@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Espace artiste - BookTonDJ</title>
+    <meta name="robots" content="noindex">
+    <meta name="description" content="Espace artiste BookTonDJ pour gerer profil DJ, validation et disponibilites.">
+    <link rel="stylesheet" href="assets/css/style.css?v=nightlife-premium-20260518">
+  </head>
+  <body data-page="artist-space">
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Accueil BookTonDJ"><span class="brand-mark">BTD</span><span>BookTonDJ</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span><span class="sr-only">Ouvrir le menu</span></button>
+      <nav class="site-nav" id="site-nav" aria-label="Navigation principale">
+        <a href="index.html">Accueil</a>
+        <a href="djs.html">DJs</a>
+        <a href="questionnaire-artiste.html">Questionnaire</a>
+        <a href="espace-artiste.html" aria-current="page">Espace artiste</a>
+        <button class="btn btn-small btn-ghost" type="button" id="signout-button">Déconnexion</button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="page-hero compact-hero">
+        <div class="container narrow">
+          <p class="eyebrow">Dashboard artiste</p>
+          <h1>Votre espace DJ</h1>
+          <p>Gérez votre fiche artiste, suivez la validation et préparez vos disponibilités.</p>
+          <div class="alert alert-soft">Connecté avec : <strong id="artist-email">chargement...</strong></div>
+          <div class="form-feedback auth-message" id="auth-message" hidden></div>
+        </div>
+      </section>
+
+      <section class="section section-tight">
+        <div class="container auth-dashboard-grid">
+          <div id="artist-dashboard"></div>
+
+          <section class="auth-card reveal">
+            <p class="eyebrow">Calendrier</p>
+            <h2>Disponibilités</h2>
+            <form id="availability-form" class="availability-form">
+              <div class="form-grid">
+                <div class="field">
+                  <label for="availability-date">Date</label>
+                  <input id="availability-date" name="available_date" type="date" required>
+                </div>
+                <div class="field">
+                  <label for="availability-status">Statut</label>
+                  <select id="availability-status" name="status" required>
+                    <option value="available">Disponible</option>
+                    <option value="unavailable">Indisponible</option>
+                    <option value="booked">Booké</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field">
+                <label for="availability-note">Note</label>
+                <input id="availability-note" name="note" type="text" placeholder="Ex : disponible après 22h">
+              </div>
+              <div class="form-feedback auth-message" id="availability-message" hidden></div>
+              <button class="btn btn-secondary btn-full" type="submit">Ajouter la date</button>
+            </form>
+            <div class="availability-list" id="availability-list"></div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container legal">
+        <p>Les disponibilités sont visibles publiquement uniquement pour les profils validés et publiés.</p>
+      </div>
+    </footer>
+
+    <script src="assets/js/main.js?v=nightlife-premium-20260518"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-config.js"></script>
+    <script src="assets/js/supabase-auth.js"></script>
+  </body>
+</html>

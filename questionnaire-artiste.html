@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Questionnaire artiste - BookTonDJ</title>
+    <meta name="robots" content="noindex">
+    <meta name="description" content="Questionnaire artiste BookTonDJ pour soumettre un profil DJ a validation.">
+    <link rel="stylesheet" href="assets/css/style.css?v=nightlife-premium-20260518">
+  </head>
+  <body data-page="artist-questionnaire">
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Accueil BookTonDJ"><span class="brand-mark">BTD</span><span>BookTonDJ</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span><span class="sr-only">Ouvrir le menu</span></button>
+      <nav class="site-nav" id="site-nav" aria-label="Navigation principale">
+        <a href="index.html">Accueil</a>
+        <a href="djs.html">DJs</a>
+        <a href="questionnaire-artiste.html" aria-current="page">Questionnaire</a>
+        <a href="espace-artiste.html">Espace artiste</a>
+        <button class="btn btn-small btn-ghost" type="button" data-auth-link="logout">Déconnexion</button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="page-hero compact-hero">
+        <div class="container narrow">
+          <p class="eyebrow">Validation artiste</p>
+          <h1>Préparez votre fiche DJ</h1>
+          <p>Ces informations serviront à créer votre profil. Il restera privé jusqu'à validation admin.</p>
+          <div class="alert alert-soft">Compte : <strong id="artist-email">chargement...</strong></div>
+          <div class="form-feedback auth-message" id="auth-message" hidden></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container form-layout">
+          <form class="app-form reveal" id="artist-questionnaire-form">
+            <p class="eyebrow">Identité musicale</p>
+            <div class="form-grid">
+              <div class="field">
+                <label for="artist-stage-name">Nom d'artiste</label>
+                <input id="artist-stage-name" name="stage_name" type="text" required>
+              </div>
+              <div class="field">
+                <label for="artist-city">Ville principale</label>
+                <input id="artist-city" name="city" type="text" required>
+              </div>
+              <div class="field">
+                <label for="artist-styles">Styles musicaux</label>
+                <input id="artist-styles" name="styles" type="text" placeholder="House, Disco, Techno" required>
+              </div>
+              <div class="field">
+                <label for="artist-price-from">Prix à partir de</label>
+                <input id="artist-price-from" name="price_from" type="number" min="0" step="10" placeholder="350">
+              </div>
+              <div class="field">
+                <label for="artist-material">Matériel</label>
+                <select id="artist-material" name="material">
+                  <option value="true">Matériel possible</option>
+                  <option value="false">Matériel à prévoir</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="artist-zones">Zones couvertes</label>
+                <input id="artist-zones" name="zones" type="text" placeholder="Marseille, Aix-en-Provence, Toulon">
+              </div>
+              <div class="field">
+                <label for="artist-event-types">Événements adaptés</label>
+                <input id="artist-event-types" name="event_types" type="text" placeholder="Club, Rooftop, Soirée privée">
+              </div>
+              <div class="field">
+                <label for="artist-badges">Badges</label>
+                <input id="artist-badges" name="badges" type="text" placeholder="Club-ready, Réponse rapide">
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="artist-bio">Bio courte</label>
+              <textarea id="artist-bio" name="bio" rows="5" placeholder="Décrivez votre univers, votre énergie et vos contextes préférés."></textarea>
+            </div>
+
+            <div class="field">
+              <label for="artist-experience">Expérience</label>
+              <textarea id="artist-experience" name="experience" rows="5" placeholder="Clubs, bars, mariages, festivals, résidences, événements privés..."></textarea>
+            </div>
+
+            <p class="eyebrow">Liens</p>
+            <div class="form-grid">
+              <div class="field">
+                <label for="artist-instagram">Instagram</label>
+                <input id="artist-instagram" name="instagram" type="url" placeholder="https://instagram.com/...">
+              </div>
+              <div class="field">
+                <label for="artist-soundcloud">SoundCloud</label>
+                <input id="artist-soundcloud" name="soundcloud" type="url" placeholder="https://soundcloud.com/...">
+              </div>
+              <div class="field">
+                <label for="artist-mixcloud">Mixcloud</label>
+                <input id="artist-mixcloud" name="mixcloud" type="url" placeholder="https://mixcloud.com/...">
+              </div>
+            </div>
+
+            <button class="btn btn-primary btn-full" type="submit">Envoyer en validation</button>
+          </form>
+
+          <aside class="side-panel reveal">
+            <p class="eyebrow">Publication contrôlée</p>
+            <h2>Votre fiche part en validation.</h2>
+            <p>Le statut passe en `pending_review`. Un admin doit ensuite approuver et publier votre profil dans Supabase.</p>
+            <ul class="checklist">
+              <li>Vous pouvez modifier votre fiche avant validation.</li>
+              <li>Les clients ne voient que les profils approuvés.</li>
+              <li>La publication automatique est bloquée par RLS.</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container legal">
+        <p>Les informations artiste sont utilisées uniquement pour étudier, valider et publier votre profil BookTonDJ.</p>
+      </div>
+    </footer>
+
+    <script src="assets/js/main.js?v=nightlife-premium-20260518"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-config.js"></script>
+    <script src="assets/js/supabase-auth.js"></script>
+  </body>
+</html>

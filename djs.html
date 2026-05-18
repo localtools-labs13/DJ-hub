@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Liste des DJs - BookTonDJ</title>
+    <meta name="description" content="Explorez les DJs BookTonDJ par ville, style, budget, type d'événement et matériel disponible.">
+    <link rel="stylesheet" href="assets/css/style.css?v=nightlife-premium-20260518">
+  </head>
+  <body data-page="artists">
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Accueil BookTonDJ"><span class="brand-mark">BTD</span><span>BookTonDJ</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span><span class="sr-only">Ouvrir le menu</span></button>
+      <nav class="site-nav" id="site-nav" aria-label="Navigation principale">
+        <a href="index.html">Accueil</a>
+        <a href="trouver-un-dj.html">Trouver un DJ</a>
+        <a href="djs.html" aria-current="page">DJs</a>
+        <a href="lieux-et-pros.html">Lieux &amp; Pros</a>
+        <a href="devenir-dj.html">Devenir DJ</a>
+        <a class="btn btn-small btn-primary" href="trouver-un-dj.html">Trouver un DJ</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="page-hero compact-hero">
+        <div class="container">
+          <p class="eyebrow">Line-up BookTonDJ</p>
+          <h1>Des profils DJ à filtrer comme une vraie shortlist de booking.</h1>
+          <p>Ville, style, budget, type d'événement, matériel : explorez une première sélection, puis envoyez une demande pour confirmer disponibilité, tarif et conditions.</p>
+        </div>
+      </section>
+
+      <section class="section section-tight">
+        <div class="container">
+          <form class="filters-panel artist-filters reveal" id="artist-filters" aria-label="Filtres artistes">
+            <div class="field field-wide">
+              <label for="filter-search">Recherche</label>
+              <input id="filter-search" name="q" type="search" placeholder="Nom, ville, style...">
+            </div>
+            <div class="field">
+              <label for="filter-city">Ville</label>
+              <select id="filter-city" name="city">
+                <option value="">Toutes</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="filter-style">Style</label>
+              <select id="filter-style" name="style">
+                <option value="">Tous</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="filter-budget">Budget maximum</label>
+              <input id="filter-budget" name="budget" type="number" min="0" step="50" placeholder="Ex : 500">
+            </div>
+            <div class="field">
+              <label for="filter-event">Type événement</label>
+              <select id="filter-event" name="event">
+                <option value="">Tous</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="filter-material">Matériel</label>
+              <select id="filter-material" name="material">
+                <option value="">Peu importe</option>
+                <option value="true">Oui</option>
+                <option value="false">Non</option>
+              </select>
+            </div>
+            <button class="btn btn-secondary" type="reset" id="reset-filters">Réinitialiser</button>
+          </form>
+
+          <div class="results-bar reveal">
+            <p><strong id="results-count">0</strong> résultat(s)</p>
+            <p>Shortlist humaine selon disponibilité réelle.</p>
+          </div>
+
+          <div class="artist-grid artists-grid" id="artists-grid"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container legal">
+        <p>BookTonDJ est un service de mise en relation entre organisateurs d'événements et DJs indépendants. Les profils, disponibilités, tarifs, besoins matériels et conditions de prestation doivent être confirmés avant toute réservation définitive. Le paiement d'un acompte ne confirme pas automatiquement la prestation. Les informations envoyées via les formulaires sont utilisées uniquement pour traiter les demandes.</p>
+      </div>
+    </footer>
+    <script src="assets/js/data.js?v=nightlife-premium-20260518"></script>
+    <script src="assets/js/main.js?v=nightlife-premium-20260518"></script>
+  </body>
+</html>

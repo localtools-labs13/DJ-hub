@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin prototype - BookTonDJ</title>
+    <meta name="robots" content="noindex">
+    <meta name="description" content="Prototype local d'administration BookTonDJ non sécurisé.">
+    <link rel="stylesheet" href="assets/css/style.css?v=nightlife-premium-20260518">
+  </head>
+  <body data-page="admin">
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Accueil BookTonDJ"><span class="brand-mark">BTD</span><span>BookTonDJ</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span><span class="sr-only">Ouvrir le menu</span></button>
+      <nav class="site-nav" id="site-nav" aria-label="Navigation principale">
+        <a href="index.html">Accueil</a>
+        <a href="trouver-un-dj.html">Trouver un DJ</a>
+        <a href="djs.html">DJs</a>
+        <a href="lieux-et-pros.html">Lieux &amp; Pros</a>
+        <a href="devenir-dj.html">Devenir DJ</a>
+        <a class="btn btn-small btn-primary" href="trouver-un-dj.html">Trouver un DJ</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="page-hero compact-hero">
+        <div class="container">
+          <p class="eyebrow">Back-office prototype</p>
+          <h1>Console de pilotage BookTonDJ</h1>
+          <div class="alert alert-danger">Prototype local sans authentification. À garder pour la démonstration uniquement, jamais pour de vraies données sensibles en production.</div>
+        </div>
+      </section>
+
+      <section class="section section-tight">
+        <div class="container admin-layout">
+          <div class="stats-grid admin-stats reveal" id="admin-stats"></div>
+
+          <section class="admin-panel reveal">
+            <div class="panel-heading">
+              <h2>Demandes fictives</h2>
+              <span>Dispatch</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Client</th>
+                    <th>Ville</th>
+                    <th>Date</th>
+                    <th>Style</th>
+                    <th>Budget</th>
+                    <th>Statut</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody class="admin-requests" id="admin-requests"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="admin-panel reveal">
+            <div class="panel-heading">
+              <h2>Line-up artistes</h2>
+              <span>Depuis data.js</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nom</th>
+                    <th>Ville</th>
+                    <th>Styles</th>
+                    <th>Prix</th>
+                    <th>Statut</th>
+                  </tr>
+                </thead>
+                <tbody class="admin-artists" id="admin-artists"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="admin-panel reveal">
+            <div class="panel-heading">
+              <h2>Comment ajouter un artiste</h2>
+              <span>Exemple data.js</span>
+            </div>
+            <pre><code>{
+  id: "nom-ville",
+  name: "Nom DJ",
+  city: "Ville",
+  styles: ["House", "Disco"],
+  priceFrom: 250,
+  rating: 4.8,
+  events: 12,
+  material: true,
+  image: "",
+  instagram: "",
+  soundcloud: "",
+  mixcloud: "",
+  bio: "Courte bio du DJ.",
+  zones: ["Ville", "Autour"],
+  available: "Sur demande",
+  eventTypes: ["Soirée privée", "Bar"],
+  badges: ["Réponse rapide"],
+  experience: "Expérience en clubs, événements privés et lieux professionnels."
+}</code></pre>
+          </section>
+
+          <section class="admin-panel reveal">
+            <div class="panel-heading">
+              <h2>Avant mise en production</h2>
+              <span>Checklist</span>
+            </div>
+            <ul class="checklist">
+              <li>Remplacer les liens Formspree par les vrais formulaires.</li>
+              <li>Remplacer les liens Stripe par les vrais Payment Links.</li>
+              <li>Ajouter une authentification admin réelle.</li>
+              <li>Créer une base de données pour les artistes et demandes.</li>
+              <li>Ajouter une politique de confidentialité et des mentions légales complètes.</li>
+              <li>Valider les textes, prix et disponibilités avec chaque DJ.</li>
+            </ul>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container legal">
+        <p>BookTonDJ est un service de mise en relation entre organisateurs d'événements et DJs indépendants. Les profils, disponibilités, tarifs, besoins matériels et conditions de prestation doivent être confirmés avant toute réservation définitive. Le paiement d'un acompte ne confirme pas automatiquement la prestation. Les informations envoyées via les formulaires sont utilisées uniquement pour traiter les demandes.</p>
+      </div>
+    </footer>
+    <script src="assets/js/data.js?v=nightlife-premium-20260518"></script>
+    <script src="assets/js/main.js?v=nightlife-premium-20260518"></script>
+  </body>
+</html>

@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lieux & Pros - BookTonDJ</title>
+    <meta name="description" content="BookTonDJ aide les bars, restaurants, hôtels, clubs et agences à trouver des DJs pour leurs programmations musicales.">
+    <link rel="stylesheet" href="assets/css/style.css?v=nightlife-premium-20260518">
+  </head>
+  <body data-page="pros">
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Accueil BookTonDJ"><span class="brand-mark">BTD</span><span>BookTonDJ</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span><span class="sr-only">Ouvrir le menu</span></button>
+      <nav class="site-nav" id="site-nav" aria-label="Navigation principale">
+        <a href="index.html">Accueil</a>
+        <a href="trouver-un-dj.html">Trouver un DJ</a>
+        <a href="djs.html">DJs</a>
+        <a href="lieux-et-pros.html" aria-current="page">Lieux &amp; Pros</a>
+        <a href="devenir-dj.html">Devenir DJ</a>
+        <a class="btn btn-small btn-primary" href="trouver-un-dj.html">Trouver un DJ</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="page-hero pro-hero">
+        <div class="container narrow">
+          <p class="eyebrow">Nightlife B2B</p>
+          <h1>Un réseau DJ pour vos dates, résidences et urgences de programmation.</h1>
+          <p>Bars, restaurants, hôtels, rooftops, agences et clubs : BookTonDJ vous aide à cadrer un besoin musical, identifier des profils compatibles et sécuriser les échanges avant confirmation.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#demande-pro">Déposer une demande pro</a>
+            <a class="btn btn-ghost" href="djs.html">Voir les profils</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="feature-grid">
+            <article class="feature-card reveal"><p class="eyebrow">One-shot</p><h2>Réservation ponctuelle</h2><p>Une ouverture, un anniversaire client, un lancement de marque ou une soirée privée dans votre établissement.</p></article>
+            <article class="feature-card reveal"><p class="eyebrow">Résidence</p><h2>Résidence DJ</h2><p>Installez une signature musicale régulière avec des DJs adaptés à votre clientèle, vos horaires et votre niveau sonore.</p></article>
+            <article class="feature-card reveal"><p class="eyebrow">Urgence</p><h2>Remplacement last minute</h2><p>Un DJ annule, une date se confirme tard, une terrasse ouvre plus tôt : envoyez le brief, on cherche vite et proprement.</p></article>
+            <article class="feature-card reveal"><p class="eyebrow">Direction artistique</p><h2>Soirées thématiques</h2><p>Afro, disco, deep house, hip-hop, latino, lounge ou open format selon la cible et l'énergie voulue.</p></article>
+            <article class="feature-card reveal"><p class="eyebrow">Technique</p><h2>DJ + matériel possible</h2><p>Certains profils peuvent proposer une solution contrôleur, son ou setup léger selon la jauge et les contraintes du lieu.</p></article>
+            <article class="feature-card reveal"><p class="eyebrow">Exécution</p><h2>Demandes priorisées</h2><p>Brief cadré, profils adaptés, échanges plus rapides et validation humaine avant toute confirmation définitive.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-band">
+        <div class="container">
+          <div class="section-heading reveal">
+            <p class="eyebrow">Backstage pro</p>
+            <h2>Un parcours pensé pour les établissements</h2>
+          </div>
+          <div class="steps-grid">
+            <article class="step-card reveal"><span>01</span><h3>Brief établissement</h3><p>Date, fréquence, style, budget, contraintes techniques, image du lieu et type de clientèle.</p></article>
+            <article class="step-card reveal"><span>02</span><h3>Shortlist compatible</h3><p>La sélection s'appuie sur la ville, l'expérience, l'ambiance musicale, le matériel et la disponibilité.</p></article>
+            <article class="step-card reveal"><span>03</span><h3>Validation finale</h3><p>Vous avancez après accord sur la date, les horaires, le tarif, le setup et les conditions du lieu.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="demande-pro">
+        <div class="container form-layout">
+          <form class="app-form reveal" method="POST" action="https://formspree.io/f/TON_FORM_PRO" data-form="pro">
+            <p class="eyebrow">Brief pro</p>
+            <h2>Demande prioritaire pro</h2>
+            <div class="form-grid">
+              <div class="field">
+                <label for="etablissement">Établissement</label>
+                <input id="etablissement" name="etablissement" type="text" required>
+              </div>
+              <div class="field">
+                <label for="contact">Nom contact</label>
+                <input id="contact" name="nom_contact" type="text" required autocomplete="name">
+              </div>
+              <div class="field">
+                <label for="email-pro">Email</label>
+                <input id="email-pro" name="email" type="email" required autocomplete="email">
+              </div>
+              <div class="field">
+                <label for="telephone-pro">Téléphone</label>
+                <input id="telephone-pro" name="telephone" type="tel" required autocomplete="tel">
+              </div>
+              <div class="field">
+                <label for="ville-pro">Ville</label>
+                <input id="ville-pro" name="ville" type="text" required>
+              </div>
+              <div class="field">
+                <label for="type-lieu">Type de lieu</label>
+                <select id="type-lieu" name="type_de_lieu" required>
+                  <option value="">Choisir</option>
+                  <option>Bar</option>
+                  <option>Restaurant</option>
+                  <option>Hôtel</option>
+                  <option>Club</option>
+                  <option>Agence événementielle</option>
+                  <option>Rooftop</option>
+                  <option>Autre</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="besoin-pro">Besoin</label>
+                <input id="besoin-pro" name="besoin" type="text" required placeholder="Soirée, résidence, remplacement...">
+              </div>
+              <div class="field">
+                <label for="frequence">Fréquence</label>
+                <select id="frequence" name="frequence" required>
+                  <option value="">Choisir</option>
+                  <option>Ponctuelle</option>
+                  <option>Hebdomadaire</option>
+                  <option>Mensuelle</option>
+                  <option>Saisonnière</option>
+                  <option>À définir</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="styles-pro">Styles souhaités</label>
+                <input id="styles-pro" name="styles_souhaites" type="text" required>
+              </div>
+              <div class="field">
+                <label for="budget-pro">Budget</label>
+                <input id="budget-pro" name="budget" type="text" required placeholder="Ex : 450 EUR / soirée">
+              </div>
+            </div>
+            <div class="field">
+              <label for="message-pro">Message</label>
+              <textarea id="message-pro" name="message" rows="6" placeholder="Programmation, contraintes horaires, équipement sur place, ambiance du lieu..."></textarea>
+            </div>
+            <label class="check-line">
+              <input type="checkbox" name="consentement_rgpd" required>
+              <span>J'accepte que BookTonDJ utilise ces informations uniquement pour traiter ma demande professionnelle.</span>
+            </label>
+            <div class="form-feedback" data-form-feedback hidden>Merci, votre demande pro est prête à être envoyée.</div>
+            <button class="btn btn-primary btn-full" type="submit">Envoyer la demande pro</button>
+          </form>
+
+          <aside class="side-panel reveal">
+            <h2>Traitement prioritaire</h2>
+            <p>Idéal pour un remplacement last minute, une résidence DJ ou une demande régulière avec plusieurs dates.</p>
+            <a class="btn btn-secondary btn-full" href="https://buy.stripe.com/TON_LIEN_PRO">Lancer une demande pro prioritaire</a>
+            <p class="payment-note">Le paiement permet de prioriser le traitement de votre demande.</p>
+            <p class="payment-note">Le paiement ne confirme pas automatiquement une prestation. La réservation finale dépend de la validation du DJ, du lieu, de la date, du matériel et du tarif global.</p>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container legal">
+        <p>BookTonDJ est un service de mise en relation entre organisateurs d'événements et DJs indépendants. Les profils, disponibilités, tarifs, besoins matériels et conditions de prestation doivent être confirmés avant toute réservation définitive. Le paiement d'un acompte ne confirme pas automatiquement la prestation. Les informations envoyées via les formulaires sont utilisées uniquement pour traiter les demandes.</p>
+      </div>
+    </footer>
+    <script src="assets/js/data.js?v=nightlife-premium-20260518"></script>
+    <script src="assets/js/main.js?v=nightlife-premium-20260518"></script>
+  </body>
+</html>

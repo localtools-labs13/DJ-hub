@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Devenir DJ partenaire - BookTonDJ</title>
+    <meta name="description" content="Créez votre profil DJ sur BookTonDJ et recevez des demandes qualifiées en France.">
+    <link rel="stylesheet" href="assets/css/style.css?v=nightlife-premium-20260518">
+  </head>
+  <body data-page="join">
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Accueil BookTonDJ"><span class="brand-mark">BTD</span><span>BookTonDJ</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span><span class="sr-only">Ouvrir le menu</span></button>
+      <nav class="site-nav" id="site-nav" aria-label="Navigation principale">
+        <a href="index.html">Accueil</a>
+        <a href="trouver-un-dj.html">Trouver un DJ</a>
+        <a href="djs.html">DJs</a>
+        <a href="lieux-et-pros.html">Lieux &amp; Pros</a>
+        <a href="devenir-dj.html" aria-current="page">Devenir DJ</a>
+        <a class="btn btn-small btn-primary" href="trouver-un-dj.html">Trouver un DJ</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="page-hero compact-hero">
+        <div class="container narrow">
+          <p class="eyebrow">Artistes & collectifs</p>
+          <h1>Entrez dans une sélection pensée pour les bookings sérieux.</h1>
+          <p>Créez votre profil BookTonDJ, présentez votre univers et recevez des demandes mieux cadrées : ville, date, ambiance, budget, horaires et besoin matériel.</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container form-layout">
+          <form class="app-form reveal" method="POST" action="https://formspree.io/f/TON_FORM_DJ" data-form="dj">
+            <p class="eyebrow">Profil artiste</p>
+            <div class="form-grid">
+              <div class="field">
+                <label for="nom-artiste">Nom d'artiste</label>
+                <input id="nom-artiste" name="nom_artiste" type="text" required>
+              </div>
+              <div class="field">
+                <label for="prenom-nom">Prénom nom</label>
+                <input id="prenom-nom" name="prenom_nom" type="text" required autocomplete="name">
+              </div>
+              <div class="field">
+                <label for="ville-dj">Ville</label>
+                <input id="ville-dj" name="ville" type="text" required autocomplete="address-level2">
+              </div>
+              <div class="field">
+                <label for="email-dj">Email</label>
+                <input id="email-dj" name="email" type="email" required autocomplete="email">
+              </div>
+              <div class="field">
+                <label for="telephone-dj">Téléphone</label>
+                <input id="telephone-dj" name="telephone" type="tel" required autocomplete="tel">
+              </div>
+              <div class="field">
+                <label for="styles-dj">Styles musicaux</label>
+                <input id="styles-dj" name="styles_musicaux" type="text" required placeholder="House, afro, hip-hop...">
+              </div>
+              <div class="field">
+                <label for="experience-dj">Expérience</label>
+                <input id="experience-dj" name="experience" type="text" required placeholder="5 ans, clubs, mariages, festivals...">
+              </div>
+              <div class="field">
+                <label for="prix-dj">Prix à partir de</label>
+                <input id="prix-dj" name="prix_a_partir_de" type="number" min="0" step="10" required>
+              </div>
+              <div class="field">
+                <label for="zone-dj">Zone de déplacement</label>
+                <input id="zone-dj" name="zone_de_deplacement" type="text" required>
+              </div>
+              <div class="field">
+                <label for="materiel-dj">Matériel disponible</label>
+                <select id="materiel-dj" name="materiel_disponible" required>
+                  <option value="">Choisir</option>
+                  <option>Oui</option>
+                  <option>Non</option>
+                  <option>Selon prestation</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="instagram">Instagram</label>
+                <input id="instagram" name="instagram" type="url" placeholder="https://instagram.com/...">
+              </div>
+              <div class="field">
+                <label for="soundcloud">SoundCloud</label>
+                <input id="soundcloud" name="soundcloud" type="url" placeholder="https://soundcloud.com/...">
+              </div>
+              <div class="field">
+                <label for="mixcloud">Mixcloud</label>
+                <input id="mixcloud" name="mixcloud" type="url" placeholder="https://mixcloud.com/...">
+              </div>
+              <div class="field">
+                <label for="statut-legal">Statut légal</label>
+                <select id="statut-legal" name="statut_legal" required>
+                  <option value="">Choisir</option>
+                  <option>Auto-entrepreneur</option>
+                  <option>Entreprise</option>
+                  <option>Intermittent</option>
+                  <option>Association</option>
+                  <option>À créer</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label for="message-dj">Message</label>
+              <textarea id="message-dj" name="message" rows="6" placeholder="Présentez votre univers, vos références, votre matériel, vos disponibilités..."></textarea>
+            </div>
+            <label class="check-line">
+              <input type="checkbox" name="consentement_rgpd" required>
+              <span>J'accepte que BookTonDJ utilise ces informations uniquement pour traiter ma candidature.</span>
+            </label>
+            <div class="form-feedback" data-form-feedback hidden>Merci, votre profil est prêt à être envoyé.</div>
+            <button class="btn btn-primary btn-full" type="submit">Envoyer mon profil DJ</button>
+          </form>
+
+          <aside class="side-panel reveal">
+            <p class="eyebrow">Visibilité lancement</p>
+            <h2>Mise en avant DJ</h2>
+            <p>La mise en avant est optionnelle. Elle peut donner plus de visibilité à votre profil pendant le lancement de BookTonDJ, sans garantir de booking.</p>
+            <a class="btn btn-secondary btn-full" href="https://buy.stripe.com/TON_LIEN_MISE_EN_AVANT">Booster mon profil</a>
+            <p class="payment-note">Le paiement ne confirme pas automatiquement une prestation. La réservation finale dépend de la validation du DJ, du lieu, de la date, du matériel et du tarif global.</p>
+            <p class="payment-note">Paiement optionnel, ne garantit pas de booking.</p>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container legal">
+        <p>BookTonDJ est un service de mise en relation entre organisateurs d'événements et DJs indépendants. Les profils, disponibilités, tarifs, besoins matériels et conditions de prestation doivent être confirmés avant toute réservation définitive. Le paiement d'un acompte ne confirme pas automatiquement la prestation. Les informations envoyées via les formulaires sont utilisées uniquement pour traiter les demandes.</p>
+      </div>
+    </footer>
+    <script src="assets/js/data.js?v=nightlife-premium-20260518"></script>
+    <script src="assets/js/main.js?v=nightlife-premium-20260518"></script>
+  </body>
+</html>
