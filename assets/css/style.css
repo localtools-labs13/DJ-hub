@@ -4641,3 +4641,357 @@ code {
     color: #fbfaf7 !important;
   }
 }
+
+/* Presskit A4 clean layout v4: keeps every block inside the sheet. */
+.container.presskit-layout {
+  width: min(100% - 2rem, 1640px);
+  max-width: 1640px;
+  grid-template-columns: minmax(440px, 1fr) minmax(700px, 760px);
+}
+
+.presskit-preview {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+}
+
+.presskit-preview .presskit-a4-sheet {
+  flex: 0 0 min(100%, 760px);
+  margin-inline: auto;
+}
+
+.presskit-a4-sheet {
+  width: min(100%, 760px);
+  gap: 16px;
+  padding: 36px 36px 28px;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,0.033) 0 1px, transparent 1px 38px),
+    linear-gradient(0deg, rgba(255,255,255,0.027) 0 1px, transparent 1px 38px),
+    radial-gradient(circle at 14% 16%, rgba(139, 92, 246, 0.18), transparent 18rem),
+    radial-gradient(circle at 90% 20%, rgba(24, 216, 255, 0.18), transparent 19rem),
+    linear-gradient(145deg, #070a13 0%, #101421 52%, #071018 100%);
+}
+
+.pk2-header {
+  min-height: 0;
+  padding-right: 0;
+  padding-bottom: 17px;
+  border-bottom: 1px solid rgba(24, 216, 255, 0.16);
+}
+
+.pk2-brand {
+  margin-bottom: 18px;
+}
+
+.pk2-brand strong {
+  min-width: 50px;
+  min-height: 50px;
+  border-radius: 15px;
+  font-size: 0.78rem;
+}
+
+.pk2-brand span {
+  font-size: 0.58rem;
+}
+
+.pk2-kicker {
+  margin-bottom: 0.42rem;
+  font-size: 0.62rem;
+}
+
+.pk2-header h1 {
+  max-width: 100%;
+  font-size: clamp(3.05rem, 6.4vw, 4.55rem);
+  line-height: 0.86;
+  overflow-wrap: anywhere;
+}
+
+.pk2-subtitle {
+  max-width: 92%;
+  margin-top: 0.72rem;
+  font-size: 0.72rem;
+}
+
+.pk2-tags {
+  max-width: 100%;
+}
+
+.pk2-body {
+  grid-template-columns: minmax(238px, 0.83fr) minmax(0, 1.17fr);
+  gap: 22px;
+}
+
+.pk2-left {
+  grid-template-rows: auto auto;
+  align-content: start;
+}
+
+.pk2-photo {
+  height: 456px;
+  min-height: 0;
+  border-radius: 0;
+}
+
+.pk2-photo img,
+.pk2-photo-placeholder {
+  height: 100%;
+  min-height: 0;
+}
+
+.pk2-photo::before {
+  top: 24px;
+  width: 104px;
+  height: 16px;
+}
+
+.pk2-right {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  align-content: start;
+}
+
+.pk2-card {
+  min-width: 0;
+  padding: 12px 12px 13px;
+  overflow: hidden;
+  border: 1px solid rgba(24, 216, 255, 0.16);
+  border-radius: 16px;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.074), rgba(255,255,255,0.032)),
+    rgba(3, 4, 10, 0.42);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+.pk2-card::before {
+  display: none;
+}
+
+.pk2-info-card,
+.pk2-bio-card,
+.pk2-booking-card,
+.pk2-tech-card,
+.pk2-sound-card {
+  grid-column: 1 / -1;
+}
+
+.pk2-mini-grid {
+  grid-column: 1 / -1;
+  gap: 10px;
+}
+
+.pk2-card h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.48rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+}
+
+.pk2-card h2::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--pink);
+  box-shadow: 0 0 12px rgba(233, 70, 255, 0.78);
+}
+
+.pk2-card p {
+  font-size: 0.61rem;
+  line-height: 1.42;
+}
+
+.pk2-bio-card p {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+}
+
+.pk2-bio-card .pk2-lead {
+  -webkit-line-clamp: 4;
+}
+
+.pk2-bio-card p:not(.pk2-lead) {
+  -webkit-line-clamp: 5;
+}
+
+.pk2-info-card .pk-info-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.48rem 0.72rem;
+}
+
+.pk2-info-card .pk-info-list div {
+  display: block;
+}
+
+.pk2-info-card dt {
+  margin-bottom: 0.16rem;
+  font-size: 0.5rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.pk2-info-card dd {
+  font-size: 0.57rem;
+  line-height: 1.28;
+  overflow-wrap: anywhere;
+}
+
+.pk2-mini-tags {
+  gap: 0.24rem;
+}
+
+.presskit-a4-sheet .presskit-tags span {
+  min-height: 20px;
+  padding: 0.16rem 0.46rem;
+  font-size: 0.52rem;
+}
+
+.pk2-social-card {
+  padding: 12px;
+}
+
+.pk2-links {
+  gap: 0.3rem;
+}
+
+.pk2-links a {
+  min-height: 22px;
+  padding: 0.16rem 0.42rem;
+  font-size: 0.5rem;
+}
+
+.pk2-links a span {
+  width: 15px;
+  height: 15px;
+  font-size: 0.5rem;
+}
+
+.pk2-footer {
+  gap: 0.7rem;
+  padding-top: 11px;
+}
+
+.pk2-footer strong {
+  font-size: 0.86rem;
+  letter-spacing: 0.18em;
+}
+
+.pk2-footer span {
+  font-size: 0.53rem;
+  line-height: 1.35;
+}
+
+.pk2-accent-top {
+  top: 326px;
+  left: 36px;
+}
+
+.pk2-accent-bottom {
+  right: 36px;
+  bottom: 116px;
+}
+
+@media (max-width: 1320px) {
+  .container.presskit-layout,
+  .presskit-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .presskit-preview {
+    position: static;
+  }
+}
+
+@media (max-width: 760px) {
+  .presskit-a4-sheet {
+    aspect-ratio: auto;
+    min-height: auto;
+    padding: 1.25rem;
+  }
+
+  .pk2-body,
+  .pk2-right,
+  .pk2-mini-grid,
+  .pk2-footer {
+    grid-template-columns: 1fr;
+  }
+
+  .pk2-photo {
+    height: 360px;
+  }
+}
+
+@media print {
+  .presskit-a4-sheet {
+    width: 210mm !important;
+    height: 297mm !important;
+    min-height: 297mm !important;
+    gap: 4mm !important;
+    padding: 9mm 9mm 7mm !important;
+  }
+
+  .pk2-header {
+    min-height: 0 !important;
+    padding-right: 0 !important;
+    padding-bottom: 4mm !important;
+  }
+
+  .pk2-brand {
+    margin-bottom: 4.5mm !important;
+  }
+
+  .pk2-brand strong {
+    min-width: 13mm !important;
+    min-height: 13mm !important;
+  }
+
+  .pk2-header h1 {
+    max-width: 100% !important;
+    font-size: 16mm !important;
+    line-height: 0.86 !important;
+  }
+
+  .pk2-subtitle {
+    max-width: 100% !important;
+    font-size: 2.8mm !important;
+  }
+
+  .pk2-body {
+    grid-template-columns: 70mm 1fr !important;
+    gap: 6mm !important;
+  }
+
+  .pk2-photo,
+  .pk2-photo img,
+  .pk2-photo-placeholder {
+    height: 118mm !important;
+    min-height: 0 !important;
+  }
+
+  .pk2-card {
+    padding: 3mm !important;
+    border-radius: 4mm !important;
+  }
+
+  .pk2-card h2 {
+    font-size: 2.45mm !important;
+  }
+
+  .pk2-card p,
+  .pk2-info-card dt,
+  .pk2-info-card dd,
+  .pk2-links a {
+    font-size: 2.05mm !important;
+  }
+
+  .pk2-footer {
+    padding-top: 3mm !important;
+  }
+}

@@ -122,10 +122,10 @@
     const zoneTags = tags(profile.zones || []);
     const location = profile.city || "Ville à confirmer";
     const mainStyles = list(profile.styles, "Styles à confirmer");
-    const shortIntro = presskit.short_intro || "";
-    const longBio = compactText(presskit.long_bio || profile.bio || "", 760);
-    const bookingText = compactText(presskit.booking_text || "Contact réservation via DJ-hub.", 420);
-    const technicalInfo = compactText(presskit.technical_info || "", 420);
+    const shortIntro = compactText(presskit.short_intro || "", 300);
+    const longBio = compactText(presskit.long_bio || profile.bio || "", 460);
+    const bookingText = compactText(presskit.booking_text || "Contact réservation via DJ-hub.", 260);
+    const technicalInfo = compactText(presskit.technical_info || "", 250);
     if (!root) return;
     root.innerHTML = [
       '<article class="presskit-page presskit-a4-sheet pk2-template-' + esc(templateForProfile(profile)) + ' reveal" id="presskit-sheet">',
@@ -154,10 +154,10 @@
       ]) + '</section>',
       '<section class="pk2-card pk2-bio-card"><h2>Biography</h2><p class="pk2-lead">' + esc(shortIntro) + '</p>' + (longBio ? '<p>' + esc(longBio) + '</p>' : '') + '</section>',
       '<div class="pk2-mini-grid">',
-      '<section class="pk2-card"><h2>Events</h2>' + (eventTags ? '<div class="presskit-tags pk2-mini-tags">' + eventTags + '</div>' : '<p>Soirées privées, bars, rooftops.</p>') + '</section>',
-      '<section class="pk2-card"><h2>Zones</h2>' + (zoneTags ? '<div class="presskit-tags pk2-mini-tags">' + zoneTags + '</div>' : '<p>' + esc(location) + '</p>') + '</section>',
+      '<section class="pk2-card pk2-events-card"><h2>Events</h2>' + (eventTags ? '<div class="presskit-tags pk2-mini-tags">' + eventTags + '</div>' : '<p>Soirées privées, bars, rooftops.</p>') + '</section>',
+      '<section class="pk2-card pk2-zones-card"><h2>Zones</h2>' + (zoneTags ? '<div class="presskit-tags pk2-mini-tags">' + zoneTags + '</div>' : '<p>' + esc(location) + '</p>') + '</section>',
       '</div>',
-      '<section class="pk2-card"><h2>Technical rider</h2><p>' + esc(technicalInfo) + '</p></section>',
+      '<section class="pk2-card pk2-tech-card"><h2>Technical rider</h2><p>' + esc(technicalInfo) + '</p></section>',
       '<section class="pk2-card pk2-booking-card"><h2>Booking text</h2><p>' + esc(bookingText) + '</p></section>',
       '</div>',
       '</main>',

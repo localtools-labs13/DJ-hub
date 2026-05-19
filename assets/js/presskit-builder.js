@@ -217,10 +217,10 @@
     const linkMarkup = links.length ? '<div class="pk2-links">' + links.map(function (entry) {
       return '<a href="' + esc(entry[1]) + '" target="_blank" rel="noopener"><span>' + esc(entry[0].charAt(0)) + '</span>' + esc(socialLabel(entry[0], entry[1])) + '</a>';
     }).join("") + '</div>' : "";
-    const shortIntro = texts.short_intro || generateShortBio(profile);
-    const longBio = compactText(texts.long_bio || profile.bio || "", 760);
-    const bookingText = compactText(texts.booking_text || generateBookingText(profile), 420);
-    const technicalInfo = compactText(texts.technical_info || generateTechnicalText(profile), 420);
+    const shortIntro = compactText(texts.short_intro || generateShortBio(profile), 300);
+    const longBio = compactText(texts.long_bio || profile.bio || "", 460);
+    const bookingText = compactText(texts.booking_text || generateBookingText(profile), 260);
+    const technicalInfo = compactText(texts.technical_info || generateTechnicalText(profile), 250);
     const location = profile.city || "Ville à confirmer";
     const mainStyles = list(profile.styles, "Styles à confirmer");
     const mainEvents = list(profile.event_types, "soirées privées, bars, rooftops");
@@ -252,11 +252,11 @@
       ]) + '</section>',
       '<section class="pk2-card pk2-bio-card"><h2>Biography</h2><p class="pk2-lead">' + esc(shortIntro) + '</p>' + (longBio ? '<p>' + esc(longBio) + '</p>' : '') + '</section>',
       '<div class="pk2-mini-grid">',
-      '<section class="pk2-card"><h2>Events</h2>' + (eventTags ? '<div class="presskit-tags pk2-mini-tags">' + eventTags + '</div>' : '<p>' + esc(mainEvents) + '</p>') + '</section>',
-      '<section class="pk2-card"><h2>Zones</h2>' + (zoneTags ? '<div class="presskit-tags pk2-mini-tags">' + zoneTags + '</div>' : '<p>' + esc(location) + '</p>') + '</section>',
+      '<section class="pk2-card pk2-events-card"><h2>Events</h2>' + (eventTags ? '<div class="presskit-tags pk2-mini-tags">' + eventTags + '</div>' : '<p>' + esc(mainEvents) + '</p>') + '</section>',
+      '<section class="pk2-card pk2-zones-card"><h2>Zones</h2>' + (zoneTags ? '<div class="presskit-tags pk2-mini-tags">' + zoneTags + '</div>' : '<p>' + esc(location) + '</p>') + '</section>',
       '</div>',
-      '<section class="pk2-card"><h2>Technical rider</h2><p>' + esc(technicalInfo) + '</p></section>',
-      (influences || formats) ? '<section class="pk2-card"><h2>Sound universe</h2>' + influences + formats + '</section>' : '',
+      '<section class="pk2-card pk2-tech-card"><h2>Technical rider</h2><p>' + esc(technicalInfo) + '</p></section>',
+      (influences || formats) ? '<section class="pk2-card pk2-sound-card"><h2>Sound universe</h2>' + influences + formats + '</section>' : '',
       '<section class="pk2-card pk2-booking-card"><h2>Booking text</h2><p>' + esc(bookingText) + '</p></section>',
       '</div>',
       '</main>',
