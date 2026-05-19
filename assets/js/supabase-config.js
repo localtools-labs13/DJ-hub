@@ -4,8 +4,8 @@
   // DJ-hub — Configuration Supabase
   // Clé publique uniquement : ne jamais mettre de clé serveur privée ici.
 
-  const SUPABASE_URL = "TON_SUPABASE_URL";
-  const SUPABASE_ANON_KEY = "TON_SUPABASE_ANON_KEY";
+  const SUPABASE_URL = "https://eiosshneekefkfhxgeru.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_L-_sJqlMVyiYEpUJJpFS1Q_6n99rvG4";
 
   const isConfigured = Boolean(
     SUPABASE_URL &&
