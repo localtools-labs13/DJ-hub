@@ -22,6 +22,7 @@
         <div class="container">
           <p class="eyebrow">Admin DJ-hub</p>
           <h1>Validation des artistes</h1>
+          <p>Interface privée. Le JavaScript protège l’accès côté UX, mais la sécurité réelle est assurée par les policies RLS Supabase.</p>
           <div class="form-feedback auth-message" id="admin-message" hidden></div>
           <div class="stats-grid admin-stats" id="validation-stats"></div>
         </div>
@@ -29,7 +30,27 @@
 
       <section class="section">
         <div class="container">
-          <div id="validation-list" class="validation-list"></div>
+          <div class="admin-section">
+            <div class="section-heading"><p class="eyebrow">Validation</p><h2>Artistes en attente</h2></div>
+            <div id="pending-artists-list" class="validation-list"></div>
+          </div>
+          <div class="admin-section">
+            <div class="section-heading"><p class="eyebrow">Publication</p><h2>Artistes validés</h2></div>
+            <div id="approved-artists-list" class="validation-list"></div>
+          </div>
+          <div class="admin-section">
+            <div class="section-heading"><p class="eyebrow">Corrections</p><h2>Corrections demandées / refusés</h2></div>
+            <div id="review-artists-list" class="validation-list"></div>
+          </div>
+          <div class="admin-section">
+            <div class="section-heading"><p class="eyebrow">Demandes clients</p><h2>Demandes clients</h2></div>
+            <div id="booking-requests-list" class="validation-list"></div>
+          </div>
+          <div class="admin-section">
+            <div class="section-heading"><p class="eyebrow">Récentes</p><h2>Demandes récentes</h2></div>
+            <div id="recent-requests-list" class="validation-list"></div>
+          </div>
+          <div id="validation-list" class="sr-only"></div>
         </div>
       </section>
     </main>
