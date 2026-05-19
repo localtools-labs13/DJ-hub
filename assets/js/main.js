@@ -139,11 +139,19 @@
     return [
       '<div class="empty-state empty-state-premium reveal">',
       '<p class="eyebrow">Lancement DJ-hub</p>',
-      '<h2>Aucun DJ validé pour le moment</h2>',
-      '<p>DJ-hub est en phase de lancement. Les premiers artistes apparaîtront ici après validation manuelle.</p>',
+      '<h2>Les DJs DJ-hub arrivent bientôt</h2>',
+      '<p>DJ-hub sélectionne actuellement ses premiers profils partout en France. Les DJs seront affichés progressivement après validation.</p>',
+      '<div class="placeholder-category-grid" aria-label="Catégories DJ recherchées">',
+      '<article class="placeholder-category-card"><small>Catégorie bientôt disponible</small><h3>DJ House / Disco</h3><p>Pour anniversaires, rooftops, villas et bars à ambiance.</p></article>',
+      '<article class="placeholder-category-card"><small>Catégorie bientôt disponible</small><h3>DJ Techno / Electro</h3><p>Pour formats plus club, electro ou soirées privées ciblées.</p></article>',
+      '<article class="placeholder-category-card"><small>Catégorie bientôt disponible</small><h3>DJ Open Format</h3><p>Pour publics variés, anniversaires et événements privés.</p></article>',
+      '<article class="placeholder-category-card"><small>Catégorie bientôt disponible</small><h3>DJ Afro House</h3><p>Pour ambiances solaires, rooftops, villas et garden parties.</p></article>',
+      '<article class="placeholder-category-card"><small>Catégorie bientôt disponible</small><h3>DJ Généraliste</h3><p>Pour soirées familiales, entreprises et événements mixtes.</p></article>',
+      '<article class="placeholder-category-card"><small>Catégorie bientôt disponible</small><h3>DJ Bar & Rooftop</h3><p>Pour apéros musicaux, bars, restaurants-bars et lieux indépendants.</p></article>',
+      '</div>',
       '<div class="hero-actions">',
-      '<a class="btn btn-primary" href="devenir-dj.html">Devenir DJ</a>',
-      '<a class="btn btn-secondary" href="trouver-un-dj.html">Décrire ma soirée</a>',
+      '<a class="btn btn-primary" href="trouver-un-dj.html">Je cherche un DJ</a>',
+      '<a class="btn btn-secondary" href="devenir-dj.html">Je suis DJ, je crée mon profil gratuitement</a>',
       '</div>',
       '</div>'
     ].join("");

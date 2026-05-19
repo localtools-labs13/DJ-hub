@@ -222,6 +222,28 @@ Le client n’a pas besoin de compte au lancement.
 
 Interne : frais de service client de 17 % du tarif DJ validé, ne pas afficher publiquement.
 
+## SEO national et pages locales
+
+DJ-hub reste une plateforme nationale française. Les pages locales et thématiques servent à capter les recherches Google sans changer le concept produit ni créer de faux profils.
+
+Fichiers techniques :
+- `robots.txt`
+- `sitemap.xml`
+- `404.html`
+
+Pages SEO créées :
+- intentions : soirée privée, anniversaire, bar, rooftop, restaurant-bar, villa, événement privé, entreprise, mariage, remplacement urgent ;
+- styles : house, techno, disco, afro house, hip-hop, open format, généraliste, electro ;
+- villes : Paris, Marseille, Lyon, Toulouse, Nice, Nantes, Montpellier, Bordeaux, Lille, Rennes, Strasbourg, Aix-en-Provence, Toulon, Cannes, Avignon.
+
+Après déploiement :
+- connecter Google Search Console ;
+- vérifier `https://dj-hub.fr` ;
+- soumettre `https://dj-hub.fr/sitemap.xml` ;
+- inspecter la home et les pages villes prioritaires ;
+- tester formulaire client, formulaire DJ, Supabase Auth et emails Resend ;
+- suivre les premières requêtes SEO puis enrichir les pages qui commencent à recevoir des impressions.
+
 Cette information est interne au README. Les pages publiques indiquent seulement que les frais de service DJ-hub sont côté client et visibles sur facture.
 
 ## Sécurité
