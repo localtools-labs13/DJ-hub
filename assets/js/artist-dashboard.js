@@ -62,6 +62,7 @@
         '<h2>Vous n’avez pas encore complété votre profil artiste.</h2>',
         '<p>Complétez votre profil. Il restera privé jusqu’à validation manuelle par DJ-hub.</p>',
         '<a class="btn btn-primary" href="questionnaire-artiste.html">Compléter mon profil</a>',
+        '<div class="alert alert-soft">Complétez votre profil avant de générer un presskit complet.</div>',
         '</article>'
       ].join("");
       return;
@@ -91,13 +92,24 @@
       '<div class="hero-actions">',
       '<a class="btn btn-primary" href="questionnaire-artiste.html">Créer / modifier mon profil</a>',
       '<a class="btn btn-secondary" href="questionnaire-artiste.html#photo">Ajouter / modifier ma photo</a>',
-      '<a class="btn btn-secondary" href="presskit-artiste.html">Générer mon presskit</a>',
+      '<a class="btn btn-secondary" href="presskit-artiste.html">Créer / télécharger mon presskit</a>',
       '<a class="btn btn-secondary" href="calendrier-artiste.html">Gérer mes disponibilités</a>',
       '<a class="btn btn-secondary" href="demandes-artiste.html">Voir mes demandes</a>',
       profile.status === "approved" ? '<a class="btn btn-ghost" href="dj.html?id=' + encodeURIComponent(profile.id) + '">Voir ma fiche publique</a>' : '',
       '<button class="btn btn-ghost" type="button" onclick="signOutUser()">Déconnexion</button>',
       '</div>',
       '<small>Connecté avec ' + esc(user.email) + '</small>',
+      '</article>',
+      '<article class="auth-card dashboard-presskit-card">',
+      '<p class="eyebrow">Presskit DJ-hub</p>',
+      '<h2>Votre presskit DJ</h2>',
+      '<p>Un document propre à envoyer aux organisateurs, bars ou lieux. Généré automatiquement à partir de votre profil.</p>',
+      '<p>Générez automatiquement un presskit propre à partir de votre profil : photo, bio, styles, liens audio, infos techniques et contact via DJ-hub.</p>',
+      '<div class="hero-actions">',
+      '<a class="btn btn-primary" href="presskit-artiste.html">Prévisualiser mon presskit</a>',
+      '<a class="btn btn-secondary" href="presskit-artiste.html?download=pdf">Télécharger en PDF</a>',
+      '</div>',
+      (!profile.bio || !(profile.styles || []).length || !profile.city) ? '<div class="alert alert-soft">Complétez votre profil avant de générer un presskit complet.</div>' : '',
       '</article>'
     ].join("");
   }

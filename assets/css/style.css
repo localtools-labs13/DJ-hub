@@ -2215,6 +2215,222 @@ code {
   border-top: 1px solid rgba(244, 241, 234, 0.11);
 }
 
+.presskit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.presskit-page {
+  width: min(100%, 820px);
+  min-height: 1120px;
+  margin: 0 auto;
+  overflow: hidden;
+  color: #12141a;
+  border: 1px solid rgba(18, 20, 26, 0.12);
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 13% 0%, rgba(24, 216, 255, 0.14), transparent 28%),
+    radial-gradient(circle at 90% 2%, rgba(139, 92, 246, 0.12), transparent 30%),
+    #fbfaf7;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.28);
+}
+
+.presskit-page p,
+.presskit-page small,
+.presskit-page span {
+  color: #3f4652;
+}
+
+.presskit-page h1,
+.presskit-page h2,
+.presskit-page h3,
+.presskit-page strong {
+  color: #101218;
+}
+
+.presskit-hero {
+  display: grid;
+  grid-template-columns: minmax(210px, 0.72fr) minmax(0, 1fr);
+  gap: clamp(1.2rem, 3vw, 2rem);
+  align-items: stretch;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  background:
+    linear-gradient(135deg, rgba(3, 4, 10, 0.96), rgba(8, 10, 20, 0.94)),
+    radial-gradient(circle at 20% 0%, rgba(24, 216, 255, 0.3), transparent 30%);
+}
+
+.presskit-hero h1,
+.presskit-hero .presskit-kicker,
+.presskit-hero .presskit-subtitle {
+  color: var(--cream);
+}
+
+.presskit-hero .presskit-subtitle {
+  opacity: 0.82;
+}
+
+.presskit-photo {
+  position: relative;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.presskit-photo img,
+.presskit-photo-placeholder {
+  width: 100%;
+  min-height: 280px;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border: 1px solid rgba(244, 241, 234, 0.16);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(24, 216, 255, 0.34), transparent 38%),
+    radial-gradient(circle at 72% 16%, rgba(139, 92, 246, 0.34), transparent 34%),
+    #0b0e18;
+}
+
+.presskit-photo-placeholder {
+  display: grid;
+  place-items: center;
+  color: var(--cream);
+  font-family: "Space Grotesk", Inter, sans-serif;
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 900;
+}
+
+.presskit-photo-placeholder i {
+  position: absolute;
+  inset: auto 24px 24px;
+  height: 5px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(90deg, var(--electric), var(--violet), var(--pink));
+}
+
+.presskit-photo-credit {
+  margin: 0;
+  color: rgba(244, 241, 234, 0.72) !important;
+  font-size: 0.72rem;
+}
+
+.presskit-title-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.presskit-title-block h1 {
+  margin-bottom: 0.65rem;
+  font-size: clamp(2.8rem, 6vw, 5.4rem);
+  line-height: 0.92;
+}
+
+.presskit-kicker {
+  margin-bottom: 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.presskit-subtitle {
+  margin-bottom: 1rem;
+  font-weight: 800;
+}
+
+.presskit-section {
+  padding: clamp(1rem, 2.4vw, 1.55rem) clamp(1.25rem, 3vw, 2rem);
+  border-top: 1px solid rgba(18, 20, 26, 0.1);
+}
+
+.presskit-section h2 {
+  margin-bottom: 0.65rem;
+  color: #101218;
+  font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+  letter-spacing: -0.025em;
+}
+
+.presskit-lead {
+  color: #20242c !important;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.presskit-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.presskit-tags span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid rgba(18, 20, 26, 0.12);
+  border-radius: var(--radius-pill);
+  color: #14171f;
+  background: rgba(24, 216, 255, 0.11);
+  font-weight: 850;
+}
+
+.presskit-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.presskit-info-grid div {
+  min-width: 0;
+  padding: 0.85rem;
+  border: 1px solid rgba(18, 20, 26, 0.1);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.presskit-info-grid strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 1rem;
+}
+
+.presskit-info-grid span {
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.presskit-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.presskit-links a {
+  display: inline-flex;
+  padding: 0.58rem 0.8rem;
+  border: 1px solid rgba(18, 20, 26, 0.12);
+  border-radius: var(--radius-pill);
+  color: #101218;
+  background: #ffffff;
+  font-weight: 900;
+}
+
+.presskit-footer {
+  display: grid;
+  gap: 0.35rem;
+  color: #fbfaf7;
+  background: #101218;
+}
+
+.presskit-footer strong,
+.presskit-footer span {
+  color: #fbfaf7;
+}
+
 .photo-preview {
   overflow: hidden;
   margin-top: 0.9rem;
@@ -2298,6 +2514,11 @@ code {
     position: static;
   }
 
+  .presskit-hero,
+  .presskit-info-grid {
+    grid-template-columns: 1fr;
+  }
+
   .compact-admin {
     grid-template-columns: 1fr;
   }
@@ -2305,5 +2526,85 @@ code {
   .results-bar {
     align-items: flex-start;
     flex-direction: column;
+  }
+}
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+@media print {
+  html,
+  body {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 !important;
+    background: #ffffff !important;
+    color: #111111 !important;
+  }
+
+  body::before,
+  body::after,
+  .site-header,
+  .site-footer,
+  .presskit-actions,
+  .no-print,
+  .page-hero,
+  .form-feedback,
+  .auth-message {
+    display: none !important;
+  }
+
+  main,
+  .section,
+  .container,
+  .presskit-layout,
+  .presskit-preview {
+    display: block !important;
+    width: 210mm !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+  }
+
+  .presskit-page {
+    width: 210mm !important;
+    min-height: 297mm !important;
+    margin: 0 auto !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: #ffffff !important;
+    color: #111111 !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .presskit-hero {
+    background: #111111 !important;
+  }
+
+  .presskit-section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .presskit-page p,
+  .presskit-page span,
+  .presskit-page small,
+  .presskit-page h1,
+  .presskit-page h2,
+  .presskit-page h3,
+  .presskit-page strong {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  a {
+    color: #111111 !important;
+    text-decoration: none !important;
   }
 }

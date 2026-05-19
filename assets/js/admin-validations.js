@@ -129,6 +129,7 @@
     const uploadedPhoto = artist.public_image_url || "";
     const externalPhoto = artist.photo_url || "";
     const summary = artistSummary(artist, owner.email);
+    const canPreviewPresskit = Boolean(presskit || (artist.artist_name && artist.city && ((artist.styles || []).length || artist.bio)));
     return [
       '<article class="validation-card" data-profile-id="' + esc(artist.id) + '">',
       '<div class="section-heading-row">',
@@ -156,7 +157,7 @@
       '<button class="btn btn-primary" type="button" data-profile-action="approved">Approuver</button>',
       '<button class="btn btn-secondary" type="button" data-profile-action="needs_changes">Demander correction</button>',
       '<button class="btn btn-ghost" type="button" data-profile-action="rejected">Refuser</button>',
-      presskit ? '<a class="btn btn-secondary" href="presskit-public.html?id=' + encodeURIComponent(artist.id) + '&admin=1">Voir presskit</a>' : '',
+      canPreviewPresskit ? '<a class="btn btn-secondary" href="presskit-public.html?id=' + encodeURIComponent(artist.id) + '&admin=1">Voir presskit</a>' : '',
       '<button class="btn btn-ghost" type="button" data-copy="' + esc(summary) + '">Copier résumé artiste</button>',
       owner.email ? '<a class="btn btn-ghost" href="' + esc(mailto(owner.email, "DJ-hub - Votre profil artiste", summary)) + '">Envoyer email à l’artiste</a>' : '',
       '</div>',

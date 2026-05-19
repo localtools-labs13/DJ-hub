@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Mon presskit artiste - DJ-hub</title>
     <meta name="description" content="Générez un presskit DJ-hub à partir de votre questionnaire artiste.">
-    <link rel="stylesheet" href="assets/css/style.css?v=djhub-final">
+    <link rel="stylesheet" href="assets/css/style.css?v=djhub-presskit-pdf">
   </head>
   <body data-page="artist-presskit">
     <header class="site-header">
@@ -23,14 +23,17 @@
         <div class="container narrow">
           <p class="eyebrow">Presskit artiste</p>
           <h1>Générer mon presskit</h1>
-          <p>DJ-hub génère une base professionnelle à partir de votre questionnaire. Vous pouvez modifier les textes avant sauvegarde.</p>
+          <p>Générez gratuitement un presskit DJ-hub à partir de votre profil : photo, bio, styles, liens audio, infos techniques et contact via DJ-hub.</p>
           <div class="form-feedback auth-message" id="presskit-message" hidden></div>
         </div>
       </section>
 
       <section class="section">
         <div class="container presskit-layout" id="presskit-builder">
-          <form class="app-form reveal">
+          <form class="app-form reveal no-print">
+            <p class="eyebrow">Textes modifiables</p>
+            <h2>Préparer le PDF</h2>
+            <p>Le document est généré à partir de votre questionnaire. Vous pouvez ajuster les textes avant de l’imprimer ou de le télécharger.</p>
             <div class="form-grid">
               <div class="full"><label for="presskit-title">Titre</label><input id="presskit-title" name="title" type="text"></div>
               <div class="full"><label for="presskit-short">Bio courte professionnelle</label><textarea id="presskit-short" name="short_intro" rows="4"></textarea></div>
@@ -43,23 +46,26 @@
               <button class="btn btn-secondary" type="button" data-presskit-action="generate">Régénérer</button>
               <button class="btn btn-primary" type="button" data-presskit-action="save">Sauvegarder</button>
               <button class="btn btn-secondary" type="button" data-presskit-action="preview">Prévisualiser mon presskit</button>
-              <button class="btn btn-ghost" type="button" data-presskit-action="print">Imprimer / PDF</button>
+              <button class="btn btn-ghost" id="print-presskit" type="button" data-presskit-action="print">Télécharger / imprimer en PDF</button>
+              <button class="btn btn-ghost" type="button" data-presskit-action="download-pdf">Télécharger PDF automatiquement</button>
               <button class="btn btn-ghost" type="button" data-presskit-action="download-html">Télécharger HTML</button>
               <button class="btn btn-ghost" type="button" data-presskit-action="copy-summary">Copier le résumé</button>
               <button class="btn btn-ghost" type="button" data-presskit-action="copy-short">Copier bio courte</button>
               <button class="btn btn-ghost" type="button" data-presskit-action="copy-booking">Copier description booking</button>
             </div>
+            <p class="form-note">Dans la fenêtre d’impression, choisissez “Enregistrer au format PDF”. Si le téléchargement automatique n’est pas disponible, DJ-hub utilise l’impression navigateur.</p>
           </form>
 
-          <aside class="presskit-preview reveal" id="presskit-preview"></aside>
+          <aside class="presskit-preview reveal" id="presskit-preview" aria-label="Prévisualisation presskit"></aside>
         </div>
       </section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="assets/js/supabase-config.js?v=djhub-final"></script>
-    <script src="assets/js/auth.js?v=djhub-final"></script>
-    <script src="assets/js/presskit-builder.js?v=djhub-final"></script>
-    <script src="assets/js/main.js?v=djhub-final"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+    <script src="assets/js/supabase-config.js?v=djhub-presskit-pdf"></script>
+    <script src="assets/js/auth.js?v=djhub-presskit-pdf"></script>
+    <script src="assets/js/presskit-builder.js?v=djhub-presskit-pdf"></script>
+    <script src="assets/js/main.js?v=djhub-presskit-pdf"></script>
   </body>
 </html>

@@ -103,6 +103,29 @@ Problèmes fréquents :
 
 DJ-hub est toujours gratuit pour les DJs : aucun abonnement, aucun paiement DJ, aucune commission côté DJ.
 
+## Presskit PDF artiste
+
+Chaque artiste peut générer gratuitement un presskit depuis `espace-artiste.html` ou `presskit-artiste.html`.
+
+Le presskit est généré côté navigateur à partir du profil Supabase :
+- photo artiste ou placeholder avec initiales ;
+- nom d’artiste, ville et styles ;
+- bio courte et bio longue ;
+- univers musical, influences et formats de set si renseignés ;
+- événements adaptés ;
+- zone de déplacement, tarif indicatif et matériel ;
+- liens Instagram, SoundCloud, Mixcloud, YouTube et site web ;
+- contact réservation via DJ-hub.
+
+Le PDF est généré côté navigateur :
+- bouton `Télécharger / imprimer en PDF` avec `window.print()` ;
+- bouton `Télécharger PDF automatiquement` via `html2pdf.js` si le CDN est disponible ;
+- fallback automatique vers l’impression navigateur si `html2pdf.js` ne charge pas.
+
+Aucune donnée privée n’est affichée dans le presskit : pas d’email personnel, pas de téléphone, pas de note admin. Le contact se fait via DJ-hub.
+
+Le presskit public `presskit-public.html?id=ARTIST_PROFILE_ID` est visible seulement pour les profils `approved`. Si la table `artist_presskits` n’est pas disponible, la page artiste génère le presskit côté frontend sans bloquer le parcours.
+
 ## Parcours admin
 
 Page privée :
