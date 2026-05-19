@@ -39,6 +39,7 @@ La sécurité repose sur Row Level Security. Le public voit uniquement les artis
 Migrations MVP complémentaires :
 - `booking-workflow-migration.sql` ajoute le pipeline de réservation, les champs de facturation interne et la table `booking_events`.
 - `photo-rights-migration.sql` ajoute la confirmation des droits photo sur les profils artistes.
+- `admin-request-management-migration.sql` autorise uniquement les admins à supprimer une demande client depuis l’interface privée.
 
 ## Storage Supabase
 
@@ -169,8 +170,11 @@ L’admin peut :
 - approuver, refuser ou demander correction ;
 - lire les presskits générés ;
 - traiter les demandes clients dans le pipeline ;
+- accepter / confirmer une demande client ;
+- supprimer une demande client si elle est doublon, test ou invalide ;
 - marquer une demande contactée, envoyée au DJ, acceptée/refusée par le DJ, confirmée par le client, facturée, payée, confirmée ou annulée ;
-- copier un résumé client, un message WhatsApp et des emails préremplis ;
+- modifier et envoyer des messages mail préremplis au client ou au DJ depuis son logiciel de messagerie ;
+- copier un résumé client, un message WhatsApp et les messages email ;
 - enregistrer des notes admin, DJ et client ;
 - gérer une facturation MVP manuelle depuis l’admin.
 

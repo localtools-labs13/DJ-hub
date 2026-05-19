@@ -287,6 +287,56 @@
     ].join("\n");
   }
 
+  function defaultEmailMessage(request, artist, target) {
+    if (target === "artist") {
+      return [
+        "Bonjour,",
+        "",
+        "Nouvelle demande DJ-hub à regarder :",
+        "",
+        "Ville : " + (request.city || "à confirmer"),
+        "Date : " + (request.event_date || "à confirmer"),
+        "Heure : " + (request.start_time || "à confirmer"),
+        "Type de soirée : " + (request.event_type || "à confirmer"),
+        "Lieu : " + (request.venue_type || "à confirmer"),
+        "Jauge : " + (request.guests || "à confirmer"),
+        "Style souhaité : " + (request.music_style || "à confirmer"),
+        "Budget : " + (request.budget || "à confirmer"),
+        "Matériel / sono : " + (request.material_needed || request.sound_system || "à confirmer"),
+        "",
+        "Peux-tu me confirmer si tu es disponible et intéressé pour cette demande ?",
+        "",
+        "Merci,",
+        "DJ-hub"
+      ].join("\n");
+    }
+
+    return [
+      "Bonjour " + (request.client_name || ""),
+      "",
+      "Merci pour votre demande DJ-hub.",
+      "",
+      "Nous avons bien reçu les informations pour votre événement à " + (request.city || "votre ville") + (request.event_date ? " le " + request.event_date : "") + ".",
+      "Nous revenons vers vous avec un DJ compatible et un tarif final confirmé avant validation.",
+      "",
+      "Récapitulatif :",
+      "- Type de soirée : " + (request.event_type || "à confirmer"),
+      "- Lieu : " + (request.venue_type || "à confirmer"),
+      "- Style souhaité : " + (request.music_style || "à confirmer"),
+      "- Budget : " + (request.budget || "à confirmer"),
+      "",
+      "Le remplissage de la demande ne vous engage pas. Les frais de service DJ-hub seront indiqués clairement sur la facture.",
+      "",
+      "À très vite,",
+      "DJ-hub"
+    ].join("\n");
+  }
+
+  function emailSubject(request, target) {
+    if (target === "artist") return "Nouvelle demande DJ-hub - " + (request.city || "ville à confirmer") + " - " + (request.event_date || "date à confirmer");
+    return "Votre demande DJ-hub";
+  }
+
   function invoiceText(request) {
     const dj = Number(request.validated_dj_price || 0);
     const fee = Number(request.service_fee || 0);
@@ -367,7 +417,22 @@
       '<button class="btn btn-ghost" type="button" data-invoice-action="copy">Copier détail facture</button>',
       '</div>',
       '</div>',
+      '<div class="detail-panel request-email-panel">',
+      '<h3>Messages mail</h3>',
+      '<p>Modifiez le texte si besoin, puis ouvrez votre email prérempli. Aucun envoi automatique n’est fait sans votre validation.</p>',
+      '<div class="form-grid">',
+      '<div><label>Message client</label><textarea data-email-message="client" rows="9">' + esc(defaultEmailMessage(request, artist, "client")) + '</textarea></div>',
+      '<div><label>Message DJ</label><textarea data-email-message="artist" rows="9">' + esc(defaultEmailMessage(request, artist, "artist")) + '</textarea></div>',
+      '</div>',
       '<div class="hero-actions">',
+      request.client_email ? '<button class="btn btn-primary" type="button" data-mail-action="client">Envoyer email client</button>' : '<span class="status-pill">Email client indisponible</span>',
+      artistOwner && artistOwner.email ? '<button class="btn btn-secondary" type="button" data-mail-action="artist">Envoyer email DJ</button>' : '<span class="status-pill">Email artiste indisponible</span>',
+      '<button class="btn btn-ghost" type="button" data-copy-email-message="client">Copier message client</button>',
+      '<button class="btn btn-ghost" type="button" data-copy-email-message="artist">Copier message DJ</button>',
+      '</div>',
+      '</div>',
+      '<div class="hero-actions">',
+      '<button class="btn btn-primary" type="button" data-request-action="confirmed">Accepter la demande</button>',
       '<button class="btn btn-secondary" type="button" data-request-action="contacted">Marquer contacté</button>',
       '<button class="btn btn-primary" type="button" data-request-action="sent_to_artist">Envoyer au DJ</button>',
       '<button class="btn btn-secondary" type="button" data-request-action="artist_accepted">Marquer accepté par DJ</button>',
@@ -379,8 +444,7 @@
       '<button class="btn btn-ghost" type="button" data-request-action="cancelled">Annuler</button>',
       '<button class="btn btn-ghost" type="button" data-copy="' + esc(summary) + '">Copier résumé</button>',
       '<button class="btn btn-ghost" type="button" data-copy="' + esc(whatsapp) + '">Copier message WhatsApp</button>',
-      request.client_email ? '<a class="btn btn-ghost" href="' + esc(mailto(request.client_email, "Votre demande DJ-hub", summary)) + '">Email client</a>' : '',
-      artistOwner && artistOwner.email ? '<a class="btn btn-ghost" href="' + esc(mailto(artistOwner.email, "Nouvelle demande DJ-hub", summary)) + '">Email DJ</a>' : '<span class="status-pill">Email artiste indisponible</span>',
+      '<button class="btn btn-danger" type="button" data-request-delete>Supprimer la demande</button>',
       '</div>',
       '</article>'
     ].join("");
@@ -466,6 +530,44 @@
     if (error) throw error;
 
     await addBookingEvent(card.dataset.requestId, status, "Action admin : " + statusLabel(status));
+  }
+
+  async function deleteRequest(card) {
+    const { error } = await client()
+      .from("booking_requests")
+      .delete()
+      .eq("id", card.dataset.requestId);
+    if (error) throw error;
+  }
+
+  function requestContext(card) {
+    const request = (currentState && currentState.requests || []).find(function (item) {
+      return String(item.id) === String(card.dataset.requestId);
+    });
+    const artist = request && request.artist_profile_id ? currentState.artistsById[request.artist_profile_id] : null;
+    const artistOwner = artist ? currentState.profilesById[artist.user_id] : null;
+    return { request: request, artist: artist, artistOwner: artistOwner };
+  }
+
+  function emailTargetAddress(context, target) {
+    if (!context || !context.request) return "";
+    if (target === "artist") return context.artistOwner && context.artistOwner.email ? context.artistOwner.email : "";
+    return context.request.client_email || "";
+  }
+
+  async function openRequestEmail(card, target) {
+    const context = requestContext(card);
+    if (!context.request) throw new Error("Demande introuvable.");
+    const to = emailTargetAddress(context, target);
+    if (!to) throw new Error(target === "artist" ? "Email artiste indisponible." : "Email client indisponible.");
+    const field = qs('[data-email-message="' + target + '"]', card);
+    const body = field && field.value ? field.value : defaultEmailMessage(context.request, context.artist, target);
+    await addBookingEvent(
+      card.dataset.requestId,
+      target === "artist" ? "email_artist_prepared" : "email_client_prepared",
+      target === "artist" ? "Email DJ préparé par l’admin" : "Email client préparé par l’admin"
+    );
+    window.location.href = mailto(to, emailSubject(context.request, target), body);
   }
 
   async function addBookingEvent(requestId, eventType, note) {
@@ -598,6 +700,46 @@
         } catch (error) {
           show(error.message || "Mise à jour demande impossible.", "error");
         }
+        return;
+      }
+
+      const deleteButton = event.target.closest("[data-request-delete]");
+      if (deleteButton) {
+        const card = event.target.closest("[data-request-id]");
+        if (!card) return;
+        const confirmed = window.confirm("Supprimer définitivement cette demande client ? Cette action ne sera pas visible publiquement, mais elle retirera la demande de Supabase.");
+        if (!confirmed) return;
+        try {
+          await deleteRequest(card);
+          show("Demande client supprimée.", "success");
+          await refresh();
+        } catch (error) {
+          show(error.message || "Suppression de la demande impossible. Vérifiez la policy Supabase admin.", "error");
+        }
+        return;
+      }
+
+      const mailButton = event.target.closest("[data-mail-action]");
+      if (mailButton) {
+        const card = event.target.closest("[data-request-id]");
+        if (!card) return;
+        try {
+          await openRequestEmail(card, mailButton.dataset.mailAction);
+          show("Email préparé dans votre logiciel de messagerie.", "success");
+        } catch (error) {
+          show(error.message || "Préparation email impossible.", "error");
+        }
+        return;
+      }
+
+      const copyEmailButton = event.target.closest("[data-copy-email-message]");
+      if (copyEmailButton) {
+        const card = event.target.closest("[data-request-id]");
+        const target = copyEmailButton.dataset.copyEmailMessage;
+        const field = card ? qs('[data-email-message="' + target + '"]', card) : null;
+        if (!field) return;
+        await copy(field.value);
+        show(target === "artist" ? "Message DJ copié." : "Message client copié.", "success");
         return;
       }
 
