@@ -72,10 +72,29 @@
     setValue(form, "instagram", profile.instagram);
     setValue(form, "soundcloud", profile.soundcloud);
     setValue(form, "mixcloud", profile.mixcloud);
+    setValue(form, "youtube", profile.youtube);
+    setValue(form, "website", profile.website);
     setValue(form, "legal_status", profile.legal_status);
-    setValue(form, "photo_url", profile.photo_url || profile.public_image_url);
+    setValue(form, "influences", profile.influences);
+    setValue(form, "set_formats", join(profile.set_formats));
+    setValue(form, "references_text", profile.references_text);
+    setValue(form, "preferred_vibe", profile.preferred_vibe);
+    setValue(form, "sound_system", profile.sound_system);
+    setValue(form, "lights_needed", profile.lights_needed);
+    setValue(form, "controller_available", profile.controller_available ? "true" : "false");
+    setValue(form, "cdj_ready", profile.cdj_ready ? "true" : "false");
+    setValue(form, "controller_ready", profile.controller_ready ? "true" : "false");
+    setValue(form, "technical_notes", profile.technical_notes);
+    setValue(form, "public_image_url", profile.public_image_url);
+    setValue(form, "photo_url", profile.photo_url);
     setValue(form, "photo_credit", profile.photo_credit);
     setValue(form, "photo_note", profile.photo_note);
+    const auth = qs('[name="photo_authorized"]', form);
+    if (auth) auth.checked = Boolean(profile.photo_authorized);
+
+    if (profile.public_image_url && window.djHubPhotoUpload && window.djHubPhotoUpload.renderPhotoPreview) {
+      window.djHubPhotoUpload.renderPhotoPreview(profile.public_image_url);
+    }
   }
 
   function payload(form, userId) {
@@ -96,10 +115,24 @@
       instagram: value(form, "instagram"),
       soundcloud: value(form, "soundcloud"),
       mixcloud: value(form, "mixcloud"),
+      youtube: value(form, "youtube"),
+      website: value(form, "website"),
       legal_status: value(form, "legal_status"),
+      influences: value(form, "influences"),
+      set_formats: list(value(form, "set_formats")),
+      references_text: value(form, "references_text"),
+      preferred_vibe: value(form, "preferred_vibe"),
+      sound_system: value(form, "sound_system"),
+      lights_needed: value(form, "lights_needed"),
+      controller_available: value(form, "controller_available") === "true",
+      cdj_ready: value(form, "cdj_ready") === "true",
+      controller_ready: value(form, "controller_ready") === "true",
+      technical_notes: value(form, "technical_notes"),
+      public_image_url: value(form, "public_image_url") || (window.djHubPhotoUpload && window.djHubPhotoUpload.getPendingPublicUrl ? window.djHubPhotoUpload.getPendingPublicUrl() : ""),
       photo_url: value(form, "photo_url"),
       photo_credit: value(form, "photo_credit"),
       photo_note: value(form, "photo_note"),
+      photo_authorized: Boolean(qs('[name="photo_authorized"]', form) && qs('[name="photo_authorized"]', form).checked),
       status: "pending"
     };
   }

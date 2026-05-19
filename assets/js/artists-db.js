@@ -27,11 +27,15 @@
       instagram: row.instagram || "",
       soundcloud: row.soundcloud || "",
       mixcloud: row.mixcloud || "",
-      image: row.public_image_url || row.photo_url || "",
+      youtube: row.youtube || "",
+      website: row.website || "",
+      image: row.status === "approved" ? row.public_image_url || "" : "",
       photoCredit: row.photo_credit || "",
       photoNote: row.photo_note || "",
       status: row.status || "pending",
-      available: "Disponibilités à confirmer"
+      available: "Disponibilités à confirmer",
+      publicAvailability: [],
+      hasPresskit: false
     };
   }
 
@@ -111,7 +115,32 @@
       return null;
     }
 
-    return normalizeArtist(data);
+    const artist = normalizeArtist(data);
+    if (!artist) return null;
+
+    const availability = await client()
+      .from("artist_availability")
+      .select("start_at,end_at,status")
+      .eq("artist_profile_id", id)
+      .in("status", ["available", "option"])
+      .order("start_at", { ascending: true })
+      .limit(6);
+
+    if (!availability.error) {
+      artist.publicAvailability = availability.data || [];
+      if (artist.publicAvailability.length) {
+        artist.available = artist.publicAvailability.length + " créneau(x) public(s) disponible(s) ou en option";
+      }
+    }
+
+    const presskit = await client()
+      .from("artist_presskits")
+      .select("id")
+      .eq("artist_profile_id", id)
+      .limit(1);
+    artist.hasPresskit = !presskit.error && Array.isArray(presskit.data) && presskit.data.length > 0;
+
+    return artist;
   }
 
   window.djHubArtists = {

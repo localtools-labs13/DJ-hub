@@ -30,11 +30,45 @@
       <section class="section">
         <div class="container form-layout">
           <form class="app-form reveal" id="artist-profile-form">
+            <div class="section-heading compact-heading">
+              <p class="eyebrow">Identité</p>
+              <h2>Informations principales</h2>
+            </div>
             <div class="form-grid">
               <div><label for="artist-name">Nom d’artiste</label><input id="artist-name" name="artist_name" type="text" required></div>
               <div><label for="artist-city">Ville</label><input id="artist-city" name="city" type="text" required></div>
-              <div><label for="artist-styles">Styles musicaux</label><input id="artist-styles" name="styles" type="text" placeholder="House, disco, open format" required></div>
+              <div><label for="artist-zones">Zone de déplacement</label><input id="artist-zones" name="zones" type="text" placeholder="Marseille, Aix, Toulon"></div>
               <div><label for="artist-price">Prix à partir de</label><input id="artist-price" name="price_from" type="number" min="0" placeholder="400"></div>
+              <div><label for="artist-legal">Statut légal</label><input id="artist-legal" name="legal_status" type="text" placeholder="Auto-entrepreneur, société..."></div>
+            </div>
+
+            <div class="section-heading compact-heading">
+              <p class="eyebrow">Musique</p>
+              <h2>Univers et formats</h2>
+            </div>
+            <div class="form-grid">
+              <div><label for="artist-styles">Styles musicaux</label><input id="artist-styles" name="styles" type="text" placeholder="House, disco, open format" required></div>
+              <div><label for="artist-influences">Influences</label><input id="artist-influences" name="influences" type="text" placeholder="Labels, artistes, clubs, scènes..."></div>
+              <div><label for="artist-formats">Formats de set</label><input id="artist-formats" name="set_formats" type="text" placeholder="warm-up, peak time, closing, open format, lounge, privé, bar"></div>
+              <div><label for="artist-events">Types d’événements acceptés</label><input id="artist-events" name="event_types" type="text" placeholder="Soirée privée, petit bar, villa"></div>
+            </div>
+
+            <div class="section-heading compact-heading">
+              <p class="eyebrow">Bio</p>
+              <h2>Présentation artiste</h2>
+            </div>
+            <div class="form-grid">
+              <div class="full"><label for="artist-bio">Bio courte</label><textarea id="artist-bio" name="bio" rows="5" required></textarea></div>
+              <div class="full"><label for="artist-experience">Expérience</label><textarea id="artist-experience" name="experience" rows="4"></textarea></div>
+              <div class="full"><label for="artist-references">Références</label><textarea id="artist-references" name="references_text" rows="3" placeholder="Lieux, collectifs, événements, résidences..."></textarea></div>
+              <div class="full"><label for="artist-vibe">Ambiance préférée</label><textarea id="artist-vibe" name="preferred_vibe" rows="3" placeholder="Progressive, festive, élégante, underground, open format..."></textarea></div>
+            </div>
+
+            <div class="section-heading compact-heading">
+              <p class="eyebrow">Technique</p>
+              <h2>Matériel et contraintes</h2>
+            </div>
+            <div class="form-grid">
               <div>
                 <label for="artist-material">Matériel disponible</label>
                 <select id="artist-material" name="material">
@@ -43,26 +77,51 @@
                   <option value="true">Oui</option>
                 </select>
               </div>
-              <div><label for="artist-legal">Statut légal</label><input id="artist-legal" name="legal_status" type="text" placeholder="Auto-entrepreneur, société..."></div>
-              <div class="full"><label for="artist-bio">Bio</label><textarea id="artist-bio" name="bio" rows="5" required></textarea></div>
-              <div class="full"><label for="artist-experience">Expérience</label><textarea id="artist-experience" name="experience" rows="4"></textarea></div>
-              <div><label for="artist-zones">Zones de déplacement</label><input id="artist-zones" name="zones" type="text" placeholder="Marseille, Aix, Toulon"></div>
-              <div><label for="artist-events">Types d’événements</label><input id="artist-events" name="event_types" type="text" placeholder="Soirée privée, petit bar, villa"></div>
-              <div><label for="artist-instagram">Instagram</label><input id="artist-instagram" name="instagram" type="url" placeholder="https://instagram.com/..."></div>
-              <div><label for="artist-soundcloud">SoundCloud</label><input id="artist-soundcloud" name="soundcloud" type="url" placeholder="https://soundcloud.com/..."></div>
-              <div><label for="artist-mixcloud">Mixcloud</label><input id="artist-mixcloud" name="mixcloud" type="url" placeholder="https://mixcloud.com/..."></div>
+              <div><label for="sound-system">Besoin sono</label><input id="sound-system" name="sound_system" type="text" placeholder="À confirmer, fournie par le lieu, possible..."></div>
+              <div><label for="lights-needed">Besoin lumières</label><input id="lights-needed" name="lights_needed" type="text" placeholder="Non, oui, à confirmer..."></div>
+              <div><label for="controller-available">Peut venir avec contrôleur</label><select id="controller-available" name="controller_available"><option value="false">À confirmer / non</option><option value="true">Oui</option></select></div>
+              <div><label for="cdj-ready">Peut jouer sur CDJ</label><select id="cdj-ready" name="cdj_ready"><option value="false">À confirmer / non</option><option value="true">Oui</option></select></div>
+              <div><label for="controller-ready">Peut jouer sur contrôleur</label><select id="controller-ready" name="controller_ready"><option value="false">À confirmer / non</option><option value="true">Oui</option></select></div>
+              <div class="full"><label for="technical-notes">Autres infos techniques</label><textarea id="technical-notes" name="technical_notes" rows="3"></textarea></div>
             </div>
 
             <div class="section-heading compact-heading">
-              <p class="eyebrow">Photo & presskit</p>
-              <h2>Visuels à vérifier</h2>
-              <p>Pour le lancement, vous pouvez transmettre un lien vers une photo, un presskit ou un dossier d’images. Les photos sont vérifiées avant publication.</p>
+              <p class="eyebrow">Liens</p>
+              <h2>Audio et réseaux</h2>
             </div>
             <div class="form-grid">
-              <div class="full"><label for="photo-url">Lien photo artiste ou presskit</label><input id="photo-url" name="photo_url" type="url" placeholder="Google Drive, site, Instagram, presskit..."></div>
+              <div><label for="artist-instagram">Instagram</label><input id="artist-instagram" name="instagram" type="url" placeholder="https://instagram.com/..."></div>
+              <div><label for="artist-soundcloud">SoundCloud</label><input id="artist-soundcloud" name="soundcloud" type="url" placeholder="https://soundcloud.com/..."></div>
+              <div><label for="artist-mixcloud">Mixcloud</label><input id="artist-mixcloud" name="mixcloud" type="url" placeholder="https://mixcloud.com/..."></div>
+              <div><label for="artist-youtube">YouTube</label><input id="artist-youtube" name="youtube" type="url" placeholder="https://youtube.com/..."></div>
+              <div><label for="artist-website">Site web</label><input id="artist-website" name="website" type="url" placeholder="https://..."></div>
+            </div>
+
+            <div class="section-heading compact-heading" id="photo">
+              <p class="eyebrow">Photo artiste</p>
+              <h2>Photo artiste</h2>
+              <p>Ajoutez une photo JPG, PNG ou WebP. Elle sera vérifiée avant publication avec votre profil. Vous pouvez aussi ajouter un lien Google Drive, site, Instagram ou presskit.</p>
+            </div>
+            <div class="form-grid">
+              <input type="hidden" name="public_image_url">
+              <div class="full">
+                <label for="artist-photo-file">Choisir une photo JPG, PNG ou WebP</label>
+                <input id="artist-photo-file" type="file" accept="image/jpeg,image/png,image/webp">
+                <small>Image conseillée : moins de 5 Mo. Si l’upload est indisponible, utilisez le lien photo ou presskit.</small>
+                <div class="photo-preview" id="photo-preview" hidden>
+                  <img id="artist-photo-preview" alt="Aperçu photo artiste" hidden>
+                </div>
+                <button class="btn btn-secondary btn-small" type="button" id="upload-artist-photo">Importer la photo</button>
+                <div class="form-feedback auth-message" id="photo-upload-message" hidden></div>
+              </div>
+              <div class="full"><label for="photo-url">Lien photo ou presskit externe</label><input id="photo-url" name="photo_url" type="url" placeholder="Google Drive, site, Instagram, presskit…"></div>
               <div><label for="photo-credit">Crédit photo si nécessaire</label><input id="photo-credit" name="photo_credit" type="text"></div>
               <div class="full"><label for="photo-note">Informations photo</label><textarea id="photo-note" name="photo_note" rows="4" placeholder="Image souhaitée, style visuel, lien portfolio, autorisation d’utilisation..."></textarea></div>
             </div>
+            <label class="checkbox-line">
+              <input type="checkbox" name="photo_authorized">
+              <span>J’autorise DJ-hub à utiliser la photo transmise pour afficher mon profil après validation.</span>
+            </label>
 
             <button class="btn btn-primary btn-full" type="submit">Envoyer mon profil pour validation</button>
           </form>
@@ -79,6 +138,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="assets/js/supabase-config.js?v=djhub-final"></script>
     <script src="assets/js/auth.js?v=djhub-final"></script>
+    <script src="assets/js/photo-upload.js?v=djhub-final"></script>
     <script src="assets/js/artist-profile-form.js?v=djhub-final"></script>
     <script src="assets/js/main.js?v=djhub-final"></script>
   </body>

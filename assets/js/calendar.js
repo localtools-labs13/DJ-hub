@@ -36,6 +36,17 @@
     return data || null;
   }
 
+  async function profileById(id) {
+    const { data, error } = await client()
+      .from("artist_profiles")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (error) throw error;
+    return data || null;
+  }
+
   async function loadEvents(profileId) {
     const { data, error } = await client()
       .from("artist_availability")
@@ -70,6 +81,21 @@
     if (endTime && !endTime.value) endTime.value = "23:59";
   }
 
+  function fillFormFromEvent(info) {
+    const row = info.event.extendedProps || {};
+    const start = info.event.start;
+    const end = info.event.end || info.event.start;
+    qs("#availability-id").value = info.event.id;
+    qs("#availability-start-date").value = start.toISOString().slice(0, 10);
+    qs("#availability-start-time").value = start.toTimeString().slice(0, 5);
+    qs("#availability-end-date").value = end.toISOString().slice(0, 10);
+    qs("#availability-end-time").value = end.toTimeString().slice(0, 5);
+    qs("#availability-status").value = row.status || "available";
+    qs("#availability-note").value = row.note || "";
+    const del = qs("#availability-delete");
+    if (del) del.hidden = false;
+  }
+
   async function init() {
     const calendarEl = qs("#artist-calendar");
     const form = qs("#availability-form");
@@ -86,7 +112,8 @@
 
     let profile;
     try {
-      profile = await ownProfile(user.id);
+      const adminTarget = roleProfile.role === "admin" ? new URLSearchParams(window.location.search).get("artist") : "";
+      profile = adminTarget ? await profileById(adminTarget) : await ownProfile(user.id);
       if (!profile) {
         show("Complétez d’abord votre questionnaire artiste pour préparer vos disponibilités.", "warning");
         return;
@@ -113,20 +140,36 @@
       events: await loadEvents(profile.id),
       dateClick: function (info) {
         setDateInputs(info.dateStr);
+        qs("#availability-id").value = "";
+        const del = qs("#availability-delete");
+        if (del) del.hidden = true;
       },
-      eventClick: async function (info) {
-        if (!confirm("Supprimer cette disponibilité ?")) return;
-        const { error } = await client().from("artist_availability").delete().eq("id", info.event.id);
-        if (error) {
-          show(error.message, "error");
-          return;
-        }
-        info.event.remove();
-        show("Disponibilité supprimée.", "success");
+      eventClick: function (info) {
+        fillFormFromEvent(info);
+        show("Créneau chargé. Modifiez le formulaire puis enregistrez, ou supprimez-le.", "info");
       }
     });
 
     calendar.render();
+
+    const deleteButton = qs("#availability-delete");
+    if (deleteButton) {
+      deleteButton.addEventListener("click", async function () {
+        const id = qs("#availability-id").value;
+        if (!id || !confirm("Supprimer cette disponibilité ?")) return;
+        const { error } = await client().from("artist_availability").delete().eq("id", id);
+        if (error) {
+          show(error.message, "error");
+          return;
+        }
+        const event = calendar.getEventById(id);
+        if (event) event.remove();
+        form.reset();
+        qs("#availability-id").value = "";
+        deleteButton.hidden = true;
+        show("Disponibilité supprimée.", "success");
+      });
+    }
 
     form.addEventListener("submit", async function (event) {
       event.preventDefault();
@@ -142,15 +185,21 @@
         note: qs("#availability-note").value.trim()
       };
 
-      const { data, error } = await client()
-        .from("artist_availability")
-        .insert(payload)
-        .select()
-        .single();
+      const currentId = qs("#availability-id").value;
+      const request = currentId
+        ? client().from("artist_availability").update(payload).eq("id", currentId).select().single()
+        : client().from("artist_availability").insert(payload).select().single();
+
+      const { data, error } = await request;
 
       if (error) {
         show(error.message, "error");
         return;
+      }
+
+      if (currentId) {
+        const existingEvent = calendar.getEventById(currentId);
+        if (existingEvent) existingEvent.remove();
       }
 
       calendar.addEvent({
@@ -164,6 +213,8 @@
         extendedProps: data
       });
       form.reset();
+      qs("#availability-id").value = "";
+      if (deleteButton) deleteButton.hidden = true;
       show("Disponibilité enregistrée.", "success");
     });
   }

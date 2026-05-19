@@ -131,13 +131,26 @@ create table if not exists public.artist_profiles (
   instagram text,
   soundcloud text,
   mixcloud text,
+  youtube text,
+  website text,
   legal_status text,
+  influences text,
+  set_formats text[] default '{}',
+  references_text text,
+  preferred_vibe text,
+  sound_system text,
+  lights_needed text,
+  controller_available boolean default false,
+  cdj_ready boolean default false,
+  controller_ready boolean default false,
+  technical_notes text,
   status text not null default 'pending',
   admin_note text,
   public_image_url text,
   photo_url text,
   photo_credit text,
   photo_note text,
+  photo_authorized boolean default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   constraint artist_profiles_status_check check (status in ('pending', 'approved', 'rejected', 'needs_changes')),
@@ -145,8 +158,27 @@ create table if not exists public.artist_profiles (
 );
 
 create index if not exists artist_profiles_user_id_idx on public.artist_profiles (user_id);
+create unique index if not exists artist_profiles_user_id_unique_idx on public.artist_profiles (user_id);
 create index if not exists artist_profiles_status_idx on public.artist_profiles (status);
 create index if not exists artist_profiles_city_idx on public.artist_profiles (city);
+
+alter table public.artist_profiles add column if not exists public_image_url text;
+alter table public.artist_profiles add column if not exists photo_url text;
+alter table public.artist_profiles add column if not exists photo_credit text;
+alter table public.artist_profiles add column if not exists photo_note text;
+alter table public.artist_profiles add column if not exists photo_authorized boolean default false;
+alter table public.artist_profiles add column if not exists youtube text;
+alter table public.artist_profiles add column if not exists website text;
+alter table public.artist_profiles add column if not exists influences text;
+alter table public.artist_profiles add column if not exists set_formats text[] default '{}';
+alter table public.artist_profiles add column if not exists references_text text;
+alter table public.artist_profiles add column if not exists preferred_vibe text;
+alter table public.artist_profiles add column if not exists sound_system text;
+alter table public.artist_profiles add column if not exists lights_needed text;
+alter table public.artist_profiles add column if not exists controller_available boolean default false;
+alter table public.artist_profiles add column if not exists cdj_ready boolean default false;
+alter table public.artist_profiles add column if not exists controller_ready boolean default false;
+alter table public.artist_profiles add column if not exists technical_notes text;
 
 drop trigger if exists artist_profiles_set_updated_at on public.artist_profiles;
 create trigger artist_profiles_set_updated_at
@@ -253,6 +285,37 @@ create table if not exists public.booking_requests (
 create index if not exists booking_requests_artist_profile_id_idx on public.booking_requests (artist_profile_id);
 create index if not exists booking_requests_status_idx on public.booking_requests (status);
 create index if not exists booking_requests_event_date_idx on public.booking_requests (event_date);
+create index if not exists booking_requests_city_idx on public.booking_requests (city);
+
+-- ============================================================
+-- 5. Presskits artistes
+-- ============================================================
+
+create table if not exists public.artist_presskits (
+  id uuid primary key default gen_random_uuid(),
+  artist_profile_id uuid not null references public.artist_profiles(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  title text,
+  short_intro text,
+  long_bio text,
+  music_styles text[] default '{}',
+  ideal_events text[] default '{}',
+  technical_info text,
+  booking_text text,
+  generated_html text,
+  generated_text text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists artist_presskits_artist_profile_id_idx on public.artist_presskits (artist_profile_id);
+create index if not exists artist_presskits_user_id_idx on public.artist_presskits (user_id);
+create unique index if not exists artist_presskits_artist_profile_id_unique_idx on public.artist_presskits (artist_profile_id);
+
+drop trigger if exists artist_presskits_set_updated_at on public.artist_presskits;
+create trigger artist_presskits_set_updated_at
+before update on public.artist_presskits
+for each row execute function public.set_updated_at();
 
 -- ============================================================
 -- Grants necessaires pour l'API Supabase
@@ -267,6 +330,8 @@ grant select, insert, update on public.profiles to authenticated;
 grant insert, update on public.artist_profiles to authenticated;
 grant insert, update, delete on public.artist_availability to authenticated;
 grant select, update on public.booking_requests to authenticated;
+grant select on public.artist_presskits to anon, authenticated;
+grant insert, update, delete on public.artist_presskits to authenticated;
 grant execute on function public.is_admin() to anon, authenticated;
 grant execute on function public.is_artist_owner(uuid) to anon, authenticated;
 
@@ -278,6 +343,7 @@ alter table public.profiles enable row level security;
 alter table public.artist_profiles enable row level security;
 alter table public.artist_availability enable row level security;
 alter table public.booking_requests enable row level security;
+alter table public.artist_presskits enable row level security;
 
 -- profiles
 drop policy if exists "profiles_owner_can_read" on public.profiles;
@@ -431,6 +497,76 @@ using (
 drop policy if exists "booking_requests_admin_can_update_status" on public.booking_requests;
 create policy "booking_requests_admin_can_update_status"
 on public.booking_requests for update to authenticated
+using (public.is_admin())
+with check (public.is_admin());
+
+drop policy if exists "booking_requests_artist_can_update_related_response" on public.booking_requests;
+create policy "booking_requests_artist_can_update_related_response"
+on public.booking_requests for update to authenticated
+using (
+  artist_profile_id is not null
+  and exists (
+    select 1
+    from public.artist_profiles ap
+    where ap.id = artist_profile_id
+      and ap.user_id = auth.uid()
+      and ap.status = 'approved'
+  )
+)
+with check (
+  status in ('accepted', 'refused')
+  and artist_profile_id is not null
+  and exists (
+    select 1
+    from public.artist_profiles ap
+    where ap.id = artist_profile_id
+      and ap.user_id = auth.uid()
+      and ap.status = 'approved'
+  )
+);
+
+-- artist_presskits
+drop policy if exists "artist_presskits_public_can_read_approved" on public.artist_presskits;
+create policy "artist_presskits_public_can_read_approved"
+on public.artist_presskits for select to anon, authenticated
+using (
+  exists (
+    select 1
+    from public.artist_profiles ap
+    where ap.id = artist_profile_id
+      and ap.status = 'approved'
+  )
+);
+
+drop policy if exists "artist_presskits_artist_can_read_own" on public.artist_presskits;
+create policy "artist_presskits_artist_can_read_own"
+on public.artist_presskits for select to authenticated
+using (user_id = auth.uid());
+
+drop policy if exists "artist_presskits_artist_can_create_own" on public.artist_presskits;
+create policy "artist_presskits_artist_can_create_own"
+on public.artist_presskits for insert to authenticated
+with check (user_id = auth.uid() and public.is_artist_owner(artist_profile_id));
+
+drop policy if exists "artist_presskits_artist_can_update_own" on public.artist_presskits;
+create policy "artist_presskits_artist_can_update_own"
+on public.artist_presskits for update to authenticated
+using (user_id = auth.uid())
+with check (user_id = auth.uid() and public.is_artist_owner(artist_profile_id));
+
+drop policy if exists "artist_presskits_artist_can_delete_own" on public.artist_presskits;
+create policy "artist_presskits_artist_can_delete_own"
+on public.artist_presskits for delete to authenticated
+using (user_id = auth.uid());
+
+drop policy if exists "artist_presskits_admin_can_read_all" on public.artist_presskits;
+create policy "artist_presskits_admin_can_read_all"
+on public.artist_presskits for select to authenticated
+using (public.is_admin());
+
+drop policy if exists "artist_presskits_admin_can_update_all" on public.artist_presskits;
+create policy "artist_presskits_admin_can_update_all"
+on public.artist_presskits for update to authenticated
 using (public.is_admin())
 with check (public.is_admin());
 

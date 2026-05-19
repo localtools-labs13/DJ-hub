@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mon presskit artiste - DJ-hub</title>
+    <meta name="description" content="Générez un presskit DJ-hub à partir de votre questionnaire artiste.">
+    <link rel="stylesheet" href="assets/css/style.css?v=djhub-final">
+  </head>
+  <body data-page="artist-presskit">
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Accueil DJ-hub"><span class="brand-mark">DJ</span><span>DJ-hub</span></a>
+      <nav class="site-nav" id="site-nav" aria-label="Navigation principale">
+        <a href="espace-artiste.html">Espace artiste</a>
+        <a href="questionnaire-artiste.html">Mon profil</a>
+        <a href="demandes-artiste.html">Mes demandes</a>
+        <button class="btn btn-small btn-secondary" type="button" onclick="signOutUser()">Déconnexion</button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="page-hero">
+        <div class="container narrow">
+          <p class="eyebrow">Presskit artiste</p>
+          <h1>Générer mon presskit</h1>
+          <p>DJ-hub génère une base professionnelle à partir de votre questionnaire. Vous pouvez modifier les textes avant sauvegarde.</p>
+          <div class="form-feedback auth-message" id="presskit-message" hidden></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container presskit-layout" id="presskit-builder">
+          <form class="app-form reveal">
+            <div class="form-grid">
+              <div class="full"><label for="presskit-title">Titre</label><input id="presskit-title" name="title" type="text"></div>
+              <div class="full"><label for="presskit-short">Bio courte professionnelle</label><textarea id="presskit-short" name="short_intro" rows="4"></textarea></div>
+              <div class="full"><label for="presskit-long">Bio longue</label><textarea id="presskit-long" name="long_bio" rows="8"></textarea></div>
+              <div class="full"><label for="presskit-booking">Texte booking</label><textarea id="presskit-booking" name="booking_text" rows="4"></textarea></div>
+              <div class="full"><label for="presskit-tech">Fiche technique simple</label><textarea id="presskit-tech" name="technical_info" rows="4"></textarea></div>
+              <div class="full"><label for="presskit-text">Résumé pour organisateur</label><textarea id="presskit-text" name="generated_text" rows="7"></textarea></div>
+            </div>
+            <div class="hero-actions">
+              <button class="btn btn-secondary" type="button" data-presskit-action="generate">Régénérer</button>
+              <button class="btn btn-primary" type="button" data-presskit-action="save">Sauvegarder</button>
+              <button class="btn btn-secondary" type="button" data-presskit-action="preview">Prévisualiser mon presskit</button>
+              <button class="btn btn-ghost" type="button" data-presskit-action="print">Imprimer / PDF</button>
+              <button class="btn btn-ghost" type="button" data-presskit-action="download-html">Télécharger HTML</button>
+              <button class="btn btn-ghost" type="button" data-presskit-action="copy-summary">Copier le résumé</button>
+              <button class="btn btn-ghost" type="button" data-presskit-action="copy-short">Copier bio courte</button>
+              <button class="btn btn-ghost" type="button" data-presskit-action="copy-booking">Copier description booking</button>
+            </div>
+          </form>
+
+          <aside class="presskit-preview reveal" id="presskit-preview"></aside>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-config.js?v=djhub-final"></script>
+    <script src="assets/js/auth.js?v=djhub-final"></script>
+    <script src="assets/js/presskit-builder.js?v=djhub-final"></script>
+    <script src="assets/js/main.js?v=djhub-final"></script>
+  </body>
+</html>

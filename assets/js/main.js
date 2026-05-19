@@ -300,7 +300,9 @@
     var links = [
       ["Instagram", artist.instagram],
       ["SoundCloud", artist.soundcloud],
-      ["Mixcloud", artist.mixcloud]
+      ["Mixcloud", artist.mixcloud],
+      ["YouTube", artist.youtube],
+      ["Site web", artist.website]
     ].filter(function (entry) { return entry[1]; });
 
     if (!links.length) return '<p class="muted">Liens sociaux à confirmer.</p>';
@@ -313,6 +315,17 @@
   async function renderArtistDetail() {
     var container = $("#artist-detail");
     if (!container) return;
+
+    function availabilityMarkup() {
+      if (!artist.publicAvailability || !artist.publicAvailability.length) {
+        return '<p>Disponibilités à confirmer avec le DJ.</p>';
+      }
+      return '<div class="tag-grid compact">' + artist.publicAvailability.map(function (slot) {
+        var start = new Date(slot.start_at);
+        var label = start.toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric" }) + " · " + (slot.status === "option" ? "Option" : "Disponible");
+        return '<span>' + escapeHtml(label) + '</span>';
+      }).join("") + '</div>';
+    }
 
     var artist = await getArtistFromUrl();
     if (!artist) {
@@ -345,11 +358,12 @@
       '      <span><strong>Validé</strong><small>par DJ-hub</small></span>',
       '    </div>',
       '    <p>' + escapeHtml(artist.bio || "Présentation en cours de validation.") + '</p>',
-      '    <p class="muted">' + (artist.priceFrom ? 'À partir de ' + formatEuro(artist.priceFrom) + ' selon durée, lieu, matériel et disponibilité.' : 'Tarif à confirmer selon durée, lieu, matériel et disponibilité.') + '</p>',
+      '    <p class="muted">' + (artist.priceFrom ? 'À partir de ' + formatEuro(artist.priceFrom) + ' selon durée, lieu, matériel et disponibilité. Tarif final confirmé avant validation.' : 'Tarif à confirmer selon durée, lieu, matériel et disponibilité. Tarif final confirmé avant validation.') + '</p>',
       '    <div class="style-line detail-style-line">' + stylePills(artist.styles || [], 6) + '</div>',
       '    <div class="badge-row">' + badgeList([artist.material ? "Matériel possible" : "Matériel à confirmer", "Profil vérifié"], 3) + '</div>',
       '    <div class="detail-actions">',
       '      <a class="btn btn-primary" href="trouver-un-dj.html?dj=' + encodeURIComponent(artist.id) + '">Demander ce DJ</a>',
+      artist.hasPresskit ? '      <a class="btn btn-secondary" href="presskit-public.html?id=' + encodeURIComponent(artist.id) + '">Voir le presskit</a>' : '',
       '      <a class="btn btn-secondary" href="djs.html">Voir d’autres DJs</a>',
       '    </div>',
       '    <div class="alert alert-soft">Tarif final confirmé avant validation avec le DJ. Les frais de service DJ-hub sont indiqués sur la facture.</div>',
@@ -360,7 +374,7 @@
       '  <section class="detail-panel reveal"><h2>Matériel</h2><p>' + (artist.material ? "Matériel possible selon prestation et configuration du lieu." : "Matériel à confirmer selon le lieu et la demande.") + '</p></section>',
       '  <section class="detail-panel reveal"><h2>Zones couvertes</h2><div class="tag-grid compact">' + (artist.zones || []).map(function (zone) { return '<span>' + escapeHtml(zone) + '</span>'; }).join("") + '</div></section>',
       '  <section class="detail-panel reveal"><h2>Événements adaptés</h2><div class="tag-grid compact">' + (artist.eventTypes || []).map(function (type) { return '<span>' + escapeHtml(type) + '</span>'; }).join("") + '</div></section>',
-      '  <section class="detail-panel reveal"><h2>Disponibilité</h2><p>' + escapeHtml(artist.available || "À confirmer avec le DJ.") + '</p></section>',
+      '  <section class="detail-panel reveal"><h2>Disponibilités publiques</h2>' + availabilityMarkup() + '</section>',
       '  <section class="detail-panel reveal"><h2>Liens</h2><div class="social-row">' + socialLinks(artist) + '</div></section>',
       '</div>'
     ].join("");

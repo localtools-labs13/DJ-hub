@@ -1,6 +1,10 @@
 (function () {
   "use strict";
 
+  const SITE_URL = "https://dj-hub.fr";
+  // Pour test local : http://localhost:8000/connexion.html
+  // Pour GitHub Pages temporaire : https://localtools-labs13.github.io/DJ-hub/connexion.html
+
   function getClient() {
     return window.djHubSupabase || null;
   }
@@ -24,6 +28,40 @@
     if (isConfigured()) return true;
     showMessage(target, "Supabase n'est pas encore configuré. Le site public fonctionne, mais la connexion sera active après ajout de l'URL projet et de l'anon key.", "warning");
     return false;
+  }
+
+  function formatAuthError(error) {
+    const raw = String((error && (error.message || error.error_description || error.name)) || "").toLowerCase();
+
+    if (raw.indexOf("email rate limit exceeded") !== -1 || raw.indexOf("rate limit") !== -1) {
+      return "Le service d’envoi d’email est temporairement limité. Réessayez dans quelques minutes.";
+    }
+
+    if (raw.indexOf("email not confirmed") !== -1 || raw.indexOf("not confirmed") !== -1) {
+      return "Votre email n’est pas encore confirmé. Vérifiez votre boîte mail avant de vous connecter.";
+    }
+
+    if (raw.indexOf("invalid login credentials") !== -1 || raw.indexOf("invalid credentials") !== -1) {
+      return "Email ou mot de passe incorrect. Si vous venez de créer votre compte, vérifiez que votre email a bien été confirmé.";
+    }
+
+    if (raw.indexOf("user already registered") !== -1 || raw.indexOf("already registered") !== -1 || raw.indexOf("already exists") !== -1) {
+      return "Un compte existe déjà avec cet email. Connectez-vous ou utilisez un autre email.";
+    }
+
+    if (raw.indexOf("password should be at least 6 characters") !== -1 || raw.indexOf("password") !== -1 && raw.indexOf("6") !== -1) {
+      return "Votre mot de passe doit contenir au moins 6 caractères.";
+    }
+
+    if (raw.indexOf("unable to validate email address") !== -1 || raw.indexOf("invalid email") !== -1) {
+      return "L’adresse email semble invalide. Vérifiez-la puis réessayez.";
+    }
+
+    if (raw.indexOf("supabase") !== -1 && raw.indexOf("config") !== -1) {
+      return "La connexion DJ-hub n’est pas encore configurée. Réessayez après activation Supabase.";
+    }
+
+    return "Une erreur est survenue. Vérifiez les informations saisies puis réessayez.";
   }
 
   async function getCurrentUser() {
@@ -112,11 +150,11 @@
       email,
       password,
       options: {
+        emailRedirectTo: SITE_URL + "/connexion.html",
         data: {
           role: safeRole,
           full_name: fullName || ""
-        },
-        emailRedirectTo: window.location.origin + window.location.pathname.replace(/[^/]+$/, "connexion.html")
+        }
       }
     });
 
@@ -170,8 +208,8 @@
         return;
       }
 
-      const href = profile.role === "admin" ? "admin-validations.html" : profile.role === "artist" ? "espace-artiste.html" : "djs.html";
-      const label = profile.role === "artist" ? "Espace artiste" : profile.role === "admin" ? "Admin" : "Mon espace";
+      const href = profile.role === "artist" ? "espace-artiste.html" : profile.role === "client" ? "djs.html" : "connexion.html";
+      const label = profile.role === "artist" ? "Espace artiste" : "Compte";
       target.innerHTML = '<a href="' + href + '">' + label + '</a>';
     });
   }
@@ -195,7 +233,7 @@
           if (redirect) window.location.href = redirect;
           else await redirectByRole();
         } catch (error) {
-          showMessage(message, error.message || "Connexion impossible.", "error");
+          showMessage(message, formatAuthError(error), "error");
         }
       });
     }
@@ -222,10 +260,10 @@
             return;
           }
 
-          showMessage(message, "Compte créé. Vérifiez votre email si Supabase demande une confirmation, puis connectez-vous.", "success");
+          showMessage(message, "Votre compte artiste a été créé. Vérifiez votre boîte mail pour confirmer votre adresse, puis connectez-vous à votre espace DJ-hub.", "success");
           signupForm.reset();
         } catch (error) {
-          showMessage(message, error.message || "Création impossible.", "error");
+          showMessage(message, formatAuthError(error), "error");
         }
       });
     }
@@ -240,6 +278,7 @@
   window.signOutUser = signOutUser;
   window.redirectByRole = redirectByRole;
   window.updateAuthNav = updateAuthNav;
+  window.formatAuthError = formatAuthError;
 
   document.addEventListener("DOMContentLoaded", function () {
     initAuthForms();

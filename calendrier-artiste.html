@@ -40,6 +40,8 @@
           </div>
           <form class="app-form reveal" id="availability-form">
             <p class="eyebrow">Ajouter un créneau</p>
+            <p>Seules les disponibilités disponibles ou option peuvent être utilisées dans la recherche publique. Les indisponibilités restent privées.</p>
+            <input id="availability-id" type="hidden">
             <div class="form-grid">
               <div><label for="availability-start-date">Date début</label><input id="availability-start-date" type="date" required></div>
               <div><label for="availability-start-time">Heure début</label><input id="availability-start-time" type="time" required></div>
@@ -55,7 +57,10 @@
               </div>
               <div class="full"><label for="availability-note">Note privée</label><textarea id="availability-note" rows="3"></textarea></div>
             </div>
-            <button class="btn btn-primary btn-full" type="submit">Enregistrer le créneau</button>
+            <div class="hero-actions">
+              <button class="btn btn-primary" type="submit">Enregistrer le créneau</button>
+              <button class="btn btn-ghost" id="availability-delete" type="button" hidden>Supprimer ce créneau</button>
+            </div>
           </form>
         </div>
       </section>
