@@ -36,11 +36,20 @@
       new: "Nouvelle",
       contacted: "Contacté",
       sent_to_artist: "Envoyée au DJ",
+      artist_accepted: "DJ intéressé",
+      artist_refused: "DJ indisponible",
+      client_confirmed: "Client confirmé",
+      invoice_sent: "Facture envoyée",
+      paid: "Payé",
       confirmed: "Confirmée",
       cancelled: "Annulée",
       accepted: "Acceptée",
       refused: "Refusée"
     }[status] || status || "À traiter";
+  }
+
+  function statusClass(status) {
+    return "status-" + String(status || "new").replace(/_/g, "-");
   }
 
   function list(values) {
@@ -63,17 +72,19 @@
   }
 
   async function loadAll() {
-    const [artistRes, profileRes, requestRes, presskitRes] = await Promise.all([
+    const [artistRes, profileRes, requestRes, presskitRes, eventRes] = await Promise.all([
       client().from("artist_profiles").select("*").order("created_at", { ascending: false }),
       client().from("profiles").select("id,email,full_name"),
       client().from("booking_requests").select("*").order("created_at", { ascending: false }),
-      client().from("artist_presskits").select("*")
+      client().from("artist_presskits").select("*"),
+      client().from("booking_events").select("*").order("created_at", { ascending: false })
     ]);
 
     if (artistRes.error) throw artistRes.error;
     if (profileRes.error) throw profileRes.error;
     if (requestRes.error) throw requestRes.error;
     if (presskitRes.error) console.warn("[DJ-hub] Presskits non chargés.", presskitRes.error.message);
+    if (eventRes.error) console.warn("[DJ-hub] Historique demandes non chargé.", eventRes.error.message);
 
     const profilesById = {};
     (profileRes.data || []).forEach(function (profile) { profilesById[profile.id] = profile; });
@@ -83,13 +94,19 @@
 
     const presskitsByArtistId = {};
     (presskitRes.data || []).forEach(function (presskit) { presskitsByArtistId[presskit.artist_profile_id] = presskit; });
+    const eventsByRequestId = {};
+    (eventRes.data || []).forEach(function (event) {
+      if (!eventsByRequestId[event.booking_request_id]) eventsByRequestId[event.booking_request_id] = [];
+      eventsByRequestId[event.booking_request_id].push(event);
+    });
 
     return {
       artists: artistRes.data || [],
       profilesById: profilesById,
       requests: requestRes.data || [],
       artistsById: artistsById,
-      presskitsByArtistId: presskitsByArtistId
+      presskitsByArtistId: presskitsByArtistId,
+      eventsByRequestId: eventsByRequestId
     };
   }
 
@@ -101,7 +118,9 @@
       ["Artistes validés", state.artists.filter(function (a) { return a.status === "approved"; }).length],
       ["Corrections demandées", state.artists.filter(function (a) { return a.status === "needs_changes"; }).length],
       ["Profils refusés", state.artists.filter(function (a) { return a.status === "rejected"; }).length],
-      ["Demandes clients nouvelles", state.requests.filter(function (r) { return r.status === "new"; }).length]
+      ["Demandes nouvelles", state.requests.filter(function (r) { return r.status === "new"; }).length],
+      ["Demandes confirmées", state.requests.filter(function (r) { return r.status === "confirmed"; }).length],
+      ["Factures à suivre", state.requests.filter(function (r) { return r.invoice_status === "sent" || r.status === "invoice_sent"; }).length]
     ];
     root.innerHTML = items.map(function (item) {
       return '<article class="stat-card"><span>' + esc(item[0]) + '</span><strong>' + esc(item[1]) + '</strong></article>';
@@ -130,6 +149,7 @@
     const externalPhoto = artist.photo_url || "";
     const summary = artistSummary(artist, owner.email);
     const canPreviewPresskit = Boolean(presskit || (artist.artist_name && artist.city && ((artist.styles || []).length || artist.bio)));
+    const rightsConfirmed = Boolean(artist.photo_rights_confirmed);
     return [
       '<article class="validation-card" data-profile-id="' + esc(artist.id) + '">',
       '<div class="section-heading-row">',
@@ -148,7 +168,7 @@
       '<section class="detail-panel"><h3>Zones</h3><p>' + esc(list(artist.zones)) + '</p></section>',
       '<section class="detail-panel"><h3>Événements</h3><p>' + esc(list(artist.event_types)) + '</p></section>',
       '<section class="detail-panel"><h3>Liens</h3><p>' + esc([artist.instagram, artist.soundcloud, artist.mixcloud, artist.youtube, artist.website].filter(Boolean).join(" · ") || "Aucun") + '</p></section>',
-      '<section class="detail-panel"><h3>Photo / presskit</h3><p>Photo uploadée : ' + esc(uploadedPhoto || "Aucune") + '<br>Lien externe : ' + esc(externalPhoto || "Aucun") + '<br>Crédit : ' + esc(artist.photo_credit || "Non renseigné") + '<br>Note : ' + esc(artist.photo_note || "Aucune") + '</p></section>',
+      '<section class="detail-panel"><h3>Photo / presskit</h3><p>Photo uploadée : ' + esc(uploadedPhoto || "Aucune") + '<br>Lien externe : ' + esc(externalPhoto || "Aucun") + '<br>Crédit : ' + esc(artist.photo_credit || "Non renseigné") + '<br>Note : ' + esc(artist.photo_note || "Aucune") + '<br>Droits photo confirmés : ' + esc(rightsConfirmed ? "Oui" : "Non") + '<br>Date confirmation : ' + esc(artist.photo_rights_confirmed_at ? new Date(artist.photo_rights_confirmed_at).toLocaleString("fr-FR") : "Non renseignée") + '</p>' + (uploadedPhoto && !rightsConfirmed ? '<span class="status-pill status-cancelled">Droits photo à vérifier</span>' : '') + '</section>',
       presskit ? '<section class="detail-panel"><h3>Presskit généré</h3><p>' + esc(presskit.short_intro || presskit.title || "Presskit disponible") + '</p></section>' : '<section class="detail-panel"><h3>Presskit</h3><p>Non généré</p></section>',
       '</div>',
       '<label>Note admin</label>',
@@ -173,36 +193,94 @@
 
   function requestSummary(request, artist) {
     return [
-      "Demande client DJ-hub",
+      "Résumé demande DJ-hub",
       "Client : " + (request.client_name || ""),
-      "Email : " + (request.client_email || ""),
       "Téléphone : " + (request.client_phone || ""),
+      "Email : " + (request.client_email || ""),
       "Type demandeur : " + (request.requester_type || ""),
       "Ville : " + (request.city || ""),
       "Date : " + (request.event_date || ""),
       "Heure : " + (request.start_time || ""),
       "Durée : " + (request.duration || ""),
-      "Événement : " + (request.event_type || ""),
-      "Lieu : " + (request.venue_type || ""),
-      "Invités / jauge : " + (request.guests || ""),
-      "Style : " + (request.music_style || ""),
+      "Type de soirée : " + (request.event_type || ""),
+      "Type de lieu : " + (request.venue_type || ""),
+      "Nombre d’invités / jauge : " + (request.guests || ""),
+      "Style souhaité : " + (request.music_style || ""),
       "Budget : " + (request.budget || ""),
       "Sono : " + (request.sound_system || ""),
       "Lumières : " + (request.lights_needed || ""),
       "Matériel : " + (request.material_needed || ""),
       "DJ demandé : " + (artist ? artist.artist_name : "Non lié"),
-      "Message : " + (request.message || "")
+      "Message : " + (request.message || ""),
+      "Statut : " + statusLabel(request.status)
     ].join("\n");
+  }
+
+  function whatsappSummary(request, artist) {
+    return [
+      "Hello, nouvelle demande DJ-hub :",
+      (request.event_type || "Soirée") + " à " + (request.city || "ville à confirmer") + " le " + (request.event_date || "date à confirmer"),
+      "Heure : " + (request.start_time || "à confirmer") + " · Durée : " + (request.duration || "à confirmer"),
+      "Jauge : " + (request.guests || "à confirmer") + " · Style : " + (request.music_style || "à confirmer"),
+      "Budget : " + (request.budget || "à confirmer"),
+      "DJ demandé : " + (artist ? artist.artist_name : "non lié"),
+      "Réponse possible ?"
+    ].join("\n");
+  }
+
+  function invoiceText(request) {
+    const dj = Number(request.validated_dj_price || 0);
+    const fee = Number(request.service_fee || 0);
+    const total = Number(request.total_client_price || 0);
+    return [
+      "Tarif prestation DJ : " + dj.toFixed(2) + " €",
+      "Frais de service DJ-hub : " + fee.toFixed(2) + " €",
+      "Total client : " + total.toFixed(2) + " €",
+      "Tarif final, disponibilité et conditions confirmés avant validation."
+    ].join("\n");
+  }
+
+  function invoiceTextFromCard(card) {
+    const dj = Number((qs('[data-invoice-field="validated_dj_price"]', card) || {}).value || 0);
+    const fee = Number((qs('[data-invoice-field="service_fee"]', card) || {}).value || 0);
+    const total = Number((qs('[data-invoice-field="total_client_price"]', card) || {}).value || 0);
+    return invoiceText({
+      validated_dj_price: dj,
+      service_fee: fee,
+      total_client_price: total
+    });
+  }
+
+  function invoiceStatusOptions(current) {
+    const statuses = [
+      ["not_sent", "Non envoyée"],
+      ["sent", "Envoyée"],
+      ["paid", "Payée"],
+      ["cancelled", "Annulée"]
+    ];
+    return statuses.map(function (item) {
+      return '<option value="' + esc(item[0]) + '"' + (current === item[0] ? " selected" : "") + '>' + esc(item[1]) + '</option>';
+    }).join("");
+  }
+
+  function eventHistory(requestId, state) {
+    const events = state.eventsByRequestId[requestId] || [];
+    if (!events.length) return '<p>Aucun historique.</p>';
+    return '<ul class="clean-list">' + events.slice(0, 6).map(function (event) {
+      return '<li><strong>' + esc(statusLabel(event.event_type) || event.event_type) + '</strong> · ' + esc(new Date(event.created_at).toLocaleString("fr-FR")) + (event.note ? '<br>' + esc(event.note) : '') + '</li>';
+    }).join("") + '</ul>';
   }
 
   function renderRequestCard(request, state) {
     const artist = request.artist_profile_id ? state.artistsById[request.artist_profile_id] : null;
     const artistOwner = artist ? state.profilesById[artist.user_id] : null;
     const summary = requestSummary(request, artist);
+    const whatsapp = whatsappSummary(request, artist);
     return [
       '<article class="validation-card" data-request-id="' + esc(request.id) + '">',
       '<div class="section-heading-row">',
-      '<div><p class="eyebrow">' + esc(statusLabel(request.status)) + '</p><h2>' + esc(request.event_type || "Demande client") + '</h2><p>' + esc(request.client_name) + ' · ' + esc(request.city) + ' · ' + esc(request.event_date) + '</p></div>',
+      '<div><p class="eyebrow">Pipeline demandes</p><h2>' + esc(request.event_type || "Demande client") + '</h2><p>' + esc(request.client_name) + ' · ' + esc(request.city) + ' · ' + esc(request.event_date) + '</p></div>',
+      '<span class="status-pill ' + esc(statusClass(request.status)) + '">' + esc(statusLabel(request.status)) + '</span>',
       '</div>',
       '<div class="detail-grid compact-admin">',
       '<section class="detail-panel"><h3>Client</h3><p>' + esc(request.client_name) + '<br>' + esc(request.client_email) + '<br>' + esc(request.client_phone) + '<br>' + esc(request.requester_type) + '</p></section>',
@@ -211,15 +289,39 @@
       '<section class="detail-panel"><h3>Technique</h3><p>Sono : ' + esc(request.sound_system) + '<br>Lumières : ' + esc(request.lights_needed) + '<br>Matériel : ' + esc(request.material_needed) + '</p></section>',
       '<section class="detail-panel"><h3>DJ demandé</h3><p>' + esc(artist ? artist.artist_name : "Aucun DJ lié") + '</p></section>',
       '<section class="detail-panel"><h3>Message</h3><p>' + esc(request.message || "Aucun message") + '</p></section>',
+      '<section class="detail-panel"><h3>Notes</h3><label>Note admin</label><textarea data-admin-note rows="3">' + esc(request.admin_note || "") + '</textarea><label>Note DJ</label><textarea data-artist-note rows="2">' + esc(request.artist_note || "") + '</textarea><label>Note client</label><textarea data-client-note rows="2">' + esc(request.client_note || "") + '</textarea></section>',
+      '<section class="detail-panel"><h3>Historique</h3>' + eventHistory(request.id, state) + '</section>',
+      '</div>',
+      '<div class="detail-panel invoice-panel">',
+      '<h3>Facturation interne</h3>',
+      '<div class="form-grid">',
+      '<div><label>Tarif DJ validé</label><input data-invoice-field="validated_dj_price" type="number" min="0" step="0.01" value="' + esc(request.validated_dj_price || "") + '"></div>',
+      '<div><label>Frais service</label><input data-invoice-field="service_fee" type="number" min="0" step="0.01" value="' + esc(request.service_fee || "") + '"></div>',
+      '<div><label>Total client</label><input data-invoice-field="total_client_price" type="number" min="0" step="0.01" value="' + esc(request.total_client_price || "") + '"></div>',
+      '<div><label>Statut facture</label><select data-invoice-field="invoice_status">' + invoiceStatusOptions(request.invoice_status || "not_sent") + '</select></div>',
+      '<div class="full"><label>Lien facture / paiement</label><input data-invoice-field="invoice_link" type="url" value="' + esc(request.invoice_link || "") + '"></div>',
+      '<div class="full"><label>Note facture</label><textarea data-invoice-field="invoice_note" rows="2">' + esc(request.invoice_note || "") + '</textarea></div>',
+      '</div>',
+      '<div class="hero-actions">',
+      '<button class="btn btn-secondary" type="button" data-invoice-action="calculate">Calculer</button>',
+      '<button class="btn btn-primary" type="button" data-invoice-action="save">Enregistrer facturation</button>',
+      '<button class="btn btn-ghost" type="button" data-invoice-action="copy">Copier détail facture</button>',
+      '</div>',
       '</div>',
       '<div class="hero-actions">',
       '<button class="btn btn-secondary" type="button" data-request-action="contacted">Marquer contacté</button>',
       '<button class="btn btn-primary" type="button" data-request-action="sent_to_artist">Envoyer au DJ</button>',
+      '<button class="btn btn-secondary" type="button" data-request-action="artist_accepted">Marquer accepté par DJ</button>',
+      '<button class="btn btn-ghost" type="button" data-request-action="artist_refused">Marquer refusé par DJ</button>',
+      '<button class="btn btn-secondary" type="button" data-request-action="client_confirmed">Marquer client confirmé</button>',
+      '<button class="btn btn-secondary" type="button" data-request-action="invoice_sent">Marquer facture envoyée</button>',
+      '<button class="btn btn-secondary" type="button" data-request-action="paid">Marquer payé</button>',
       '<button class="btn btn-secondary" type="button" data-request-action="confirmed">Marquer confirmé</button>',
       '<button class="btn btn-ghost" type="button" data-request-action="cancelled">Annuler</button>',
-      '<button class="btn btn-ghost" type="button" data-copy="' + esc(summary) + '">Copier résumé client</button>',
-      request.client_email ? '<a class="btn btn-ghost" href="' + esc(mailto(request.client_email, "DJ-hub - Votre demande DJ", summary)) + '">Envoyer email au client</a>' : '',
-      artistOwner && artistOwner.email ? '<a class="btn btn-ghost" href="' + esc(mailto(artistOwner.email, "DJ-hub - Nouvelle demande liée", summary)) + '">Envoyer email à l’artiste</a>' : '',
+      '<button class="btn btn-ghost" type="button" data-copy="' + esc(summary) + '">Copier résumé</button>',
+      '<button class="btn btn-ghost" type="button" data-copy="' + esc(whatsapp) + '">Copier message WhatsApp</button>',
+      request.client_email ? '<a class="btn btn-ghost" href="' + esc(mailto(request.client_email, "Votre demande DJ-hub", summary)) + '">Email client</a>' : '',
+      artistOwner && artistOwner.email ? '<a class="btn btn-ghost" href="' + esc(mailto(artistOwner.email, "Nouvelle demande DJ-hub", summary)) + '">Email DJ</a>' : '<span class="status-pill">Email artiste indisponible</span>',
       '</div>',
       '</article>'
     ].join("");
@@ -241,11 +343,86 @@
   }
 
   async function updateRequest(card, status) {
+    const timestamps = {
+      contacted: "contacted_at",
+      sent_to_artist: "sent_to_artist_at",
+      artist_accepted: "artist_responded_at",
+      artist_refused: "artist_responded_at",
+      client_confirmed: "confirmed_at",
+      invoice_sent: "contacted_at",
+      paid: "paid_at",
+      confirmed: "confirmed_at"
+    };
+    const body = { status: status };
+    if (timestamps[status]) body[timestamps[status]] = new Date().toISOString();
+    if (status === "invoice_sent") body.invoice_status = "sent";
+    if (status === "paid") body.invoice_status = "paid";
+    if (status === "cancelled") body.invoice_status = "cancelled";
+    body.admin_note = qs("[data-admin-note]", card) ? qs("[data-admin-note]", card).value.trim() : "";
+    body.artist_note = qs("[data-artist-note]", card) ? qs("[data-artist-note]", card).value.trim() : "";
+    body.client_note = qs("[data-client-note]", card) ? qs("[data-client-note]", card).value.trim() : "";
+
     const { error } = await client()
       .from("booking_requests")
-      .update({ status: status })
+      .update(body)
       .eq("id", card.dataset.requestId);
     if (error) throw error;
+
+    await addBookingEvent(card.dataset.requestId, status, "Action admin : " + statusLabel(status));
+  }
+
+  async function addBookingEvent(requestId, eventType, note) {
+    try {
+      const profile = await window.getCurrentProfile();
+      const user = await window.getCurrentUser();
+      await client()
+        .from("booking_events")
+        .insert({
+          booking_request_id: requestId,
+          actor_user_id: user ? user.id : null,
+          actor_role: profile ? profile.role : "admin",
+          event_type: eventType,
+          note: note || ""
+        });
+    } catch (error) {
+      console.warn("[DJ-hub] Événement booking non enregistré.", error.message);
+    }
+  }
+
+  function invoiceBody(card) {
+    const data = {};
+    Array.prototype.slice.call(card.querySelectorAll("[data-invoice-field]")).forEach(function (field) {
+      const key = field.dataset.invoiceField;
+      if (["validated_dj_price", "service_fee", "total_client_price"].indexOf(key) !== -1) {
+        data[key] = field.value ? Number(field.value) : null;
+      } else {
+        data[key] = field.value || null;
+      }
+    });
+    data.admin_note = qs("[data-admin-note]", card) ? qs("[data-admin-note]", card).value.trim() : "";
+    data.artist_note = qs("[data-artist-note]", card) ? qs("[data-artist-note]", card).value.trim() : "";
+    data.client_note = qs("[data-client-note]", card) ? qs("[data-client-note]", card).value.trim() : "";
+    return data;
+  }
+
+  function calculateInvoice(card) {
+    const djInput = qs('[data-invoice-field="validated_dj_price"]', card);
+    const feeInput = qs('[data-invoice-field="service_fee"]', card);
+    const totalInput = qs('[data-invoice-field="total_client_price"]', card);
+    const dj = Number(djInput && djInput.value ? djInput.value : 0);
+    const fee = Math.round(dj * 0.17 * 100) / 100;
+    const total = Math.round((dj + fee) * 100) / 100;
+    if (feeInput) feeInput.value = fee ? fee.toFixed(2) : "";
+    if (totalInput) totalInput.value = total ? total.toFixed(2) : "";
+  }
+
+  async function saveInvoice(card) {
+    const { error } = await client()
+      .from("booking_requests")
+      .update(invoiceBody(card))
+      .eq("id", card.dataset.requestId);
+    if (error) throw error;
+    await addBookingEvent(card.dataset.requestId, "invoice_updated", "Facturation mise à jour");
   }
 
   let currentState = null;
@@ -309,6 +486,30 @@
           await refresh();
         } catch (error) {
           show(error.message || "Mise à jour demande impossible.", "error");
+        }
+        return;
+      }
+
+      const invoiceButton = event.target.closest("[data-invoice-action]");
+      if (invoiceButton) {
+        const card = event.target.closest("[data-request-id]");
+        if (!card) return;
+        if (invoiceButton.dataset.invoiceAction === "calculate") {
+          calculateInvoice(card);
+          show("Calcul interne effectué.", "success");
+          return;
+        }
+        if (invoiceButton.dataset.invoiceAction === "copy") {
+          await copy(invoiceTextFromCard(card));
+          show("Détail facture copié.", "success");
+          return;
+        }
+        try {
+          await saveInvoice(card);
+          show("Facturation enregistrée.", "success");
+          await refresh();
+        } catch (error) {
+          show(error.message || "Enregistrement facturation impossible.", "error");
         }
       }
     });

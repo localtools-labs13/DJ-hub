@@ -89,8 +89,9 @@
     setValue(form, "photo_url", profile.photo_url);
     setValue(form, "photo_credit", profile.photo_credit);
     setValue(form, "photo_note", profile.photo_note);
-    const auth = qs('[name="photo_authorized"]', form);
-    if (auth) auth.checked = Boolean(profile.photo_authorized);
+    const rights = qs('[name="photo_rights_confirmed"]', form);
+    if (rights) rights.checked = Boolean(profile.photo_rights_confirmed || profile.photo_authorized);
+    setValue(form, "photo_rights_note", profile.photo_rights_note);
 
     if (profile.public_image_url && window.djHubPhotoUpload && window.djHubPhotoUpload.renderPhotoPreview) {
       window.djHubPhotoUpload.renderPhotoPreview(profile.public_image_url);
@@ -132,7 +133,10 @@
       photo_url: value(form, "photo_url"),
       photo_credit: value(form, "photo_credit"),
       photo_note: value(form, "photo_note"),
-      photo_authorized: Boolean(qs('[name="photo_authorized"]', form) && qs('[name="photo_authorized"]', form).checked),
+      photo_authorized: Boolean(qs('[name="photo_rights_confirmed"]', form) && qs('[name="photo_rights_confirmed"]', form).checked),
+      photo_rights_confirmed: Boolean(qs('[name="photo_rights_confirmed"]', form) && qs('[name="photo_rights_confirmed"]', form).checked),
+      photo_rights_confirmed_at: qs('[name="photo_rights_confirmed"]', form) && qs('[name="photo_rights_confirmed"]', form).checked ? new Date().toISOString() : null,
+      photo_rights_note: value(form, "photo_rights_note"),
       status: "pending"
     };
   }
@@ -164,6 +168,10 @@
 
       try {
         const body = payload(form, user.id);
+        if ((body.public_image_url || body.photo_url) && !body.photo_rights_confirmed) {
+          show("Vous devez confirmer disposer des droits nécessaires pour utiliser cette photo.", "error");
+          return;
+        }
         let result;
         if (existing) {
           result = await client()

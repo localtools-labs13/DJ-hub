@@ -74,6 +74,10 @@
 
     const validation = validateImageFile(file);
     if (!validation.valid) throw new Error(validation.message);
+    const rights = qs('[name="photo_rights_confirmed"]');
+    if (rights && !rights.checked) {
+      throw new Error("Vous devez confirmer disposer des droits nécessaires pour utiliser cette photo.");
+    }
 
     const user = userId ? { id: userId } : await window.getCurrentUser();
     if (!user || !user.id) {
@@ -128,7 +132,12 @@
 
     const { error: updateError } = await client()
       .from("artist_profiles")
-      .update({ public_image_url: publicUrl, status: "pending" })
+      .update({
+        public_image_url: publicUrl,
+        photo_rights_confirmed: true,
+        photo_rights_confirmed_at: new Date().toISOString(),
+        status: "pending"
+      })
       .eq("id", profile.id);
 
     if (updateError) throw updateError;

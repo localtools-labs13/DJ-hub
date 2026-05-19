@@ -790,6 +790,7 @@ small {
 .artist-grid,
 .stats-grid,
 .two-columns,
+.three-process-grid,
 .detail-grid {
   display: grid;
   gap: 1rem;
@@ -806,6 +807,10 @@ small {
 
 .two-columns {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.three-process-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .artist-grid {
@@ -1726,6 +1731,28 @@ th {
   font-weight: 950;
 }
 
+.status-new { border-color: rgba(24, 216, 255, 0.32); color: var(--electric); background: rgba(24, 216, 255, 0.11); }
+.status-contacted,
+.status-sent-to-artist,
+.status-client-confirmed,
+.status-invoice-sent { border-color: rgba(139, 92, 246, 0.34); color: #d8ccff; background: rgba(139, 92, 246, 0.13); }
+.status-artist-accepted,
+.status-paid,
+.status-confirmed,
+.status-approved { border-color: rgba(85, 242, 187, 0.32); color: var(--mint); background: rgba(85, 242, 187, 0.12); }
+.status-artist-refused,
+.status-cancelled,
+.status-rejected { border-color: rgba(255, 77, 109, 0.36); color: #ffd9e1; background: rgba(255, 77, 109, 0.12); }
+.status-needs-changes { border-color: rgba(233, 70, 255, 0.34); color: #f4d9ff; background: rgba(233, 70, 255, 0.12); }
+
+.invoice-panel {
+  margin: 1.3rem 0;
+  border-color: rgba(24, 216, 255, 0.22);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(24, 216, 255, 0.1), transparent 18rem),
+    rgba(255, 255, 255, 0.055);
+}
+
 .table-actions {
   display: flex;
   flex-wrap: wrap;
@@ -1772,6 +1799,24 @@ code {
   padding: 3rem 0 2rem;
 }
 
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem 1rem;
+  margin-bottom: 1.4rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.footer-links a {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.footer-links a:hover {
+  color: var(--electric);
+}
+
 .footer-grid {
   display: grid;
   grid-template-columns: 1.3fr 0.8fr 0.8fr;
@@ -1801,6 +1846,25 @@ code {
 
 .legal p {
   margin: 0;
+}
+
+.legal-page,
+.checklist-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.legal-page {
+  grid-template-columns: 1fr;
+  max-width: 940px;
+}
+
+.legal-page .detail-panel h2 {
+  font-size: clamp(1.5rem, 2.4vw, 2.2rem);
+}
+
+.checklist-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .reveal {
@@ -1918,6 +1982,7 @@ code {
   .feature-grid,
   .pricing-grid,
   .two-columns,
+  .three-process-grid,
   .artist-grid,
   .form-layout,
   .auth-dashboard-grid,
@@ -2520,6 +2585,10 @@ code {
   }
 
   .compact-admin {
+    grid-template-columns: 1fr;
+  }
+
+  .checklist-grid {
     grid-template-columns: 1fr;
   }
 

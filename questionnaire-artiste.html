@@ -119,9 +119,10 @@
               <div class="full"><label for="photo-note">Informations photo</label><textarea id="photo-note" name="photo_note" rows="4" placeholder="Image souhaitée, style visuel, lien portfolio, autorisation d’utilisation..."></textarea></div>
             </div>
             <label class="checkbox-line">
-              <input type="checkbox" name="photo_authorized">
-              <span>J’autorise DJ-hub à utiliser la photo transmise pour afficher mon profil après validation.</span>
+              <input type="checkbox" id="photo-rights" name="photo_rights_confirmed">
+              <span>Je confirme disposer des droits nécessaires pour utiliser cette photo sur mon profil DJ-hub et mon presskit.</span>
             </label>
+            <div><label for="photo-rights-note">Note droits photo</label><textarea id="photo-rights-note" name="photo_rights_note" rows="2" placeholder="Auteur, source, autorisation, précision utile..."></textarea></div>
 
             <button class="btn btn-primary btn-full" type="submit">Envoyer mon profil pour validation</button>
           </form>

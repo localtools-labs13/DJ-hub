@@ -26,6 +26,10 @@ Tables :
 
 La sécurité repose sur Row Level Security. Le public voit uniquement les artistes `approved` et les presskits liés à des artistes `approved`.
 
+Migrations MVP complémentaires :
+- `booking-workflow-migration.sql` ajoute le pipeline de réservation, les champs de facturation interne et la table `booking_events`.
+- `photo-rights-migration.sql` ajoute la confirmation des droits photo sur les profils artistes.
+
 ## Storage Supabase
 
 Fichier dédié : `supabase-storage-policies.sql`.
@@ -147,9 +151,42 @@ L’admin peut :
 - lire les profils artistes en attente, validés, refusés ou à corriger ;
 - approuver, refuser ou demander correction ;
 - lire les presskits générés ;
-- traiter les demandes clients ;
-- marquer une demande contactée, envoyée au DJ, confirmée ou annulée ;
-- utiliser les liens `mailto` préremplis.
+- traiter les demandes clients dans le pipeline ;
+- marquer une demande contactée, envoyée au DJ, acceptée/refusée par le DJ, confirmée par le client, facturée, payée, confirmée ou annulée ;
+- copier un résumé client, un message WhatsApp et des emails préremplis ;
+- enregistrer des notes admin, DJ et client ;
+- gérer une facturation MVP manuelle depuis l’admin.
+
+## Pipeline de réservation MVP
+
+Statuts supportés dans `booking_requests.status` :
+- `new`
+- `contacted`
+- `sent_to_artist`
+- `artist_accepted`
+- `artist_refused`
+- `client_confirmed`
+- `invoice_sent`
+- `paid`
+- `confirmed`
+- `cancelled`
+
+Chaque changement de statut peut créer un événement dans `booking_events` si la migration a été appliquée.
+
+## Facturation interne manuelle
+
+Le MVP ne met pas encore en place de paiement marketplace automatisé.
+
+Process recommandé :
+1. L’admin qualifie la demande client.
+2. L’admin confirme le tarif avec le DJ.
+3. L’admin calcule les frais côté client dans `admin-validations.html`.
+4. L’admin crée une facture ou un lien de paiement manuellement.
+5. L’admin colle `invoice_link` dans la demande.
+6. L’admin marque `invoice_sent`.
+7. Après paiement, l’admin marque `paid`, puis `confirmed`.
+
+Plus tard : Stripe Connect pourra être étudié si DJ-hub encaisse la totalité puis reverse automatiquement les DJs. Ce n’est pas intégré dans le MVP GitHub Pages.
 
 ## Parcours client
 
@@ -160,8 +197,9 @@ Le client n’a pas besoin de compte au lancement.
 3. Si Supabase est configuré, la demande est stockée dans `booking_requests`.
 4. Si Formspree est configuré, la demande est aussi envoyée par email.
 5. Si l’URL contient `?dj=ARTIST_PROFILE_ID`, la demande est rattachée au DJ.
-6. Le tarif final est confirmé avant validation.
-7. Les frais de service DJ-hub sont côté client et indiqués sur facture.
+6. L’admin qualifie la demande et peut l’envoyer au DJ.
+7. Le tarif final est confirmé avant validation.
+8. Les frais de service DJ-hub sont côté client et indiqués sur facture.
 
 ## Modèle économique
 
@@ -174,6 +212,8 @@ Le client n’a pas besoin de compte au lancement.
 
 Interne : frais de service client de 17 % du tarif DJ validé, ne pas afficher publiquement.
 
+Cette information est interne au README. Les pages publiques indiquent seulement que les frais de service DJ-hub sont côté client et visibles sur facture.
+
 ## Sécurité
 
 - RLS obligatoire sur toutes les tables.
@@ -185,13 +225,43 @@ Interne : frais de service client de 17 % du tarif DJ validé, ne pas afficher p
 - Les admins peuvent lire et traiter les profils/demandes via policies RLS.
 - Les profils publics sont seulement ceux avec `status = 'approved'`.
 - Le bucket `artist-photos` peut être public en MVP, mais les pages publiques ne chargent que les photos liées à des profils `approved`.
+- Les créneaux `busy` restent privés ; la recherche publique utilise seulement `available` et `option` pour les artistes `approved`.
+- Les notes admin, données privées et événements internes ne doivent jamais être affichés publiquement.
+- Les droits photo doivent être confirmés avant publication d’une photo artiste.
+
+## Pages de confiance et lancement
+
+Pages publiques :
+- `comment-ca-marche.html`
+- `mentions-legales.html`
+- `confidentialite.html`
+- `conditions-utilisation.html`
+- `recrutement-dj.html`
+
+Pages internes non présentes dans la navigation publique :
+- `admin-validations.html`
+- `launch-checklist.html`
+
+Fichier prospection :
+- `outreach-templates.md`
+
+## Parcours recrutement premiers DJs
+
+1. Envoyer un DM ou email avec `outreach-templates.md`.
+2. Diriger vers `recrutement-dj.html` ou `inscription-artiste.html`.
+3. L’artiste crée son compte.
+4. Il complète le questionnaire, ajoute photo/liens audio et presskit.
+5. L’admin valide les premiers vrais profils.
+6. Les profils `approved` apparaissent sur `djs.html`.
 
 ## Configuration Supabase
 
 1. Créer un projet Supabase.
 2. Exécuter `supabase-schema.sql` dans SQL Editor.
 3. Exécuter `supabase-storage-policies.sql` dans SQL Editor.
-4. Remplacer les placeholders dans `assets/js/supabase-config.js` :
+4. Exécuter `booking-workflow-migration.sql`.
+5. Exécuter `photo-rights-migration.sql`.
+6. Remplacer les placeholders dans `assets/js/supabase-config.js` si besoin :
 
 ```js
 const SUPABASE_URL = "TON_SUPABASE_URL";
@@ -223,3 +293,11 @@ http://127.0.0.1:8000/index.html
    - `inscription-artiste.html`
    - `connexion.html`
    - `admin-validations.html`
+
+## Prochaines étapes
+
+- Compte client pour suivre une demande.
+- Messagerie réelle client/admin/DJ.
+- Paiement marketplace automatisé après validation du modèle.
+- Avis clients réels, uniquement après prestations vérifiées.
+- Upload presskit complet et stockage de documents additionnels.

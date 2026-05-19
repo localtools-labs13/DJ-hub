@@ -31,10 +31,12 @@
     return {
       new: "Nouvelle",
       sent_to_artist: "Envoyée au DJ",
-      accepted: "Acceptée",
-      refused: "Refusée",
+      artist_accepted: "DJ intéressé",
+      artist_refused: "DJ indisponible",
+      client_confirmed: "Client confirmé",
+      invoice_sent: "Facture envoyée",
+      paid: "Payé",
       contacted: "Contacté",
-      assigned: "Assignée",
       confirmed: "Confirmée",
       cancelled: "Annulée"
     }[status] || status;
@@ -106,8 +108,8 @@
         '</div>',
         '<p>' + esc(request.message || "") + '</p>',
         '<div class="hero-actions">',
-        '<button class="btn btn-primary" type="button" data-action="accepted">Accepter</button>',
-        '<button class="btn btn-secondary" type="button" data-action="refused">Refuser</button>',
+        '<button class="btn btn-primary" type="button" data-action="artist_accepted">Accepter</button>',
+        '<button class="btn btn-secondary" type="button" data-action="artist_refused">Refuser</button>',
         '<a class="btn btn-ghost" href="' + esc(mailto(request)) + '">Demander plus d’infos</a>',
         '</div>',
         '</article>'
@@ -118,9 +120,21 @@
   async function updateRequest(id, status) {
     const { error } = await client()
       .from("booking_requests")
-      .update({ status: status })
+      .update({ status: status, artist_responded_at: new Date().toISOString() })
       .eq("id", id);
     if (error) throw error;
+    try {
+      const user = await window.getCurrentUser();
+      await client().from("booking_events").insert({
+        booking_request_id: id,
+        actor_user_id: user ? user.id : null,
+        actor_role: "artist",
+        event_type: status,
+        note: status === "artist_accepted" ? "Le DJ accepte la demande." : "Le DJ refuse la demande."
+      });
+    } catch (eventError) {
+      console.warn("[DJ-hub] Événement artiste non enregistré.", eventError.message);
+    }
   }
 
   async function init() {

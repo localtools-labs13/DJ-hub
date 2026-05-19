@@ -88,7 +88,7 @@
     var styles = artist.styles || [];
     var badges = [
       artist.material ? "Matériel possible" : "Matériel à confirmer",
-      artist.available || "Disponibilités à confirmer"
+      artist.matchesSelectedDate ? "Disponible à cette date" : (artist.available || "Disponibilité à confirmer")
     ].concat(artist.badges || []);
 
     return [
@@ -110,7 +110,7 @@
       '      <span>' + escapeHtml((artist.eventTypes || []).slice(0, 2).join(" · ") || "Soirées privées") + '</span>',
       '      <span>' + (artist.material ? "DJ + matériel possible" : "Matériel à confirmer") + '</span>',
       '    </div>',
-      '    <p class="availability">' + escapeHtml(artist.available || "Disponibilités à confirmer avec le DJ") + '</p>',
+      '    <p class="availability">' + escapeHtml(artist.matchesSelectedDate ? "Disponible à cette date" : (artist.available || "Disponibilités à confirmer avec le DJ")) + '</p>',
       '    <div class="badge-row">' + badgeList(badges, 3) + '</div>',
       '    <div class="card-actions">',
       '      <a class="btn btn-secondary" href="dj.html?id=' + encodeURIComponent(artist.id) + '">Voir le profil</a>',

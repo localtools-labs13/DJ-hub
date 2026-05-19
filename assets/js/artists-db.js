@@ -35,6 +35,7 @@
       status: row.status || "pending",
       available: "Disponibilités à confirmer",
       publicAvailability: [],
+      matchesSelectedDate: false,
       hasPresskit: false
     };
   }
@@ -90,7 +91,13 @@
     if (filters.date) {
       const ids = await availableArtistIdsForDate(filters.date);
       if (Array.isArray(ids)) {
-        artists = artists.filter(function (artist) { return ids.indexOf(artist.id) !== -1; });
+        artists = artists
+          .filter(function (artist) { return ids.indexOf(artist.id) !== -1; })
+          .map(function (artist) {
+            artist.matchesSelectedDate = true;
+            artist.available = "Disponible à cette date";
+            return artist;
+          });
       }
     }
 
