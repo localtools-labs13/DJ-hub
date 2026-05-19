@@ -3,10 +3,12 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="assets/img/dj-hub-logo-icon-gradient.png">
+    <link rel="apple-touch-icon" href="assets/img/dj-hub-logo-icon-gradient.png">
     <title>Mes disponibilités - DJ-hub</title>
     <meta name="description" content="Calendrier artiste DJ-hub pour préparer et gérer les disponibilités.">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css">
-    <link rel="stylesheet" href="assets/css/style.css?v=djhub-presskit-pdf">
+    <link rel="stylesheet" href="assets/css/style.css?v=djhub-calendar-simple">
   </head>
   <body data-page="artist-calendar">
     <header class="site-header">
@@ -23,90 +25,40 @@
         <div class="container narrow">
           <p class="eyebrow">Calendrier artiste</p>
           <h1>Mes disponibilités</h1>
-          <p>Cliquez sur une date, choisissez un format de soirée, puis enregistrez. Les créneaux disponibles ou en option peuvent être utilisés dans la recherche publique après validation de votre profil.</p>
+          <p>Cliquez sur les jours où vous êtes disponible. Les jours disponibles apparaissent en vert. Recliquez sur un jour vert pour retirer la disponibilité.</p>
           <div class="legend-row">
             <span><i class="dot mint"></i>Disponible</span>
-            <span><i class="dot cyan"></i>Option</span>
-            <span><i class="dot pink"></i>Occupé</span>
           </div>
           <div class="form-feedback auth-message" id="calendar-message" hidden></div>
         </div>
       </section>
 
       <section class="section">
-        <div class="container availability-layout">
-          <div class="auth-card calendar-card">
+        <div class="container">
+          <div class="auth-card calendar-card availability-simple-card">
             <div class="calendar-card-head">
               <div>
-                <p class="eyebrow">Planning</p>
-                <h2>Cliquez sur une date</h2>
-                <p>Un clic prépare automatiquement un créneau. Vous pouvez aussi cliquer sur un créneau existant pour le modifier.</p>
+                <p class="eyebrow">Planning simple</p>
+                <h2>Un clic = disponible</h2>
+                <p>Pas besoin d’horaires ici. Les détails se feront ensuite selon la demande client.</p>
               </div>
               <a class="btn btn-ghost" href="espace-artiste.html">Retour espace artiste</a>
             </div>
             <div id="artist-calendar"></div>
+            <div class="availability-summary">
+              <strong id="availability-count">0 jour disponible</strong>
+              <span>Les jours verts peuvent ressortir dans la recherche client après validation de votre profil.</span>
+            </div>
           </div>
-
-          <aside class="availability-sidebar">
-            <form class="app-form availability-panel reveal" id="availability-form">
-              <p class="eyebrow">Ajouter un créneau</p>
-              <h2>Disponibilité</h2>
-              <div class="selected-date-card" id="selected-date-card">
-                <span>Date choisie</span>
-                <strong>Cliquez sur un jour du calendrier</strong>
-              </div>
-
-              <div class="availability-presets" aria-label="Formats rapides">
-                <button type="button" class="preset-button is-active" data-preset="evening">Soirée<br><span>20h - 02h</span></button>
-                <button type="button" class="preset-button" data-preset="apero">Apéro<br><span>18h - 22h</span></button>
-                <button type="button" class="preset-button" data-preset="afternoon">Après-midi<br><span>14h - 18h</span></button>
-                <button type="button" class="preset-button" data-preset="day">Journée<br><span>10h - 18h</span></button>
-              </div>
-
-            <input id="availability-id" type="hidden">
-            <div class="availability-field-grid">
-              <div><label for="availability-start-date">Date début</label><input id="availability-start-date" type="text" inputmode="numeric" placeholder="jj/mm/aaaa" autocomplete="off" required></div>
-              <div><label for="availability-end-date">Date fin</label><input id="availability-end-date" type="text" inputmode="numeric" placeholder="jj/mm/aaaa" autocomplete="off" required></div>
-              <div><label for="availability-start-time">Début</label><input id="availability-start-time" type="time" required></div>
-              <div><label for="availability-end-time">Fin</label><input id="availability-end-time" type="time" required></div>
-              <div class="full">
-                <label for="availability-status">Statut</label>
-                <div class="status-choice-row" aria-label="Statut du créneau">
-                  <button class="status-choice is-active" type="button" data-status="available"><i class="dot mint"></i> Disponible</button>
-                  <button class="status-choice" type="button" data-status="option"><i class="dot cyan"></i> Option</button>
-                  <button class="status-choice" type="button" data-status="busy"><i class="dot pink"></i> Occupé</button>
-                </div>
-                <select id="availability-status" class="sr-only" aria-label="Statut du créneau">
-                  <option value="available">Disponible</option>
-                  <option value="option">Option</option>
-                  <option value="busy">Occupé</option>
-                </select>
-              </div>
-              <div class="full"><label for="availability-note">Note privée</label><textarea id="availability-note" rows="3" placeholder="Ex : option jusqu’à vendredi, lieu à confirmer..."></textarea></div>
-            </div>
-            <div class="hero-actions">
-              <button class="btn btn-primary" type="submit">Enregistrer le créneau</button>
-              <button class="btn btn-ghost" id="availability-delete" type="button" hidden>Supprimer ce créneau</button>
-            </div>
-            <p class="mini-note">Les créneaux “Occupé” restent privés. Ils vous aident seulement à ne pas vous tromper dans votre planning.</p>
-          </form>
-
-            <div class="auth-card availability-help-card">
-              <p class="eyebrow">Prochains créneaux</p>
-              <div id="availability-upcoming-list" class="availability-list">
-                <p class="muted">Vos créneaux apparaîtront ici après chargement.</p>
-              </div>
-            </div>
-          </aside>
         </div>
       </section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
-    <script src="assets/js/supabase-config.js?v=djhub-presskit-pdf"></script>
-    <script src="assets/js/auth.js?v=djhub-presskit-pdf"></script>
-    <script src="assets/js/calendar.js?v=djhub-presskit-pdf"></script>
-    <script src="assets/js/main.js?v=djhub-presskit-pdf"></script>
+    <script src="assets/js/supabase-config.js?v=djhub-calendar-simple"></script>
+    <script src="assets/js/auth.js?v=djhub-calendar-simple"></script>
+    <script src="assets/js/calendar.js?v=djhub-calendar-simple"></script>
+    <script src="assets/js/main.js?v=djhub-calendar-simple"></script>
   </body>
 </html>

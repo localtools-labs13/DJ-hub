@@ -252,6 +252,10 @@ small {
   font-weight: 950;
 }
 
+.brand > span:last-child {
+  white-space: nowrap;
+}
+
 .brand-mark {
   position: relative;
   display: grid;
@@ -261,23 +265,18 @@ small {
   overflow: hidden;
   border: 1px solid rgba(244, 241, 234, 0.22);
   border-radius: 16px;
-  color: var(--cream);
+  color: transparent;
   background:
-    linear-gradient(135deg, rgba(24, 216, 255, 0.23), rgba(139, 92, 246, 0.2)),
+    url("../img/dj-hub-logo-icon-gradient.png") center / cover no-repeat,
     #090c16;
   box-shadow: var(--glow-cyan);
   font-family: "Space Grotesk", Inter, sans-serif;
-  font-size: 0.76rem;
+  font-size: 0;
   letter-spacing: 0.02em;
 }
 
 .brand-mark::after {
-  content: "";
-  position: absolute;
-  inset: auto 7px 7px;
-  height: 3px;
-  border-radius: var(--radius-pill);
-  background: linear-gradient(90deg, var(--electric), var(--violet), var(--pink));
+  display: none;
 }
 
 .site-nav {
@@ -448,6 +447,15 @@ small {
   grid-template-columns: minmax(0, 0.95fr) minmax(320px, 0.58fr);
   gap: 3rem;
   align-items: center;
+}
+
+.hero-brand-lockup {
+  display: block;
+  width: min(100%, 520px);
+  margin: 0 0 1.35rem;
+  border-radius: 22px;
+  opacity: 0.96;
+  filter: drop-shadow(0 20px 55px rgba(24, 216, 255, 0.18));
 }
 
 .hero-copy {
@@ -2095,7 +2103,7 @@ code {
   }
 }
 
-@media (max-width: 860px) {
+@media (max-width: 920px) {
   .site-header {
     min-height: 68px;
     padding: 0 1rem;
@@ -2254,6 +2262,16 @@ code {
   .hero-app-card {
     padding: 0.74rem;
     border-radius: 28px;
+  }
+
+  .hero-brand-lockup {
+    width: min(100%, 330px);
+    margin-bottom: 1rem;
+  }
+
+  .availability-summary {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .spotlight-media {
@@ -2729,18 +2747,63 @@ code {
   color: var(--text);
 }
 
+.availability-simple-card {
+  max-width: 1120px;
+  margin-inline: auto;
+}
+
+.availability-simple-card .calendar-card-head {
+  align-items: flex-start;
+}
+
+.availability-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.15rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(85, 242, 187, 0.25);
+  border-radius: var(--radius);
+  color: rgba(244, 241, 234, 0.86);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(85, 242, 187, 0.16), transparent 18rem),
+    rgba(255, 255, 255, 0.055);
+}
+
+.availability-summary strong {
+  color: var(--mint);
+  font-family: "Space Grotesk", Inter, sans-serif;
+  font-size: 1.08rem;
+}
+
 .fc .fc-daygrid-day {
   cursor: pointer;
+  transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
 
 .fc .fc-daygrid-day:hover {
   background: rgba(24, 216, 255, 0.07);
 }
 
+.fc .fc-daygrid-day:has(.availability-day-event) {
+  background:
+    linear-gradient(180deg, rgba(85, 242, 187, 0.18), rgba(85, 242, 187, 0.08)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(85, 242, 187, 0.34),
+    inset 0 0 30px rgba(85, 242, 187, 0.08);
+}
+
 .fc .fc-event {
   border-radius: 10px;
   padding: 0.1rem 0.25rem;
   font-weight: 850;
+}
+
+.fc .availability-day-event {
+  border-radius: var(--radius-pill);
+  padding: 0.18rem 0.45rem;
+  box-shadow: 0 0 22px rgba(85, 242, 187, 0.25);
 }
 
 .fc .fc-day-today {

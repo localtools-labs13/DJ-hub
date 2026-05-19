@@ -4,6 +4,14 @@ DJ-hub est une marketplace statique HTML/CSS/JavaScript vanilla pour aider les p
 
 Le site reste compatible GitHub Pages : pas de React, pas de backend maison. Le backend applicatif est Supabase.
 
+## Identité visuelle
+
+Le kit logo est intégré dans `assets/img/` :
+- `dj-hub-logo-full.png` pour le grand lockup de la page d’accueil.
+- `dj-hub-logo-horizontal.png` pour les supports horizontaux.
+- `dj-hub-logo-icon-gradient.png` pour l’icône du site, la navigation et les favicons.
+- `dj-hub-logo-icon-white.png` pour les usages monochromes sur fond sombre.
+
 ## Architecture
 
 - GitHub Pages pour l’hébergement statique.
@@ -102,7 +110,7 @@ Problèmes fréquents :
 5. Il peut générer son presskit sur `presskit-artiste.html`.
 6. L’admin valide, refuse ou demande correction.
 7. Une fois `approved`, le profil devient visible publiquement.
-8. L’artiste gère ses disponibilités sur `calendrier-artiste.html`.
+8. L’artiste clique simplement les jours disponibles sur `calendrier-artiste.html`; aucun horaire n’est demandé.
 9. L’artiste voit ses demandes liées sur `demandes-artiste.html`.
 
 DJ-hub est toujours gratuit pour les DJs : aucun abonnement, aucun paiement DJ, aucune commission côté DJ.
@@ -225,7 +233,7 @@ Cette information est interne au README. Les pages publiques indiquent seulement
 - Les admins peuvent lire et traiter les profils/demandes via policies RLS.
 - Les profils publics sont seulement ceux avec `status = 'approved'`.
 - Le bucket `artist-photos` peut être public en MVP, mais les pages publiques ne chargent que les photos liées à des profils `approved`.
-- Les créneaux `busy` restent privés ; la recherche publique utilise seulement `available` et `option` pour les artistes `approved`.
+- Le calendrier artiste enregistre uniquement des jours `available`; les horaires précis se gèrent ensuite selon la demande client.
 - Les notes admin, données privées et événements internes ne doivent jamais être affichés publiquement.
 - Les droits photo doivent être confirmés avant publication d’une photo artiste.
 - Les demandes anonymes ne peuvent insérer que les champs nécessaires au brief client.
