@@ -3,15 +3,35 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/png" href="assets/img/dj-hub-logo-icon-gradient.png">
-    <link rel="apple-touch-icon" href="assets/img/dj-hub-logo-icon-gradient.png">
+    <link rel="icon" type="image/svg+xml" href="assets/img/dj-hub-favicon.svg">
+    <link rel="alternate icon" type="image/png" href="assets/img/dj-hub-touch-icon.png">
+    <link rel="apple-touch-icon" href="assets/img/dj-hub-touch-icon.png">
     <title>Profil DJ - DJ-hub</title>
     <meta name="description" content="Consultez une fiche DJ validée par DJ-hub et envoyez une demande gratuite.">
-    <link rel="stylesheet" href="assets/css/style.css?v=djhub-calendar-simple">
+    <link rel="stylesheet" href="assets/css/style.css?v=djhub-brand-pro">
   </head>
   <body data-page="artist-detail">
     <header class="site-header">
-      <a class="brand" href="index.html" aria-label="Accueil DJ-hub"><span class="brand-mark">DJ</span><span>DJ-hub</span></a>
+      <a class="brand brand--pro" href="index.html" aria-label="DJ-hub.fr"><span class="brand-mark" aria-hidden="true">
+          <svg class="brand-cdj" viewBox="0 0 64 44" focusable="false" aria-hidden="true">
+            <defs>
+              <linearGradient id="brand-cdj-gradient" x1="3" y1="4" x2="61" y2="40" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#8b5cf6"/>
+                <stop offset=".5" stop-color="#3b82f6"/>
+                <stop offset="1" stop-color="#18d8ff"/>
+              </linearGradient>
+            </defs>
+            <rect class="brand-cdj-shell" x="2.5" y="4" width="59" height="36" rx="10" fill="#040712" stroke="url(#brand-cdj-gradient)"/>
+            <rect class="brand-cdj-screen" x="43" y="10" width="11" height="5.5" rx="2"/>
+            <circle class="brand-jog-ring" cx="23" cy="23" r="12.5" fill="none" stroke="url(#brand-cdj-gradient)"/>
+            <circle class="brand-jog-inner" cx="23" cy="23" r="6.8"/>
+            <circle class="brand-jog-core" cx="23" cy="23" r="2.4"/>
+            <path class="brand-tonearm" d="M45 23.5 52.4 31.6"/>
+            <circle class="brand-tonearm-dot" cx="43.2" cy="21.8" r="3.2"/>
+            <circle class="brand-button" cx="12.5" cy="32.5" r="2.3"/>
+            <path class="brand-bars" d="M40 33h5.8M49.5 33h3.5"/>
+          </svg>
+        </span><span class="brand-word"><span class="brand-dj">DJ</span><span class="brand-sep">-</span><span class="brand-hub">hub</span><span class="brand-fr">.fr</span></span></a>
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span><span class="sr-only">Ouvrir le menu</span></button>
       <nav class="site-nav" id="site-nav" aria-label="Navigation principale">
         <a href="index.html">Accueil</a>
@@ -41,10 +61,10 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="assets/js/supabase-config.js?v=djhub-calendar-simple"></script>
-    <script src="assets/js/auth.js?v=djhub-calendar-simple"></script>
-    <script src="assets/js/data.js?v=djhub-calendar-simple"></script>
-    <script src="assets/js/artists-db.js?v=djhub-calendar-simple"></script>
-    <script src="assets/js/main.js?v=djhub-calendar-simple"></script>
+    <script src="assets/js/supabase-config.js?v=djhub-brand-pro"></script>
+    <script src="assets/js/auth.js?v=djhub-brand-pro"></script>
+    <script src="assets/js/data.js?v=djhub-brand-pro"></script>
+    <script src="assets/js/artists-db.js?v=djhub-brand-pro"></script>
+    <script src="assets/js/main.js?v=djhub-brand-pro"></script>
   </body>
 </html>

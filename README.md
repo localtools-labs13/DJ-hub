@@ -6,11 +6,13 @@ Le site reste compatible GitHub Pages : pas de React, pas de backend maison. Le 
 
 ## Identité visuelle
 
-Le kit logo est intégré dans `assets/img/` :
-- `dj-hub-logo-full.png` pour le grand lockup de la page d’accueil.
-- `dj-hub-logo-horizontal.png` pour les supports horizontaux.
-- `dj-hub-logo-icon-gradient.png` pour l’icône du site, la navigation et les favicons.
-- `dj-hub-logo-icon-white.png` pour les usages monochromes sur fond sombre.
+Le header utilise maintenant un logo vectoriel inline SVG : icône CDJ compacte + texte `DJ-hub.fr`.
+
+Assets actifs :
+- `dj-hub-favicon.svg` pour le favicon vectoriel.
+- `dj-hub-touch-icon.png` pour l’icône Apple/téléphone.
+
+Les anciens PNG du kit restent dans `assets/img/` comme archives de marque, mais ils ne sont plus utilisés dans le header.
 
 ## Architecture
 

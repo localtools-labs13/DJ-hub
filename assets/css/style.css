@@ -247,36 +247,144 @@ small {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.82rem;
+  gap: 0.62rem;
   color: var(--text);
   font-weight: 950;
+  min-width: 0;
+  text-decoration: none;
+  transition: opacity 180ms ease, transform 180ms ease;
 }
 
-.brand > span:last-child {
-  white-space: nowrap;
+.brand--pro {
+  max-width: 180px;
+  min-height: 44px;
 }
 
 .brand-mark {
   position: relative;
-  display: grid;
-  place-items: center;
-  width: 46px;
-  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 52px;
+  height: 38px;
   overflow: hidden;
-  border: 1px solid rgba(244, 241, 234, 0.22);
-  border-radius: 16px;
-  color: transparent;
+  border: 1px solid rgba(24, 216, 255, 0.28);
+  border-radius: 14px;
+  color: var(--text);
   background:
-    url("../img/dj-hub-logo-icon-gradient.png") center / cover no-repeat,
-    #090c16;
-  box-shadow: var(--glow-cyan);
-  font-family: "Space Grotesk", Inter, sans-serif;
-  font-size: 0;
-  letter-spacing: 0.02em;
+    radial-gradient(circle at 20% 15%, rgba(139, 92, 246, 0.2), transparent 42%),
+    radial-gradient(circle at 80% 90%, rgba(24, 216, 255, 0.16), transparent 40%),
+    rgba(5, 8, 20, 0.92);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+    0 12px 34px rgba(24, 216, 255, 0.08);
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
 }
 
-.brand-mark::after {
-  display: none;
+.brand-cdj {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.brand-cdj-shell {
+  fill: rgba(4, 7, 18, 0.96);
+  stroke-width: 1.35;
+}
+
+.brand-cdj-screen {
+  fill: rgba(16, 31, 57, 0.9);
+  stroke: rgba(24, 216, 255, 0.74);
+  stroke-width: 1;
+}
+
+.brand-jog-ring {
+  fill: none;
+  stroke-width: 1.75;
+  stroke-dasharray: 4 3;
+  transform-origin: 23px 23px;
+  transition: stroke-dashoffset 360ms ease, filter 180ms ease;
+}
+
+.brand-jog-inner {
+  fill: none;
+  stroke: rgba(244, 241, 234, 0.32);
+  stroke-width: 1;
+}
+
+.brand-jog-core,
+.brand-button {
+  fill: #8b5cf6;
+}
+
+.brand-tonearm,
+.brand-bars {
+  fill: none;
+  stroke: rgba(244, 241, 234, 0.84);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+}
+
+.brand-tonearm-dot {
+  fill: none;
+  stroke: rgba(24, 216, 255, 0.9);
+  stroke-width: 1.35;
+}
+
+.brand-word {
+  display: inline-flex;
+  align-items: baseline;
+  min-width: 0;
+  color: var(--text);
+  font-family: "Space Grotesk", Inter, sans-serif;
+  font-size: 1.12rem;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.brand-dj {
+  color: #f4f7ff;
+}
+
+.brand-sep {
+  color: rgba(244, 241, 234, 0.72);
+  margin: 0 0.02em;
+}
+
+.brand-hub {
+  background: linear-gradient(135deg, var(--violet) 8%, #3b82f6 48%, var(--electric) 92%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.brand-fr {
+  margin-left: 0.06em;
+  color: rgba(244, 241, 234, 0.92);
+  font-size: 0.84em;
+  font-style: italic;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.brand--pro:hover {
+  transform: translateY(-1px);
+}
+
+.brand--pro:hover .brand-mark {
+  border-color: rgba(24, 216, 255, 0.58);
+  box-shadow:
+    0 0 0 1px rgba(139, 92, 246, 0.14) inset,
+    0 14px 42px rgba(24, 216, 255, 0.18),
+    0 0 30px rgba(139, 92, 246, 0.12);
+}
+
+.brand--pro:hover .brand-jog-ring {
+  stroke-dashoffset: -7;
+  filter: drop-shadow(0 0 4px rgba(24, 216, 255, 0.36));
 }
 
 .site-nav {
@@ -447,15 +555,6 @@ small {
   grid-template-columns: minmax(0, 0.95fr) minmax(320px, 0.58fr);
   gap: 3rem;
   align-items: center;
-}
-
-.hero-brand-lockup {
-  display: block;
-  width: min(100%, 520px);
-  margin: 0 0 1.35rem;
-  border-radius: 22px;
-  opacity: 0.96;
-  filter: drop-shadow(0 20px 55px rgba(24, 216, 255, 0.18));
 }
 
 .hero-copy {
@@ -2255,18 +2354,22 @@ code {
   }
 
   .brand-mark {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 34px;
+    border-radius: 12px;
+  }
+
+  .brand-word {
+    font-size: 1rem;
+  }
+
+  .brand-fr {
+    display: none;
   }
 
   .hero-app-card {
     padding: 0.74rem;
     border-radius: 28px;
-  }
-
-  .hero-brand-lockup {
-    width: min(100%, 330px);
-    margin-bottom: 1rem;
   }
 
   .availability-summary {
