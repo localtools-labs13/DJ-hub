@@ -256,8 +256,8 @@ small {
 }
 
 .brand--pro {
-  max-width: 180px;
-  min-height: 44px;
+  max-width: 220px;
+  min-height: 48px;
 }
 
 .brand-mark {
@@ -266,8 +266,8 @@ small {
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  width: 52px;
-  height: 38px;
+  width: 60px;
+  height: 44px;
   overflow: hidden;
   border: 1px solid rgba(24, 216, 255, 0.28);
   border-radius: 14px;
@@ -338,7 +338,7 @@ small {
   min-width: 0;
   color: var(--text);
   font-family: "Space Grotesk", Inter, sans-serif;
-  font-size: 1.12rem;
+  font-size: 1.24rem;
   font-weight: 900;
   letter-spacing: -0.035em;
   line-height: 1;
@@ -514,10 +514,16 @@ small {
 .hero {
   position: relative;
   overflow: hidden;
-  min-height: 790px;
+  min-height: 620px;
   display: flex;
-  align-items: center;
-  padding: 7.2rem 0 5.8rem;
+  align-items: flex-start;
+  padding: 1.65rem 0 4.2rem;
+}
+
+.hero-brand-lockup,
+.hero img[src*="dj-hub-logo-full"],
+.hero img[src*="dj-hub-logo-horizontal"] {
+  display: none !important;
 }
 
 .hero-backdrop {
@@ -2236,7 +2242,7 @@ code {
 
   .hero {
     min-height: auto;
-    padding: 5rem 0 4rem;
+    padding: 1.7rem 0 3.4rem;
   }
 
   .hero-app-card {
