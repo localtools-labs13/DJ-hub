@@ -414,7 +414,7 @@ grant select on public.artist_profiles to anon, authenticated;
 grant select on public.artist_availability to anon, authenticated;
 grant insert on public.booking_requests to anon, authenticated;
 grant select, insert, update on public.profiles to authenticated;
-grant insert, update on public.artist_profiles to authenticated;
+grant insert, update, delete on public.artist_profiles to authenticated;
 grant insert, update, delete on public.artist_availability to authenticated;
 grant select, update, delete on public.booking_requests to authenticated;
 grant select, insert on public.booking_events to authenticated;
@@ -488,6 +488,11 @@ create policy "artist_profiles_admin_can_update_validation"
 on public.artist_profiles for update to authenticated
 using (public.is_admin())
 with check (public.is_admin());
+
+drop policy if exists "artist_profiles_admin_can_delete" on public.artist_profiles;
+create policy "artist_profiles_admin_can_delete"
+on public.artist_profiles for delete to authenticated
+using (public.is_admin());
 
 -- artist_availability
 drop policy if exists "artist_availability_public_can_read_available_approved" on public.artist_availability;

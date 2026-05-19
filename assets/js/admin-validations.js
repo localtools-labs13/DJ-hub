@@ -175,6 +175,14 @@
     const summary = artistSummary(artist, owner.email);
     const canPreviewPresskit = Boolean(presskit || (artist.artist_name && artist.city && ((artist.styles || []).length || artist.bio)));
     const rightsConfirmed = Boolean(artist.photo_rights_confirmed);
+    const validationActions = artist.status === "approved" ? [
+      '<span class="status-pill status-approved">Artiste déjà approuvé</span>',
+      '<button class="btn btn-secondary" type="button" data-profile-action="needs_changes">Demander correction</button>'
+    ].join("") : [
+      '<button class="btn btn-primary" type="button" data-profile-action="approved">Approuver</button>',
+      '<button class="btn btn-secondary" type="button" data-profile-action="needs_changes">Demander correction</button>',
+      '<button class="btn btn-ghost" type="button" data-profile-action="rejected">Refuser</button>'
+    ].join("");
     return [
       '<article class="validation-card" data-profile-id="' + esc(artist.id) + '">',
       '<div class="section-heading-row">',
@@ -231,14 +239,13 @@
       '<label>Note admin</label>',
       '<textarea data-note rows="3">' + esc(artist.admin_note || "") + '</textarea>',
       '<div class="hero-actions">',
-      '<button class="btn btn-primary" type="button" data-profile-action="approved">Approuver</button>',
-      '<button class="btn btn-secondary" type="button" data-profile-action="needs_changes">Demander correction</button>',
-      '<button class="btn btn-ghost" type="button" data-profile-action="rejected">Refuser</button>',
+      validationActions,
       canPreviewPresskit ? '<a class="btn btn-secondary" href="presskit-public.html?id=' + encodeURIComponent(artist.id) + '&admin=1">Voir presskit</a>' : '',
       '<a class="btn btn-secondary" href="presskit-artiste.html?artist=' + encodeURIComponent(artist.id) + '">Générer / modifier presskit</a>',
       '<a class="btn btn-ghost" href="presskit-artiste.html?artist=' + encodeURIComponent(artist.id) + '&download=pdf">Télécharger PDF A4</a>',
       '<button class="btn btn-ghost" type="button" data-copy="' + esc(summary) + '">Copier résumé artiste</button>',
       owner.email ? '<a class="btn btn-ghost" href="' + esc(mailto(owner.email, "DJ-hub - Votre profil artiste", summary)) + '">Envoyer email à l’artiste</a>' : '',
+      '<button class="btn btn-danger" type="button" data-profile-delete>Supprimer l’artiste</button>',
       '</div>',
       '</article>'
     ].join("");
@@ -503,6 +510,14 @@
     if (error) throw error;
   }
 
+  async function deleteArtist(card) {
+    const { error } = await client()
+      .from("artist_profiles")
+      .delete()
+      .eq("id", card.dataset.profileId);
+    if (error) throw error;
+  }
+
   async function updateRequest(card, status) {
     const timestamps = {
       contacted: "contacted_at",
@@ -685,6 +700,23 @@
           await refresh();
         } catch (error) {
           show(error.message || "Modification de la page artiste impossible.", "error");
+        }
+        return;
+      }
+
+      const profileDeleteButton = event.target.closest("[data-profile-delete]");
+      if (profileDeleteButton) {
+        const card = event.target.closest("[data-profile-id]");
+        if (!card) return;
+        const title = (qs("h2", card) || {}).textContent || "cet artiste";
+        const confirmed = window.confirm("Supprimer définitivement le profil artiste “" + title + "” ? Ses disponibilités et presskits liés seront supprimés, et ses demandes client resteront conservées sans DJ lié.");
+        if (!confirmed) return;
+        try {
+          await deleteArtist(card);
+          show("Profil artiste supprimé.", "success");
+          await refresh();
+        } catch (error) {
+          show(error.message || "Suppression artiste impossible. Vérifiez la policy Supabase admin.", "error");
         }
         return;
       }

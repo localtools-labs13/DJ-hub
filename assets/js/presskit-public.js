@@ -57,6 +57,40 @@
     ].filter(function (entry) { return entry[1]; });
   }
 
+  function socialLabel(label, url) {
+    const raw = String(url || "").trim();
+    if (!raw) return "";
+    const handleMatch = raw.match(/(?:instagram\.com|soundcloud\.com|mixcloud\.com|youtube\.com|youtu\.be)\/@?([^/?#]+)/i);
+    if (handleMatch && handleMatch[1]) return label + " · @" + handleMatch[1].replace(/^@/, "");
+    try {
+      return label + " · " + new URL(raw).hostname.replace(/^www\./, "");
+    } catch (error) {
+      return label + " · " + raw.replace(/^https?:\/\//, "");
+    }
+  }
+
+  function formatEuro(value) {
+    if (!value) return "Tarif à confirmer";
+    return new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(value);
+  }
+
+  function materialLabel(profile) {
+    if (profile.material === true) return "Matériel disponible selon configuration";
+    if (profile.material === false) return "Matériel à confirmer selon le lieu";
+    return "À confirmer";
+  }
+
+  function templateSection(title, body, extraClass) {
+    if (!body) return "";
+    return '<section class="pk-block ' + esc(extraClass || "") + '"><h2>' + esc(title) + '</h2>' + body + '</section>';
+  }
+
+  function infoRows(rows) {
+    return '<dl class="pk-info-list">' + rows.filter(function (row) { return row[1]; }).map(function (row) {
+      return '<div><dt>' + esc(row[0]) + '</dt><dd>' + esc(row[1]) + '</dd></div>';
+    }).join("") + '</dl>';
+  }
+
   function generateFallbackPresskit(profile) {
     const styles = list(profile.styles, "plusieurs univers musicaux");
     const events = list(profile.event_types, "soirées privées et petits lieux");
@@ -73,37 +107,58 @@
     const root = qs("#presskit-public");
     const image = profile.public_image_url || "";
     const links = linkRows(profile);
-    const linkMarkup = links.length ? '<div class="presskit-links">' + links.map(function (entry) {
-      return '<a href="' + esc(entry[1]) + '" target="_blank" rel="noopener">' + esc(entry[0]) + '</a>';
+    const linkMarkup = links.length ? '<div class="pk-social-links">' + links.map(function (entry) {
+      return '<a href="' + esc(entry[1]) + '" target="_blank" rel="noopener"><span>' + esc(entry[0].charAt(0)) + '</span>' + esc(socialLabel(entry[0], entry[1])) + '</a>';
     }).join("") + '</div>' : "";
+    const styleTags = tags(profile.styles || []);
+    const eventTags = tags(profile.event_types || []);
+    const zoneTags = tags(profile.zones || []);
+    const location = profile.city || "Ville à confirmer";
+    const mainStyles = list(profile.styles, "Styles à confirmer");
+    const shortIntro = presskit.short_intro || "";
+    const longBio = compactText(presskit.long_bio || profile.bio || "", 760);
+    const bookingText = compactText(presskit.booking_text || "Contact réservation via DJ-hub.", 420);
+    const technicalInfo = compactText(presskit.technical_info || "", 420);
     if (!root) return;
     root.innerHTML = [
-      '<article class="presskit-page presskit-page-one reveal" id="presskit-sheet">',
-      '<header class="presskit-hero presskit-one-hero">',
-      '<div class="presskit-photo presskit-one-photo">',
-      image ? '<img src="' + esc(image) + '" alt="Photo artiste ' + esc(profile.artist_name) + '">' : '<div class="presskit-photo-placeholder"><span>' + esc(initials(profile.artist_name)) + '</span><i></i></div>',
-      profile.photo_credit ? '<p class="presskit-photo-credit">Crédit photo : ' + esc(profile.photo_credit) + '</p>' : '',
-      '</div>',
-      '<div class="presskit-title-block">',
-      '<p class="presskit-kicker">' + (profile.status === "approved" ? "Profil validé par DJ-hub" : "Prévisualisation admin") + ' · 1/1</p>',
+      '<article class="presskit-page presskit-pro-sheet reveal" id="presskit-sheet">',
+      '<div class="pk-glow pk-glow-one"></div><div class="pk-glow pk-glow-two"></div><div class="pk-grid-bg"></div>',
+      '<header class="pk-hero">',
+      '<div class="pk-brand-chip"><strong>DJ-hub</strong><span>' + (profile.status === "approved" ? "Profil validé" : "Prévisualisation admin") + '</span></div>',
+      '<div class="pk-title">',
+      '<p class="pk-kicker">Official press kit</p>',
       '<h1>' + esc(profile.artist_name) + '</h1>',
-      '<p class="presskit-subtitle">' + esc(profile.city) + ' · Contact réservation via DJ-hub</p>',
-      '<div class="presskit-tags">' + tags(profile.styles) + '</div>',
+      '<p class="pk-subtitle">DJ · ' + esc(location) + ' · Réservation via DJ-hub</p>',
+      styleTags ? '<div class="presskit-tags pk-tags">' + styleTags + '</div>' : '',
+      '</div>',
+      '<div class="pk-photo-orbit">',
+      '<div class="pk-orbit-ring"></div><div class="pk-orbit-ring pk-orbit-ring-two"></div>',
+      '<div class="pk-photo-frame">',
+      image ? '<img src="' + esc(image) + '" alt="Photo artiste ' + esc(profile.artist_name) + '">' : '<div class="presskit-photo-placeholder pk-photo-placeholder"><span>' + esc(initials(profile.artist_name)) + '</span><i></i></div>',
+      '</div>',
+      profile.photo_credit ? '<p class="pk-photo-credit">Crédit photo : ' + esc(profile.photo_credit) + '</p>' : '',
       '</div>',
       '</header>',
-      '<div class="presskit-one-content">',
-      '<div class="presskit-one-main">',
-      '<section class="presskit-section"><h2>Présentation</h2><p class="presskit-lead">' + esc(presskit.short_intro || "") + '</p><p>' + esc(compactText(presskit.long_bio || "", 620)) + '</p></section>',
-      '<section class="presskit-section"><h2>Booking</h2><p>' + esc(compactText(presskit.booking_text || "", 360)) + '</p></section>',
-      '<section class="presskit-section"><h2>Technique</h2><p>' + esc(compactText(presskit.technical_info || "", 320)) + '</p></section>',
+      '<main class="pk-body">',
+      '<div class="pk-column pk-column-left">',
+      templateSection("Personal info", infoRows([
+        ["Ville", location],
+        ["Styles", mainStyles],
+        ["Tarif indicatif", formatEuro(profile.price_from)],
+        ["Matériel", materialLabel(profile)]
+      ]), "pk-block-info"),
+      templateSection("Biography", '<p class="pk-lead">' + esc(shortIntro) + '</p>' + (longBio ? '<p>' + esc(longBio) + '</p>' : "")),
+      templateSection("Booking text", '<p>' + esc(bookingText) + '</p>'),
       '</div>',
-      '<aside class="presskit-one-aside">',
-      '<div class="presskit-info-grid presskit-one-info"><div><strong>' + esc(profile.price_from ? profile.price_from + " €" : "Tarif à confirmer") + '</strong><span>tarif indicatif</span></div><div><strong>' + esc(profile.material ? "Matériel possible" : "À confirmer") + '</strong><span>matériel</span></div><div><strong>' + esc(list(profile.zones, profile.city || "À confirmer")) + '</strong><span>zone</span></div></div>',
-      '<section class="presskit-section"><h2>Événements</h2><div class="presskit-tags">' + tags(profile.event_types || []) + '</div></section>',
-      linkMarkup ? '<section class="presskit-section"><h2>Réseaux & liens</h2>' + linkMarkup + '</section>' : '',
+      '<aside class="pk-column pk-column-right">',
+      '<div class="pk-stat-row"><div><strong>' + esc(formatEuro(profile.price_from)) + '</strong><span>à partir de</span></div><div><strong>' + esc(location) + '</strong><span>ville</span></div></div>',
+      templateSection("Events", eventTags ? '<div class="presskit-tags pk-mini-tags">' + eventTags + '</div>' : '<p>Soirées privées, bars, rooftops.</p>'),
+      zoneTags ? templateSection("Zones", '<div class="presskit-tags pk-mini-tags">' + zoneTags + '</div>') : "",
+      templateSection("Technical rider", '<p>' + esc(technicalInfo) + '</p>'),
+      linkMarkup ? templateSection("Follow / links", linkMarkup, "pk-social-block") : "",
       '</aside>',
-      '</div>',
-      '<footer class="presskit-footer presskit-one-footer"><strong>Presskit généré avec DJ-hub</strong><span>Contact réservation via DJ-hub.</span><span>Informations à confirmer avant réservation.</span><span><a href="trouver-un-dj.html?dj=' + encodeURIComponent(profile.id) + '">Demander ce DJ</a></span></footer>',
+      '</main>',
+      '<footer class="pk-footer"><div><strong>FOLLOW ME</strong>' + (linkMarkup || '<span>Réseaux à confirmer</span>') + '</div><div><strong>BOOKING CONTACT</strong><span>Contact réservation via DJ-hub</span><span>Informations à confirmer avant réservation.</span></div><span class="pk-footer-url">DJ-hub.fr</span></footer>',
       '</article>'
     ].join("");
   }

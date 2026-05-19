@@ -40,6 +40,7 @@ Migrations MVP complémentaires :
 - `booking-workflow-migration.sql` ajoute le pipeline de réservation, les champs de facturation interne et la table `booking_events`.
 - `photo-rights-migration.sql` ajoute la confirmation des droits photo sur les profils artistes.
 - `admin-request-management-migration.sql` autorise uniquement les admins à supprimer une demande client depuis l’interface privée.
+- `admin-artist-delete-migration.sql` autorise uniquement les admins à supprimer un profil artiste depuis l’interface privée.
 
 ## Storage Supabase
 
@@ -134,6 +135,7 @@ Le presskit est généré côté navigateur à partir du profil Supabase :
 
 Le PDF est généré côté navigateur :
 - rendu optimisé sur une page A4 unique `1/1` ;
+- modèle visuel sombre type press kit DJ premium, avec grand portrait, accents cyan/magenta, blocs biography / booking / technical rider et réseaux sociaux ;
 - bouton `Imprimer / enregistrer en PDF A4` avec `window.print()` ;
 - bouton `Télécharger PDF A4` via `html2pdf.js` si le CDN est disponible ;
 - fallback automatique vers l’impression navigateur si `html2pdf.js` ne charge pas.
@@ -168,6 +170,8 @@ L’admin peut :
 - voir les statistiques de profils et demandes ;
 - lire les profils artistes en attente, validés, refusés ou à corriger ;
 - approuver, refuser ou demander correction ;
+- masquer automatiquement les boutons approuver/refuser quand un artiste est déjà validé ;
+- supprimer un profil artiste depuis l’admin si nécessaire ;
 - lire les presskits générés ;
 - traiter les demandes clients dans le pipeline ;
 - accepter / confirmer une demande client ;
