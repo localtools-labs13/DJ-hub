@@ -228,6 +228,8 @@ Cette information est interne au README. Les pages publiques indiquent seulement
 - Les créneaux `busy` restent privés ; la recherche publique utilise seulement `available` et `option` pour les artistes `approved`.
 - Les notes admin, données privées et événements internes ne doivent jamais être affichés publiquement.
 - Les droits photo doivent être confirmés avant publication d’une photo artiste.
+- Les demandes anonymes ne peuvent insérer que les champs nécessaires au brief client.
+- Les artistes peuvent uniquement répondre à leurs propres demandes liées ; les champs de facture, notes internes et données client restent protégés.
 
 ## Pages de confiance et lancement
 

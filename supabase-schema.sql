@@ -278,7 +278,22 @@ create table if not exists public.booking_requests (
   message text,
   status text not null default 'new',
   created_at timestamptz not null default now(),
-  constraint booking_requests_status_check check (status in ('new', 'sent_to_artist', 'accepted', 'refused', 'contacted', 'assigned', 'confirmed', 'cancelled')),
+  admin_note text,
+  artist_note text,
+  client_note text,
+  validated_dj_price numeric,
+  service_fee numeric,
+  total_client_price numeric,
+  invoice_status text default 'not_sent',
+  invoice_link text,
+  invoice_note text,
+  contacted_at timestamptz,
+  sent_to_artist_at timestamptz,
+  artist_responded_at timestamptz,
+  confirmed_at timestamptz,
+  paid_at timestamptz,
+  constraint booking_requests_status_check check (status in ('new', 'contacted', 'sent_to_artist', 'artist_accepted', 'artist_refused', 'client_confirmed', 'invoice_sent', 'paid', 'confirmed', 'cancelled')),
+  constraint booking_requests_invoice_status_check check (invoice_status in ('not_sent', 'sent', 'paid', 'cancelled')),
   constraint booking_requests_guests_check check (guests is null or guests > 0)
 );
 
@@ -286,6 +301,78 @@ create index if not exists booking_requests_artist_profile_id_idx on public.book
 create index if not exists booking_requests_status_idx on public.booking_requests (status);
 create index if not exists booking_requests_event_date_idx on public.booking_requests (event_date);
 create index if not exists booking_requests_city_idx on public.booking_requests (city);
+create index if not exists booking_requests_invoice_status_idx on public.booking_requests (invoice_status);
+
+create table if not exists public.booking_events (
+  id uuid primary key default gen_random_uuid(),
+  booking_request_id uuid references public.booking_requests(id) on delete cascade,
+  actor_user_id uuid references auth.users(id) on delete set null,
+  actor_role text,
+  event_type text not null,
+  note text,
+  created_at timestamptz default now()
+);
+
+create index if not exists booking_events_booking_request_id_idx on public.booking_events(booking_request_id);
+
+create or replace function public.protect_booking_request_artist_update()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if public.is_admin() then
+    return new;
+  end if;
+
+  if old.artist_profile_id is distinct from new.artist_profile_id
+    or old.client_user_id is distinct from new.client_user_id
+    or old.client_name is distinct from new.client_name
+    or old.client_email is distinct from new.client_email
+    or old.client_phone is distinct from new.client_phone
+    or old.requester_type is distinct from new.requester_type
+    or old.city is distinct from new.city
+    or old.event_date is distinct from new.event_date
+    or old.start_time is distinct from new.start_time
+    or old.duration is distinct from new.duration
+    or old.event_type is distinct from new.event_type
+    or old.venue_type is distinct from new.venue_type
+    or old.guests is distinct from new.guests
+    or old.music_style is distinct from new.music_style
+    or old.budget is distinct from new.budget
+    or old.sound_system is distinct from new.sound_system
+    or old.lights_needed is distinct from new.lights_needed
+    or old.material_needed is distinct from new.material_needed
+    or old.message is distinct from new.message
+    or old.admin_note is distinct from new.admin_note
+    or old.artist_note is distinct from new.artist_note
+    or old.client_note is distinct from new.client_note
+    or old.validated_dj_price is distinct from new.validated_dj_price
+    or old.service_fee is distinct from new.service_fee
+    or old.total_client_price is distinct from new.total_client_price
+    or old.invoice_status is distinct from new.invoice_status
+    or old.invoice_link is distinct from new.invoice_link
+    or old.invoice_note is distinct from new.invoice_note
+    or old.contacted_at is distinct from new.contacted_at
+    or old.sent_to_artist_at is distinct from new.sent_to_artist_at
+    or old.confirmed_at is distinct from new.confirmed_at
+    or old.paid_at is distinct from new.paid_at then
+    raise exception 'Modification de demande non autorisee.';
+  end if;
+
+  if new.status not in ('artist_accepted', 'artist_refused') then
+    raise exception 'Statut artiste non autorise.';
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists booking_requests_protect_artist_update on public.booking_requests;
+create trigger booking_requests_protect_artist_update
+before update on public.booking_requests
+for each row execute function public.protect_booking_request_artist_update();
 
 -- ============================================================
 -- 5. Presskits artistes
@@ -330,6 +417,7 @@ grant select, insert, update on public.profiles to authenticated;
 grant insert, update on public.artist_profiles to authenticated;
 grant insert, update, delete on public.artist_availability to authenticated;
 grant select, update on public.booking_requests to authenticated;
+grant select, insert on public.booking_events to authenticated;
 grant select on public.artist_presskits to anon, authenticated;
 grant insert, update, delete on public.artist_presskits to authenticated;
 grant execute on function public.is_admin() to anon, authenticated;
@@ -343,6 +431,7 @@ alter table public.profiles enable row level security;
 alter table public.artist_profiles enable row level security;
 alter table public.artist_availability enable row level security;
 alter table public.booking_requests enable row level security;
+alter table public.booking_events enable row level security;
 alter table public.artist_presskits enable row level security;
 
 -- profiles
@@ -447,6 +536,20 @@ on public.booking_requests for insert to anon
 with check (
   status = 'new'
   and client_user_id is null
+  and admin_note is null
+  and artist_note is null
+  and client_note is null
+  and validated_dj_price is null
+  and service_fee is null
+  and total_client_price is null
+  and coalesce(invoice_status, 'not_sent') = 'not_sent'
+  and invoice_link is null
+  and invoice_note is null
+  and contacted_at is null
+  and sent_to_artist_at is null
+  and artist_responded_at is null
+  and confirmed_at is null
+  and paid_at is null
   and (
     artist_profile_id is null
     or exists (
@@ -464,6 +567,20 @@ on public.booking_requests for insert to authenticated
 with check (
   status = 'new'
   and (client_user_id is null or client_user_id = auth.uid())
+  and admin_note is null
+  and artist_note is null
+  and client_note is null
+  and validated_dj_price is null
+  and service_fee is null
+  and total_client_price is null
+  and coalesce(invoice_status, 'not_sent') = 'not_sent'
+  and invoice_link is null
+  and invoice_note is null
+  and contacted_at is null
+  and sent_to_artist_at is null
+  and artist_responded_at is null
+  and confirmed_at is null
+  and paid_at is null
   and (
     artist_profile_id is null
     or exists (
@@ -514,12 +631,53 @@ using (
   )
 )
 with check (
-  status in ('accepted', 'refused')
+  status in ('artist_accepted', 'artist_refused')
   and artist_profile_id is not null
   and exists (
     select 1
     from public.artist_profiles ap
     where ap.id = artist_profile_id
+      and ap.user_id = auth.uid()
+      and ap.status = 'approved'
+  )
+);
+
+-- booking_events
+drop policy if exists "booking_events_admin_can_read" on public.booking_events;
+create policy "booking_events_admin_can_read"
+on public.booking_events for select to authenticated
+using (public.is_admin());
+
+drop policy if exists "booking_events_admin_can_insert" on public.booking_events;
+create policy "booking_events_admin_can_insert"
+on public.booking_events for insert to authenticated
+with check (public.is_admin());
+
+drop policy if exists "booking_events_artist_can_read_related" on public.booking_events;
+create policy "booking_events_artist_can_read_related"
+on public.booking_events for select to authenticated
+using (
+  exists (
+    select 1
+    from public.booking_requests br
+    join public.artist_profiles ap on ap.id = br.artist_profile_id
+    where br.id = booking_events.booking_request_id
+      and ap.user_id = auth.uid()
+  )
+);
+
+drop policy if exists "booking_events_artist_can_insert_related_response" on public.booking_events;
+create policy "booking_events_artist_can_insert_related_response"
+on public.booking_events for insert to authenticated
+with check (
+  actor_user_id = auth.uid()
+  and actor_role = 'artist'
+  and event_type in ('artist_accepted', 'artist_refused')
+  and exists (
+    select 1
+    from public.booking_requests br
+    join public.artist_profiles ap on ap.id = br.artist_profile_id
+    where br.id = booking_events.booking_request_id
       and ap.user_id = auth.uid()
       and ap.status = 'approved'
   )

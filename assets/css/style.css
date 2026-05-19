@@ -1224,6 +1224,155 @@ details p {
   margin-bottom: 1.15rem;
 }
 
+.availability-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(360px, 0.7fr);
+  gap: 1.35rem;
+  align-items: start;
+}
+
+.calendar-card {
+  min-width: 0;
+}
+
+.calendar-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+}
+
+.calendar-card-head h2,
+.availability-panel h2 {
+  margin-bottom: 0.45rem;
+  font-size: clamp(1.8rem, 2.8vw, 2.7rem);
+}
+
+.calendar-card-head p {
+  max-width: 620px;
+  margin-bottom: 0;
+}
+
+.availability-sidebar {
+  position: sticky;
+  top: 96px;
+  display: grid;
+  gap: 1rem;
+}
+
+.availability-panel {
+  padding: 1.35rem;
+  border-color: rgba(24, 216, 255, 0.24);
+}
+
+.selected-date-card {
+  display: grid;
+  gap: 0.2rem;
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid rgba(24, 216, 255, 0.24);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(24, 216, 255, 0.12), transparent 12rem),
+    rgba(255, 255, 255, 0.06);
+}
+
+.selected-date-card span {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.selected-date-card strong {
+  color: var(--cream);
+  font-size: 1.08rem;
+}
+
+.availability-presets,
+.status-choice-row {
+  display: grid;
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+}
+
+.availability-presets {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.preset-button,
+.status-choice {
+  min-width: 0;
+  border: 1px solid rgba(244, 241, 234, 0.13);
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.065);
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.preset-button {
+  min-height: 74px;
+  padding: 0.85rem;
+  border-radius: 18px;
+  text-align: left;
+  font-weight: 950;
+}
+
+.preset-button span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.preset-button:hover,
+.status-choice:hover,
+.preset-button.is-active,
+.status-choice.is-active {
+  transform: translateY(-2px);
+  border-color: rgba(24, 216, 255, 0.48);
+  background: rgba(24, 216, 255, 0.11);
+  box-shadow: 0 0 28px rgba(24, 216, 255, 0.12);
+}
+
+.availability-field-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+}
+
+.availability-field-grid input,
+.availability-field-grid textarea,
+.availability-field-grid select {
+  min-height: 56px;
+  min-width: 0;
+  border-radius: 18px;
+  font-size: 1rem;
+}
+
+.availability-field-grid input[type="date"],
+.availability-field-grid input[type="time"] {
+  color-scheme: dark;
+}
+
+.status-choice-row {
+  grid-template-columns: 1fr;
+}
+
+.status-choice {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 50px;
+  padding: 0.75rem 0.85rem;
+  border-radius: 16px;
+  font-weight: 950;
+  text-align: left;
+}
+
+.availability-help-card {
+  padding: 1rem;
+}
+
 .availability-list {
   display: grid;
   gap: 0.7rem;
@@ -1239,8 +1388,27 @@ details p {
   background: rgba(255, 255, 255, 0.055);
 }
 
+.availability-item > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.availability-item strong {
+  color: var(--cream);
+}
+
 .availability-item p {
   margin: 0;
+}
+
+.empty-mini {
+  padding: 1rem;
+  border: 1px dashed rgba(244, 241, 234, 0.18);
+  border-radius: 18px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.045);
 }
 
 .filters-panel {
@@ -1732,6 +1900,9 @@ th {
 }
 
 .status-new { border-color: rgba(24, 216, 255, 0.32); color: var(--electric); background: rgba(24, 216, 255, 0.11); }
+.status-available { border-color: rgba(85, 242, 187, 0.32); color: var(--mint); background: rgba(85, 242, 187, 0.12); }
+.status-option { border-color: rgba(24, 216, 255, 0.32); color: var(--electric); background: rgba(24, 216, 255, 0.11); }
+.status-busy { border-color: rgba(233, 70, 255, 0.34); color: #f4d9ff; background: rgba(233, 70, 255, 0.12); }
 .status-contacted,
 .status-sent-to-artist,
 .status-client-confirmed,
@@ -1918,7 +2089,8 @@ code {
   .artist-grid,
   .feature-grid,
   .pricing-grid,
-  .detail-grid {
+  .detail-grid,
+  .availability-layout {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -1985,6 +2157,7 @@ code {
   .three-process-grid,
   .artist-grid,
   .form-layout,
+  .availability-layout,
   .auth-dashboard-grid,
   .artist-dashboard-card,
   .validation-photo-block,
@@ -2005,6 +2178,14 @@ code {
 
   .side-panel {
     position: static;
+  }
+
+  .availability-sidebar {
+    position: static;
+  }
+
+  .calendar-card-head {
+    flex-direction: column;
   }
 
   .section {
@@ -2042,6 +2223,7 @@ code {
 
   .quick-search,
   .filters-panel,
+  .availability-presets,
   .form-grid,
   .detail-stats,
   .card-actions {
@@ -2545,6 +2727,24 @@ code {
 
 #artist-calendar {
   color: var(--text);
+}
+
+.fc .fc-daygrid-day {
+  cursor: pointer;
+}
+
+.fc .fc-daygrid-day:hover {
+  background: rgba(24, 216, 255, 0.07);
+}
+
+.fc .fc-event {
+  border-radius: 10px;
+  padding: 0.1rem 0.25rem;
+  font-weight: 850;
+}
+
+.fc .fc-day-today {
+  background: rgba(85, 242, 187, 0.07) !important;
 }
 
 .fc {

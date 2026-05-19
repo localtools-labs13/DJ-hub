@@ -23,8 +23,7 @@
         <div class="container narrow">
           <p class="eyebrow">Calendrier artiste</p>
           <h1>Mes disponibilités</h1>
-          <p>Préparez vos créneaux disponibles, en option ou occupés. Côté public, seules les disponibilités disponibles ou en option peuvent être lues pour les profils validés.</p>
-          <p>Seules les disponibilités Available ou Option peuvent apparaître côté public. Les créneaux Busy restent privés.</p>
+          <p>Cliquez sur une date, choisissez un format de soirée, puis enregistrez. Les créneaux disponibles ou en option peuvent être utilisés dans la recherche publique après validation de votre profil.</p>
           <div class="legend-row">
             <span><i class="dot mint"></i>Disponible</span>
             <span><i class="dot cyan"></i>Option</span>
@@ -35,34 +34,70 @@
       </section>
 
       <section class="section">
-        <div class="container form-layout">
-          <div class="auth-card">
+        <div class="container availability-layout">
+          <div class="auth-card calendar-card">
+            <div class="calendar-card-head">
+              <div>
+                <p class="eyebrow">Planning</p>
+                <h2>Cliquez sur une date</h2>
+                <p>Un clic prépare automatiquement un créneau. Vous pouvez aussi cliquer sur un créneau existant pour le modifier.</p>
+              </div>
+              <a class="btn btn-ghost" href="espace-artiste.html">Retour espace artiste</a>
+            </div>
             <div id="artist-calendar"></div>
           </div>
-          <form class="app-form reveal" id="availability-form">
-            <p class="eyebrow">Ajouter un créneau</p>
-            <p>Seules les disponibilités disponibles ou option peuvent être utilisées dans la recherche publique. Les indisponibilités restent privées.</p>
+
+          <aside class="availability-sidebar">
+            <form class="app-form availability-panel reveal" id="availability-form">
+              <p class="eyebrow">Ajouter un créneau</p>
+              <h2>Disponibilité</h2>
+              <div class="selected-date-card" id="selected-date-card">
+                <span>Date choisie</span>
+                <strong>Cliquez sur un jour du calendrier</strong>
+              </div>
+
+              <div class="availability-presets" aria-label="Formats rapides">
+                <button type="button" class="preset-button is-active" data-preset="evening">Soirée<br><span>20h - 02h</span></button>
+                <button type="button" class="preset-button" data-preset="apero">Apéro<br><span>18h - 22h</span></button>
+                <button type="button" class="preset-button" data-preset="afternoon">Après-midi<br><span>14h - 18h</span></button>
+                <button type="button" class="preset-button" data-preset="day">Journée<br><span>10h - 18h</span></button>
+              </div>
+
             <input id="availability-id" type="hidden">
-            <div class="form-grid">
-              <div><label for="availability-start-date">Date début</label><input id="availability-start-date" type="date" required></div>
-              <div><label for="availability-start-time">Heure début</label><input id="availability-start-time" type="time" required></div>
-              <div><label for="availability-end-date">Date fin</label><input id="availability-end-date" type="date" required></div>
-              <div><label for="availability-end-time">Heure fin</label><input id="availability-end-time" type="time" required></div>
+            <div class="availability-field-grid">
+              <div><label for="availability-start-date">Date début</label><input id="availability-start-date" type="text" inputmode="numeric" placeholder="jj/mm/aaaa" autocomplete="off" required></div>
+              <div><label for="availability-end-date">Date fin</label><input id="availability-end-date" type="text" inputmode="numeric" placeholder="jj/mm/aaaa" autocomplete="off" required></div>
+              <div><label for="availability-start-time">Début</label><input id="availability-start-time" type="time" required></div>
+              <div><label for="availability-end-time">Fin</label><input id="availability-end-time" type="time" required></div>
               <div class="full">
                 <label for="availability-status">Statut</label>
-                <select id="availability-status">
+                <div class="status-choice-row" aria-label="Statut du créneau">
+                  <button class="status-choice is-active" type="button" data-status="available"><i class="dot mint"></i> Disponible</button>
+                  <button class="status-choice" type="button" data-status="option"><i class="dot cyan"></i> Option</button>
+                  <button class="status-choice" type="button" data-status="busy"><i class="dot pink"></i> Occupé</button>
+                </div>
+                <select id="availability-status" class="sr-only" aria-label="Statut du créneau">
                   <option value="available">Disponible</option>
                   <option value="option">Option</option>
                   <option value="busy">Occupé</option>
                 </select>
               </div>
-              <div class="full"><label for="availability-note">Note privée</label><textarea id="availability-note" rows="3"></textarea></div>
+              <div class="full"><label for="availability-note">Note privée</label><textarea id="availability-note" rows="3" placeholder="Ex : option jusqu’à vendredi, lieu à confirmer..."></textarea></div>
             </div>
             <div class="hero-actions">
               <button class="btn btn-primary" type="submit">Enregistrer le créneau</button>
               <button class="btn btn-ghost" id="availability-delete" type="button" hidden>Supprimer ce créneau</button>
             </div>
+            <p class="mini-note">Les créneaux “Occupé” restent privés. Ils vous aident seulement à ne pas vous tromper dans votre planning.</p>
           </form>
+
+            <div class="auth-card availability-help-card">
+              <p class="eyebrow">Prochains créneaux</p>
+              <div id="availability-upcoming-list" class="availability-list">
+                <p class="muted">Vos créneaux apparaîtront ici après chargement.</p>
+              </div>
+            </div>
+          </aside>
         </div>
       </section>
     </main>
