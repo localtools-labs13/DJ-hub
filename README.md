@@ -132,13 +132,20 @@ Le presskit est généré côté navigateur à partir du profil Supabase :
 - contact réservation via DJ-hub.
 
 Le PDF est généré côté navigateur :
-- bouton `Télécharger / imprimer en PDF` avec `window.print()` ;
-- bouton `Télécharger PDF automatiquement` via `html2pdf.js` si le CDN est disponible ;
+- rendu optimisé sur une page A4 unique `1/1` ;
+- bouton `Imprimer / enregistrer en PDF A4` avec `window.print()` ;
+- bouton `Télécharger PDF A4` via `html2pdf.js` si le CDN est disponible ;
 - fallback automatique vers l’impression navigateur si `html2pdf.js` ne charge pas.
 
 Aucune donnée privée n’est affichée dans le presskit : pas d’email personnel, pas de téléphone, pas de note admin. Le contact se fait via DJ-hub.
 
 Le presskit public `presskit-public.html?id=ARTIST_PROFILE_ID` est visible seulement pour les profils `approved`. Si la table `artist_presskits` n’est pas disponible, la page artiste génère le presskit côté frontend sans bloquer le parcours.
+
+Depuis l’admin, chaque fiche artiste propose aussi :
+- édition directe de la page artiste ;
+- sauvegarde des informations publiques ;
+- génération / modification du presskit ;
+- téléchargement du PDF A4.
 
 ## Parcours admin
 

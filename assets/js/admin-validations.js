@@ -56,6 +56,31 @@
     return Array.isArray(values) && values.length ? values.join(", ") : "Non renseigné";
   }
 
+  function listValue(values) {
+    return Array.isArray(values) ? values.filter(Boolean).join(", ") : "";
+  }
+
+  function boolValue(value) {
+    if (value === true) return "true";
+    if (value === false) return "false";
+    return "";
+  }
+
+  function fieldBlock(label, key, value, type) {
+    type = type || "text";
+    return '<div><label>' + esc(label) + '</label><input data-admin-profile-field="' + esc(key) + '" type="' + esc(type) + '" value="' + esc(value || "") + '"></div>';
+  }
+
+  function textBlock(label, key, value, rows) {
+    return '<div class="full"><label>' + esc(label) + '</label><textarea data-admin-profile-field="' + esc(key) + '" rows="' + esc(rows || 3) + '">' + esc(value || "") + '</textarea></div>';
+  }
+
+  function selectBlock(label, key, value, options) {
+    return '<div><label>' + esc(label) + '</label><select data-admin-profile-field="' + esc(key) + '">' + options.map(function (item) {
+      return '<option value="' + esc(item[0]) + '"' + (String(value || "") === String(item[0]) ? " selected" : "") + '>' + esc(item[1]) + '</option>';
+    }).join("") + '</select></div>';
+  }
+
   function mailto(to, subject, body) {
     return "mailto:" + encodeURIComponent(to || "") + "?subject=" + encodeURIComponent(subject || "DJ-hub") + "&body=" + encodeURIComponent(body || "");
   }
@@ -171,6 +196,38 @@
       '<section class="detail-panel"><h3>Photo / presskit</h3><p>Photo uploadée : ' + esc(uploadedPhoto || "Aucune") + '<br>Lien externe : ' + esc(externalPhoto || "Aucun") + '<br>Crédit : ' + esc(artist.photo_credit || "Non renseigné") + '<br>Note : ' + esc(artist.photo_note || "Aucune") + '<br>Droits photo confirmés : ' + esc(rightsConfirmed ? "Oui" : "Non") + '<br>Date confirmation : ' + esc(artist.photo_rights_confirmed_at ? new Date(artist.photo_rights_confirmed_at).toLocaleString("fr-FR") : "Non renseignée") + '</p>' + (uploadedPhoto && !rightsConfirmed ? '<span class="status-pill status-cancelled">Droits photo à vérifier</span>' : '') + '</section>',
       presskit ? '<section class="detail-panel"><h3>Presskit généré</h3><p>' + esc(presskit.short_intro || presskit.title || "Presskit disponible") + '</p></section>' : '<section class="detail-panel"><h3>Presskit</h3><p>Non généré</p></section>',
       '</div>',
+      '<details class="admin-artist-editor">',
+      '<summary>Modifier la page artiste</summary>',
+      '<p class="editor-helper">Ces champs mettent à jour la fiche artiste publique. Les changements restent soumis au statut du profil : seuls les profils approuvés sont visibles publiquement.</p>',
+      '<div class="form-grid admin-profile-edit-grid">',
+      fieldBlock("Nom d’artiste", "artist_name", artist.artist_name),
+      fieldBlock("Slug public", "slug", artist.slug),
+      fieldBlock("Ville", "city", artist.city),
+      fieldBlock("Styles musicaux", "styles", listValue(artist.styles)),
+      fieldBlock("Tarif à partir de", "price_from", artist.price_from, "number"),
+      selectBlock("Matériel", "material", boolValue(artist.material), [["", "À confirmer"], ["true", "Oui"], ["false", "Non / à confirmer"]]),
+      fieldBlock("Zones de déplacement", "zones", listValue(artist.zones)),
+      fieldBlock("Types d’événements", "event_types", listValue(artist.event_types)),
+      fieldBlock("Formats de set", "set_formats", listValue(artist.set_formats)),
+      fieldBlock("Influences", "influences", artist.influences),
+      fieldBlock("Ambiance préférée", "preferred_vibe", artist.preferred_vibe),
+      fieldBlock("Instagram", "instagram", artist.instagram, "url"),
+      fieldBlock("SoundCloud", "soundcloud", artist.soundcloud, "url"),
+      fieldBlock("Mixcloud", "mixcloud", artist.mixcloud, "url"),
+      fieldBlock("YouTube", "youtube", artist.youtube, "url"),
+      fieldBlock("Site web", "website", artist.website, "url"),
+      fieldBlock("Statut légal", "legal_status", artist.legal_status),
+      fieldBlock("Photo uploadée URL", "public_image_url", artist.public_image_url, "url"),
+      fieldBlock("Lien photo / presskit externe", "photo_url", artist.photo_url, "url"),
+      fieldBlock("Crédit photo", "photo_credit", artist.photo_credit),
+      textBlock("Bio", "bio", artist.bio, 5),
+      textBlock("Expérience", "experience", artist.experience, 4),
+      textBlock("Note photo", "photo_note", artist.photo_note, 3),
+      '</div>',
+      '<div class="hero-actions">',
+      '<button class="btn btn-primary" type="button" data-profile-save="details">Enregistrer les modifications</button>',
+      '</div>',
+      '</details>',
       '<label>Note admin</label>',
       '<textarea data-note rows="3">' + esc(artist.admin_note || "") + '</textarea>',
       '<div class="hero-actions">',
@@ -178,6 +235,8 @@
       '<button class="btn btn-secondary" type="button" data-profile-action="needs_changes">Demander correction</button>',
       '<button class="btn btn-ghost" type="button" data-profile-action="rejected">Refuser</button>',
       canPreviewPresskit ? '<a class="btn btn-secondary" href="presskit-public.html?id=' + encodeURIComponent(artist.id) + '&admin=1">Voir presskit</a>' : '',
+      '<a class="btn btn-secondary" href="presskit-artiste.html?artist=' + encodeURIComponent(artist.id) + '">Générer / modifier presskit</a>',
+      '<a class="btn btn-ghost" href="presskit-artiste.html?artist=' + encodeURIComponent(artist.id) + '&download=pdf">Télécharger PDF A4</a>',
       '<button class="btn btn-ghost" type="button" data-copy="' + esc(summary) + '">Copier résumé artiste</button>',
       owner.email ? '<a class="btn btn-ghost" href="' + esc(mailto(owner.email, "DJ-hub - Votre profil artiste", summary)) + '">Envoyer email à l’artiste</a>' : '',
       '</div>',
@@ -342,6 +401,44 @@
     if (error) throw error;
   }
 
+  function splitList(value) {
+    return String(value || "")
+      .split(",")
+      .map(function (item) { return item.trim(); })
+      .filter(Boolean);
+  }
+
+  function readAdminProfileFields(card) {
+    const data = {};
+    Array.prototype.slice.call(card.querySelectorAll("[data-admin-profile-field]")).forEach(function (field) {
+      const key = field.dataset.adminProfileField;
+      if (["styles", "zones", "event_types", "set_formats"].indexOf(key) !== -1) {
+        data[key] = splitList(field.value);
+        return;
+      }
+      if (key === "price_from") {
+        data[key] = field.value ? Number(field.value) : null;
+        return;
+      }
+      if (key === "material") {
+        data[key] = field.value === "true" ? true : field.value === "false" ? false : null;
+        return;
+      }
+      data[key] = field.value ? field.value.trim() : null;
+    });
+
+    data.admin_note = qs("[data-note]", card) ? qs("[data-note]", card).value.trim() : "";
+    return data;
+  }
+
+  async function updateArtistDetails(card) {
+    const { error } = await client()
+      .from("artist_profiles")
+      .update(readAdminProfileFields(card))
+      .eq("id", card.dataset.profileId);
+    if (error) throw error;
+  }
+
   async function updateRequest(card, status) {
     const timestamps = {
       contacted: "contacted_at",
@@ -472,6 +569,20 @@
           await refresh();
         } catch (error) {
           show(error.message || "Mise à jour artiste impossible.", "error");
+        }
+        return;
+      }
+
+      const profileSaveButton = event.target.closest("[data-profile-save]");
+      if (profileSaveButton) {
+        const card = event.target.closest("[data-profile-id]");
+        if (!card) return;
+        try {
+          await updateArtistDetails(card);
+          show("Page artiste mise à jour par l’admin.", "success");
+          await refresh();
+        } catch (error) {
+          show(error.message || "Modification de la page artiste impossible.", "error");
         }
         return;
       }

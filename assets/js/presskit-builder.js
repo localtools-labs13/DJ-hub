@@ -166,6 +166,12 @@
     return '<section class="presskit-section"><h2>' + esc(title) + '</h2>' + body + '</section>';
   }
 
+  function compactText(text, max) {
+    text = String(text || "").replace(/\s+/g, " ").trim();
+    if (!text || text.length <= max) return text;
+    return text.slice(0, max - 1).trim() + "…";
+  }
+
   function renderPresskit(profile, texts) {
     texts = texts || generate(profile);
     const image = profile.public_image_url || "";
@@ -179,36 +185,44 @@
     const linkMarkup = links.length ? '<div class="presskit-links">' + links.map(function (entry) {
       return '<a href="' + esc(entry[1]) + '" target="_blank" rel="noopener">' + esc(entry[0]) + '</a>';
     }).join("") + '</div>' : "";
+    const shortIntro = texts.short_intro || generateShortBio(profile);
+    const longBio = compactText(texts.long_bio || profile.bio || "", 620);
+    const bookingText = compactText(texts.booking_text || generateBookingText(profile), 360);
+    const technicalInfo = compactText(texts.technical_info || generateTechnicalText(profile), 320);
 
     return [
-      '<article class="presskit-page" id="presskit-sheet">',
-      '<header class="presskit-hero presskit-section">',
-      '<div class="presskit-photo">',
+      '<article class="presskit-page presskit-page-one" id="presskit-sheet">',
+      '<header class="presskit-hero presskit-one-hero">',
+      '<div class="presskit-photo presskit-one-photo">',
       image ? '<img src="' + esc(image) + '" alt="Photo artiste ' + esc(profile.artist_name) + '" crossorigin="anonymous">' : '<div class="presskit-photo-placeholder"><span>' + esc(initials(profile.artist_name)) + '</span><i></i></div>',
       photoCredit,
       '</div>',
       '<div class="presskit-title-block">',
-      '<p class="presskit-kicker">Presskit DJ-hub</p>',
+      '<p class="presskit-kicker">Presskit DJ-hub · 1/1</p>',
       '<h1>' + esc(profile.artist_name || "DJ") + '</h1>',
-      '<p class="presskit-subtitle">' + esc(profile.city || "Ville à confirmer") + '</p>',
+      '<p class="presskit-subtitle">' + esc(profile.city || "Ville à confirmer") + ' · Contact réservation via DJ-hub</p>',
       styleTags ? '<div class="presskit-tags">' + styleTags + '</div>' : '',
       '</div>',
       '</header>',
-      section("Présentation", '<p class="presskit-lead">' + esc(texts.short_intro || generateShortBio(profile)) + '</p>' + (texts.long_bio ? '<p>' + esc(texts.long_bio).replace(/\n/g, "<br>") + '</p>' : "")),
-      section("Univers musical", (styleTags ? '<div class="presskit-tags">' + styleTags + '</div>' : "") + influences + formats),
-      section("Événements adaptés", eventTags ? '<div class="presskit-tags">' + eventTags + '</div>' : '<p>Soirées privées, petits bars et événements locaux.</p>'),
-      section("Infos booking", [
-        '<div class="presskit-info-grid">',
-        '<div><strong>' + esc(formatEuro(profile.price_from)) + '</strong><span>tarif indicatif</span></div>',
-        '<div><strong>' + esc(materialLabel(profile)) + '</strong><span>matériel</span></div>',
-        '<div><strong>' + esc(list(profile.zones, profile.city || "À confirmer")) + '</strong><span>zone</span></div>',
-        '</div>',
-        '<p>' + esc(texts.booking_text || generateBookingText(profile)) + '</p>',
-        '<p>' + esc(texts.technical_info || generateTechnicalText(profile)) + '</p>'
-      ].join("")),
-      zoneTags ? section("Zones de déplacement", '<div class="presskit-tags">' + zoneTags + '</div>') : "",
-      linkMarkup ? section("Liens", linkMarkup) : "",
-      '<footer class="presskit-footer presskit-section">',
+      '<div class="presskit-one-content">',
+      '<div class="presskit-one-main">',
+      section("Présentation", '<p class="presskit-lead">' + esc(shortIntro) + '</p>' + (longBio ? '<p>' + esc(longBio) + '</p>' : "")),
+      section("Booking", '<p>' + esc(bookingText) + '</p>'),
+      section("Technique", '<p>' + esc(technicalInfo) + '</p>'),
+      '</div>',
+      '<aside class="presskit-one-aside">',
+      '<div class="presskit-info-grid presskit-one-info">',
+      '<div><strong>' + esc(formatEuro(profile.price_from)) + '</strong><span>tarif indicatif</span></div>',
+      '<div><strong>' + esc(materialLabel(profile)) + '</strong><span>matériel</span></div>',
+      '<div><strong>' + esc(list(profile.zones, profile.city || "À confirmer")) + '</strong><span>zone</span></div>',
+      '</div>',
+      section("Événements", eventTags ? '<div class="presskit-tags">' + eventTags + '</div>' : '<p>Soirées privées, petits bars et événements locaux.</p>'),
+      zoneTags ? section("Zones", '<div class="presskit-tags">' + zoneTags + '</div>') : "",
+      (influences || formats) ? section("Univers", influences + formats) : "",
+      linkMarkup ? section("Réseaux & liens", linkMarkup) : "",
+      '</aside>',
+      '</div>',
+      '<footer class="presskit-footer presskit-one-footer">',
       '<strong>Presskit généré avec DJ-hub</strong>',
       '<span>Contact réservation via DJ-hub.</span>',
       '<span>Profil DJ-hub — informations à confirmer avant réservation.</span>',
@@ -349,9 +363,11 @@
 
     let profile;
     let current;
+    let presskitUserId = user ? user.id : null;
     try {
       if (roleProfile.role === "admin" && params.get("artist")) {
         profile = await profileById(params.get("artist"));
+        presskitUserId = profile ? profile.user_id : presskitUserId;
       } else {
         profile = await ownProfile(user.id);
       }
@@ -377,7 +393,7 @@
       const button = event.target.closest("[data-presskit-action]");
       if (!button) return;
       const action = button.dataset.presskitAction;
-      const payload = readForm(profile, user.id);
+      const payload = readForm(profile, presskitUserId || user.id);
 
       if (action === "generate") {
         fillForm(generate(profile));

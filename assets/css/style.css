@@ -2995,8 +2995,147 @@ code {
 }
 
 .presskit-footer strong,
-.presskit-footer span {
+.presskit-footer span,
+.presskit-footer a {
   color: #fbfaf7;
+}
+
+.presskit-page-one {
+  width: min(100%, 794px);
+  min-height: auto;
+  aspect-ratio: 210 / 297;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.presskit-page-one .presskit-section {
+  padding: 0.78rem 1.05rem;
+}
+
+.presskit-one-hero {
+  grid-template-columns: 172px minmax(0, 1fr);
+  gap: 1.05rem;
+  min-height: 230px;
+  padding: 1.05rem;
+}
+
+.presskit-one-photo img,
+.presskit-one-photo .presskit-photo-placeholder {
+  min-height: 198px;
+  aspect-ratio: 4 / 4.8;
+  border-radius: 18px;
+}
+
+.presskit-page-one .presskit-title-block h1 {
+  font-size: clamp(2.35rem, 6vw, 4.3rem);
+}
+
+.presskit-page-one .presskit-subtitle {
+  margin-bottom: 0.75rem;
+}
+
+.presskit-one-content {
+  display: grid;
+  grid-template-columns: 1.08fr 0.92fr;
+  gap: 0;
+  flex: 1;
+  min-height: 0;
+}
+
+.presskit-one-main,
+.presskit-one-aside {
+  min-width: 0;
+}
+
+.presskit-one-main {
+  border-right: 1px solid rgba(18, 20, 26, 0.1);
+}
+
+.presskit-page-one .presskit-section h2 {
+  margin-bottom: 0.45rem;
+  font-size: 1.02rem;
+  letter-spacing: 0;
+}
+
+.presskit-page-one .presskit-lead {
+  font-size: 0.92rem;
+  line-height: 1.36;
+}
+
+.presskit-page-one p {
+  font-size: 0.78rem;
+  line-height: 1.38;
+}
+
+.presskit-page-one .presskit-tags {
+  gap: 0.3rem;
+}
+
+.presskit-page-one .presskit-tags span {
+  min-height: 23px;
+  padding: 0.22rem 0.48rem;
+  font-size: 0.66rem;
+}
+
+.presskit-one-info {
+  grid-template-columns: 1fr;
+  gap: 0.45rem;
+  margin-bottom: 0;
+}
+
+.presskit-one-info div {
+  padding: 0.58rem 0.65rem;
+}
+
+.presskit-one-info strong {
+  font-size: 0.8rem;
+}
+
+.presskit-one-info span {
+  font-size: 0.58rem;
+}
+
+.presskit-page-one .presskit-links {
+  gap: 0.35rem;
+}
+
+.presskit-page-one .presskit-links a {
+  padding: 0.35rem 0.5rem;
+  font-size: 0.68rem;
+}
+
+.presskit-one-footer {
+  display: grid;
+  grid-template-columns: 1.1fr 0.8fr 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding: 0.75rem 1.05rem;
+  font-size: 0.66rem;
+}
+
+.admin-artist-editor {
+  margin: 1.1rem 0;
+  padding: 1rem;
+  border: 1px solid rgba(24, 216, 255, 0.18);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.admin-artist-editor summary {
+  cursor: pointer;
+  color: var(--electric);
+  font-weight: 950;
+  letter-spacing: 0.03em;
+}
+
+.editor-helper {
+  color: var(--muted);
+  margin: 0.8rem 0 1rem;
+}
+
+.admin-profile-edit-grid {
+  margin-bottom: 1rem;
 }
 
 .photo-preview {
@@ -3168,8 +3307,22 @@ code {
   }
 
   .presskit-hero,
-  .presskit-info-grid {
+  .presskit-info-grid,
+  .presskit-one-content,
+  .presskit-one-footer {
     grid-template-columns: 1fr;
+  }
+
+  .presskit-page-one {
+    aspect-ratio: auto;
+  }
+
+  .presskit-one-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .presskit-one-main {
+    border-right: 0;
   }
 
   .compact-admin {
@@ -3229,8 +3382,11 @@ code {
 
   .presskit-page {
     width: 210mm !important;
+    height: 297mm !important;
     min-height: 297mm !important;
+    max-height: 297mm !important;
     margin: 0 auto !important;
+    overflow: hidden !important;
     box-shadow: none !important;
     border: none !important;
     border-radius: 0 !important;
@@ -3242,6 +3398,24 @@ code {
 
   .presskit-hero {
     background: #111111 !important;
+  }
+
+  .presskit-one-hero {
+    min-height: 61mm !important;
+    padding: 8mm !important;
+  }
+
+  .presskit-one-photo img,
+  .presskit-one-photo .presskit-photo-placeholder {
+    min-height: 47mm !important;
+  }
+
+  .presskit-page-one .presskit-section {
+    padding: 4.5mm 7mm !important;
+  }
+
+  .presskit-one-footer {
+    padding: 4mm 7mm !important;
   }
 
   .presskit-section {
@@ -3263,5 +3437,9 @@ code {
   a {
     color: #111111 !important;
     text-decoration: none !important;
+  }
+
+  .presskit-footer a {
+    color: #fbfaf7 !important;
   }
 }

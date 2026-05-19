@@ -35,6 +35,28 @@
     return Array.isArray(values) && values.length ? values.join(", ") : fallback || "à confirmer";
   }
 
+  function compactText(text, max) {
+    text = String(text || "").replace(/\s+/g, " ").trim();
+    if (!text || text.length <= max) return text;
+    return text.slice(0, max - 1).trim() + "…";
+  }
+
+  function initials(name) {
+    return String(name || "DJ").split(" ").filter(Boolean).slice(0, 2).map(function (part) {
+      return part.charAt(0);
+    }).join("").toUpperCase();
+  }
+
+  function linkRows(profile) {
+    return [
+      ["Instagram", profile.instagram],
+      ["SoundCloud", profile.soundcloud],
+      ["Mixcloud", profile.mixcloud],
+      ["YouTube", profile.youtube],
+      ["Site web", profile.website]
+    ].filter(function (entry) { return entry[1]; });
+  }
+
   function generateFallbackPresskit(profile) {
     const styles = list(profile.styles, "plusieurs univers musicaux");
     const events = list(profile.event_types, "soirées privées et petits lieux");
@@ -50,22 +72,38 @@
   function render(profile, presskit) {
     const root = qs("#presskit-public");
     const image = profile.public_image_url || "";
+    const links = linkRows(profile);
+    const linkMarkup = links.length ? '<div class="presskit-links">' + links.map(function (entry) {
+      return '<a href="' + esc(entry[1]) + '" target="_blank" rel="noopener">' + esc(entry[0]) + '</a>';
+    }).join("") + '</div>' : "";
     if (!root) return;
     root.innerHTML = [
-      '<article class="presskit-card presskit-page reveal" id="presskit-sheet">',
-      image ? '<img class="presskit-cover" src="' + esc(image) + '" alt="' + esc(profile.artist_name) + '">' : '<div class="artist-placeholder artist-placeholder-large"><span>DJ</span><i></i></div>',
-      '<div class="presskit-body">',
-      profile.photo_credit ? '<small>Crédit photo : ' + esc(profile.photo_credit) + '</small>' : '',
-      '<p class="eyebrow">' + (profile.status === "approved" ? "Profil validé par DJ-hub" : "Prévisualisation admin") + '</p>',
-      '<h1>' + esc(profile.artist_name) + '</h1>',
-      '<p class="detail-subtitle">' + esc(profile.city) + ' · ' + esc((profile.styles || []).join(" / ")) + '</p>',
-      '<div class="style-line detail-style-line">' + tags(profile.styles) + '</div>',
-      '<p>' + esc(presskit.short_intro || "") + '</p>',
-      '<section><h2>Bio</h2><p>' + esc(presskit.long_bio || "").replace(/\n/g, "<br>") + '</p></section>',
-      '<section><h2>Booking</h2><p>' + esc(presskit.booking_text || "") + '</p></section>',
-      '<section><h2>Technique</h2><p>' + esc(presskit.technical_info || "") + '</p></section>',
-      '<div class="hero-actions"><a class="btn btn-primary" href="trouver-un-dj.html?dj=' + encodeURIComponent(profile.id) + '">Demander ce DJ</a><button class="btn btn-secondary" type="button" onclick="window.print()">Imprimer / PDF</button></div>',
+      '<article class="presskit-page presskit-page-one reveal" id="presskit-sheet">',
+      '<header class="presskit-hero presskit-one-hero">',
+      '<div class="presskit-photo presskit-one-photo">',
+      image ? '<img src="' + esc(image) + '" alt="Photo artiste ' + esc(profile.artist_name) + '">' : '<div class="presskit-photo-placeholder"><span>' + esc(initials(profile.artist_name)) + '</span><i></i></div>',
+      profile.photo_credit ? '<p class="presskit-photo-credit">Crédit photo : ' + esc(profile.photo_credit) + '</p>' : '',
       '</div>',
+      '<div class="presskit-title-block">',
+      '<p class="presskit-kicker">' + (profile.status === "approved" ? "Profil validé par DJ-hub" : "Prévisualisation admin") + ' · 1/1</p>',
+      '<h1>' + esc(profile.artist_name) + '</h1>',
+      '<p class="presskit-subtitle">' + esc(profile.city) + ' · Contact réservation via DJ-hub</p>',
+      '<div class="presskit-tags">' + tags(profile.styles) + '</div>',
+      '</div>',
+      '</header>',
+      '<div class="presskit-one-content">',
+      '<div class="presskit-one-main">',
+      '<section class="presskit-section"><h2>Présentation</h2><p class="presskit-lead">' + esc(presskit.short_intro || "") + '</p><p>' + esc(compactText(presskit.long_bio || "", 620)) + '</p></section>',
+      '<section class="presskit-section"><h2>Booking</h2><p>' + esc(compactText(presskit.booking_text || "", 360)) + '</p></section>',
+      '<section class="presskit-section"><h2>Technique</h2><p>' + esc(compactText(presskit.technical_info || "", 320)) + '</p></section>',
+      '</div>',
+      '<aside class="presskit-one-aside">',
+      '<div class="presskit-info-grid presskit-one-info"><div><strong>' + esc(profile.price_from ? profile.price_from + " €" : "Tarif à confirmer") + '</strong><span>tarif indicatif</span></div><div><strong>' + esc(profile.material ? "Matériel possible" : "À confirmer") + '</strong><span>matériel</span></div><div><strong>' + esc(list(profile.zones, profile.city || "À confirmer")) + '</strong><span>zone</span></div></div>',
+      '<section class="presskit-section"><h2>Événements</h2><div class="presskit-tags">' + tags(profile.event_types || []) + '</div></section>',
+      linkMarkup ? '<section class="presskit-section"><h2>Réseaux & liens</h2>' + linkMarkup + '</section>' : '',
+      '</aside>',
+      '</div>',
+      '<footer class="presskit-footer presskit-one-footer"><strong>Presskit généré avec DJ-hub</strong><span>Contact réservation via DJ-hub.</span><span>Informations à confirmer avant réservation.</span><span><a href="trouver-un-dj.html?dj=' + encodeURIComponent(profile.id) + '">Demander ce DJ</a></span></footer>',
       '</article>'
     ].join("");
   }
