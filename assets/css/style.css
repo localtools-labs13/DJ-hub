@@ -3599,6 +3599,480 @@ code {
   white-space: nowrap;
 }
 
+.presskit-a4-sheet {
+  position: relative;
+  isolation: isolate;
+  width: min(100%, 794px);
+  aspect-ratio: 210 / 297;
+  min-height: auto;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 20px;
+  overflow: hidden;
+  padding: 44px 44px 30px;
+  color: #f8fbff;
+  border: 1px solid rgba(24, 216, 255, 0.18);
+  border-radius: 0;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 42px),
+    linear-gradient(0deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 42px),
+    radial-gradient(circle at 22% 16%, rgba(24, 216, 255, 0.15), transparent 19rem),
+    radial-gradient(circle at 88% 18%, rgba(233, 70, 255, 0.14), transparent 20rem),
+    #242424;
+  box-shadow: 0 34px 90px rgba(0, 0, 0, 0.42);
+}
+
+.presskit-a4-sheet p,
+.presskit-a4-sheet span,
+.presskit-a4-sheet dt,
+.presskit-a4-sheet dd {
+  color: rgba(250, 253, 255, 0.76);
+}
+
+.presskit-a4-sheet h1,
+.presskit-a4-sheet h2,
+.presskit-a4-sheet strong {
+  color: #ffffff;
+}
+
+.pk2-noise,
+.pk2-accent {
+  position: absolute;
+  pointer-events: none;
+}
+
+.pk2-noise {
+  inset: 0;
+  z-index: -2;
+  opacity: 0.22;
+  background:
+    repeating-linear-gradient(135deg, rgba(24, 216, 255, 0.08) 0 7px, transparent 7px 18px),
+    radial-gradient(circle at 74% 8%, rgba(24, 216, 255, 0.12), transparent 15rem);
+}
+
+.pk2-accent {
+  width: 150px;
+  height: 18px;
+  z-index: 0;
+  background: repeating-linear-gradient(135deg, var(--electric) 0 16px, #8b5cf6 16px 25px, transparent 25px 34px);
+  filter: drop-shadow(0 0 14px rgba(24, 216, 255, 0.22));
+}
+
+.pk2-accent-top {
+  top: 354px;
+  left: 44px;
+}
+
+.pk2-accent-bottom {
+  right: 44px;
+  bottom: 128px;
+}
+
+.pk2-header {
+  position: relative;
+  z-index: 1;
+  min-height: 190px;
+  padding-right: 170px;
+}
+
+.pk2-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.58rem;
+  margin-bottom: 30px;
+}
+
+.pk2-brand strong {
+  display: inline-grid;
+  min-width: 58px;
+  min-height: 58px;
+  place-items: center;
+  border: 1px solid rgba(24, 216, 255, 0.44);
+  border-radius: 16px;
+  color: #061018;
+  background: linear-gradient(135deg, var(--electric), #8b5cf6);
+  font-family: "Space Grotesk", Inter, sans-serif;
+  font-size: 0.86rem;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+}
+
+.pk2-brand span {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.64rem;
+  font-weight: 950;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.pk2-kicker {
+  margin: 0 0 0.5rem;
+  color: var(--electric) !important;
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.pk2-header h1 {
+  max-width: 560px;
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(3.5rem, 8vw, 5.6rem);
+  line-height: 0.82;
+  letter-spacing: -0.08em;
+  text-transform: uppercase;
+}
+
+.pk2-subtitle {
+  margin: 0.78rem 0 0.8rem;
+  color: var(--electric) !important;
+  font-size: 0.86rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pk2-tags {
+  max-width: 560px;
+}
+
+.presskit-a4-sheet .presskit-tags span {
+  min-height: 24px;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid rgba(24, 216, 255, 0.44);
+  color: #e7fbff;
+  background: rgba(24, 216, 255, 0.1);
+  font-size: 0.62rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pk2-body {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 322px minmax(0, 1fr);
+  gap: 34px;
+  min-height: 0;
+}
+
+.pk2-left,
+.pk2-right {
+  min-width: 0;
+}
+
+.pk2-left {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 14px;
+}
+
+.pk2-photo {
+  position: relative;
+  min-height: 600px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(24, 216, 255, 0.2);
+  background:
+    linear-gradient(135deg, rgba(24, 216, 255, 0.08), rgba(139, 92, 246, 0.08)),
+    #333;
+}
+
+.pk2-photo::before,
+.pk2-photo::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+}
+
+.pk2-photo::before {
+  top: 28px;
+  left: 0;
+  width: 122px;
+  height: 18px;
+  background: repeating-linear-gradient(135deg, var(--electric) 0 16px, #8b5cf6 16px 25px, transparent 25px 34px);
+}
+
+.pk2-photo::after {
+  inset: 0;
+  background: linear-gradient(180deg, transparent 62%, rgba(0, 0, 0, 0.72));
+}
+
+.pk2-photo img,
+.pk2-photo-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 600px;
+  object-fit: cover;
+  border: 0;
+  border-radius: 0;
+}
+
+.pk2-photo-placeholder {
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  font-family: "Space Grotesk", Inter, sans-serif;
+  font-size: 5.2rem;
+  font-weight: 950;
+  background:
+    radial-gradient(circle at 50% 36%, rgba(24, 216, 255, 0.2), transparent 24%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,0.04) 0 18px, rgba(0,0,0,0.08) 18px 36px),
+    #3b3b3b;
+}
+
+.pk2-photo-placeholder i {
+  position: absolute;
+  right: 26px;
+  bottom: 26px;
+  left: 26px;
+  z-index: 3;
+  height: 5px;
+  background: linear-gradient(90deg, var(--electric), #8b5cf6, var(--pink));
+}
+
+.pk-photo-credit {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  z-index: 4;
+  max-width: 270px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.62) !important;
+  font-size: 0.52rem;
+  text-align: right;
+}
+
+.pk2-right {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pk2-card {
+  position: relative;
+  padding-left: 13px;
+}
+
+.pk2-card::before {
+  content: "";
+  position: absolute;
+  top: 0.38rem;
+  left: 0;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--pink);
+  box-shadow: 0 0 14px rgba(233, 70, 255, 0.85);
+}
+
+.pk2-card h2 {
+  margin: 0 0 0.55rem;
+  color: var(--electric);
+  font-family: "Space Grotesk", Inter, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 950;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.pk2-card p {
+  margin: 0;
+  color: rgba(248, 251, 255, 0.76);
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+.pk2-card p + p {
+  margin-top: 0.5rem;
+}
+
+.pk2-lead {
+  color: #ffffff !important;
+  font-weight: 800;
+}
+
+.pk2-info-card .pk-info-list {
+  grid-template-columns: 1fr;
+  gap: 0.32rem;
+}
+
+.pk2-info-card .pk-info-list div {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 0.6rem;
+}
+
+.pk2-info-card dt {
+  color: rgba(248, 251, 255, 0.5);
+  font-size: 0.58rem;
+  font-weight: 900;
+}
+
+.pk2-info-card dd {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.62rem;
+  font-weight: 850;
+}
+
+.pk2-bio-card {
+  padding-top: 2px;
+}
+
+.pk2-mini-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.pk2-mini-tags {
+  gap: 0.3rem;
+}
+
+.pk2-social-card {
+  padding: 12px 14px 13px;
+  border: 1px solid rgba(24, 216, 255, 0.18);
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.pk2-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.38rem;
+}
+
+.pk2-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.34rem;
+  max-width: 100%;
+  min-height: 25px;
+  padding: 0.22rem 0.48rem;
+  overflow: hidden;
+  border: 1px solid rgba(24, 216, 255, 0.3);
+  border-radius: var(--radius-pill);
+  color: #f8fbff;
+  background: rgba(255, 255, 255, 0.055);
+  font-size: 0.54rem;
+  font-weight: 850;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pk2-links a span {
+  display: grid;
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  color: #061018;
+  background: linear-gradient(135deg, var(--electric), var(--pink));
+  font-size: 0.58rem;
+  font-weight: 950;
+}
+
+.pk2-footer {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: center;
+  padding-top: 14px;
+  border-top: 1px solid rgba(24, 216, 255, 0.22);
+}
+
+.pk2-footer strong {
+  color: var(--electric);
+  font-family: "Space Grotesk", Inter, sans-serif;
+  font-size: 1.05rem;
+  font-weight: 950;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.pk2-footer span {
+  color: rgba(248, 251, 255, 0.68);
+  font-size: 0.62rem;
+  text-align: right;
+}
+
+.pk2-template-general {
+  background:
+    linear-gradient(90deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 42px),
+    linear-gradient(0deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 42px),
+    radial-gradient(circle at 22% 16%, rgba(24, 216, 255, 0.15), transparent 19rem),
+    radial-gradient(circle at 88% 18%, rgba(233, 70, 255, 0.14), transparent 20rem),
+    #242424;
+}
+
+.pk2-template-house {
+  background:
+    linear-gradient(90deg, rgba(255,255,255,0.028) 0 1px, transparent 1px 44px),
+    linear-gradient(0deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 44px),
+    radial-gradient(circle at 15% 12%, rgba(85, 242, 187, 0.14), transparent 18rem),
+    radial-gradient(circle at 86% 18%, rgba(233, 70, 255, 0.16), transparent 20rem),
+    linear-gradient(145deg, #20172d 0%, #142331 48%, #18191f 100%);
+}
+
+.pk2-template-house .pk2-kicker,
+.pk2-template-house .pk2-subtitle,
+.pk2-template-house .pk2-card h2,
+.pk2-template-house .pk2-footer strong {
+  color: var(--mint) !important;
+}
+
+.pk2-template-house .pk2-brand strong,
+.pk2-template-house .pk2-links a span {
+  background: linear-gradient(135deg, var(--mint), var(--pink));
+}
+
+.pk2-template-house .pk2-accent,
+.pk2-template-house .pk2-photo::before {
+  background: repeating-linear-gradient(135deg, var(--mint) 0 16px, var(--pink) 16px 25px, transparent 25px 34px);
+}
+
+.pk2-template-house .presskit-tags span,
+.pk2-template-house .pk2-links a,
+.pk2-template-house .pk2-photo {
+  border-color: rgba(85, 242, 187, 0.36);
+}
+
+.pk2-template-techno {
+  background:
+    repeating-linear-gradient(90deg, rgba(24,216,255,0.035) 0 1px, transparent 1px 18px),
+    repeating-linear-gradient(0deg, rgba(139,92,246,0.028) 0 1px, transparent 1px 18px),
+    radial-gradient(circle at 74% 14%, rgba(24, 216, 255, 0.16), transparent 18rem),
+    radial-gradient(circle at 24% 86%, rgba(139, 92, 246, 0.13), transparent 18rem),
+    linear-gradient(145deg, #08080d 0%, #11131b 50%, #050609 100%);
+}
+
+.pk2-template-techno .pk2-header h1 {
+  letter-spacing: -0.06em;
+}
+
+.pk2-template-techno .pk2-brand strong,
+.pk2-template-techno .pk2-links a span {
+  background: linear-gradient(135deg, #18d8ff, #8b5cf6);
+}
+
+.pk2-template-techno .pk2-accent,
+.pk2-template-techno .pk2-photo::before {
+  background: repeating-linear-gradient(135deg, #18d8ff 0 14px, #8b5cf6 14px 23px, transparent 23px 32px);
+}
+
+.pk2-template-techno .pk2-photo-placeholder {
+  background:
+    repeating-linear-gradient(135deg, rgba(24,216,255,0.08) 0 8px, rgba(0,0,0,0.14) 8px 20px),
+    radial-gradient(circle at 52% 40%, rgba(24,216,255,0.22), transparent 26%),
+    #121217;
+}
+
 .admin-artist-editor {
   margin: 1.1rem 0;
   padding: 1rem;
@@ -3807,6 +4281,12 @@ code {
     min-height: 1120px;
   }
 
+  .presskit-a4-sheet {
+    aspect-ratio: auto;
+    min-height: 1120px;
+    padding: 1.4rem;
+  }
+
   .pk-hero {
     min-height: auto;
     padding: 1.25rem;
@@ -3845,6 +4325,31 @@ code {
   .pk-info-list,
   .pk-stat-row {
     grid-template-columns: 1fr;
+  }
+
+  .pk2-header {
+    min-height: auto;
+    padding-right: 0;
+  }
+
+  .pk2-header h1 {
+    font-size: 3rem;
+  }
+
+  .pk2-body,
+  .pk2-mini-grid,
+  .pk2-footer {
+    grid-template-columns: 1fr;
+  }
+
+  .pk2-photo,
+  .pk2-photo img,
+  .pk2-photo-placeholder {
+    min-height: 420px;
+  }
+
+  .pk2-footer span {
+    text-align: left;
   }
 
   .presskit-one-hero {
@@ -3935,6 +4440,65 @@ code {
       radial-gradient(circle at 78% 10%, rgba(24, 216, 255, 0.2), transparent 22rem),
       radial-gradient(circle at 14% 18%, rgba(233, 70, 255, 0.18), transparent 18rem),
       linear-gradient(155deg, #060817 0%, #0b0b22 42%, #050712 100%) !important;
+  }
+
+  .presskit-a4-sheet {
+    position: relative !important;
+    display: grid !important;
+    grid-template-rows: auto 1fr auto !important;
+    gap: 5mm !important;
+    padding: 11mm 11mm 8mm !important;
+    color: #f8fbff !important;
+    background:
+      linear-gradient(90deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 42px),
+      linear-gradient(0deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 42px),
+      radial-gradient(circle at 22% 16%, rgba(24, 216, 255, 0.15), transparent 19rem),
+      radial-gradient(circle at 88% 18%, rgba(233, 70, 255, 0.14), transparent 20rem),
+      #242424 !important;
+  }
+
+  .pk2-header {
+    min-height: 50mm !important;
+    padding-right: 45mm !important;
+  }
+
+  .pk2-brand {
+    margin-bottom: 7mm !important;
+  }
+
+  .pk2-header h1 {
+    font-size: 18mm !important;
+  }
+
+  .pk2-body {
+    display: grid !important;
+    grid-template-columns: 85mm 1fr !important;
+    gap: 9mm !important;
+  }
+
+  .pk2-photo,
+  .pk2-photo img,
+  .pk2-photo-placeholder {
+    min-height: 158mm !important;
+  }
+
+  .pk2-card {
+    margin-bottom: 0 !important;
+  }
+
+  .pk2-card h2 {
+    font-size: 3.2mm !important;
+  }
+
+  .pk2-card p,
+  .pk2-info-card dt,
+  .pk2-info-card dd,
+  .pk2-links a {
+    font-size: 2.45mm !important;
+  }
+
+  .pk2-footer {
+    padding-top: 3.5mm !important;
   }
 
   .presskit-hero {
@@ -4039,7 +4603,13 @@ code {
   .presskit-pro-sheet span,
   .presskit-pro-sheet small,
   .presskit-pro-sheet dt,
-  .presskit-pro-sheet dd {
+  .presskit-pro-sheet dd,
+  .presskit-a4-sheet a,
+  .presskit-a4-sheet p,
+  .presskit-a4-sheet span,
+  .presskit-a4-sheet small,
+  .presskit-a4-sheet dt,
+  .presskit-a4-sheet dd {
     color: rgba(244, 249, 255, 0.78) !important;
   }
 
@@ -4050,13 +4620,20 @@ code {
   .presskit-pro-sheet .pk-kicker,
   .presskit-pro-sheet .pk-subtitle,
   .presskit-pro-sheet .pk-block h2,
-  .presskit-pro-sheet .pk-footer-url {
+  .presskit-pro-sheet .pk-footer-url,
+  .presskit-a4-sheet h1,
+  .presskit-a4-sheet h2,
+  .presskit-a4-sheet h3,
+  .presskit-a4-sheet strong {
     color: #ffffff !important;
   }
 
   .presskit-pro-sheet .pk-kicker,
   .presskit-pro-sheet .pk-block h2,
-  .presskit-pro-sheet .pk-footer-url {
+  .presskit-pro-sheet .pk-footer-url,
+  .presskit-a4-sheet .pk2-kicker,
+  .presskit-a4-sheet .pk2-card h2,
+  .presskit-a4-sheet .pk2-footer strong {
     color: #18d8ff !important;
   }
 

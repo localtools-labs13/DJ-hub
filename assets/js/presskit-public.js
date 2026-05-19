@@ -41,6 +41,13 @@
     return text.slice(0, max - 1).trim() + "…";
   }
 
+  function templateForProfile(profile) {
+    const styles = list(profile.styles, "").toLowerCase();
+    if (styles.indexOf("techno") !== -1 || styles.indexOf("electro") !== -1 || styles.indexOf("hard") !== -1) return "techno";
+    if (styles.indexOf("house") !== -1 || styles.indexOf("disco") !== -1 || styles.indexOf("afro") !== -1) return "house";
+    return "general";
+  }
+
   function initials(name) {
     return String(name || "DJ").split(" ").filter(Boolean).slice(0, 2).map(function (part) {
       return part.charAt(0);
@@ -107,7 +114,7 @@
     const root = qs("#presskit-public");
     const image = profile.public_image_url || "";
     const links = linkRows(profile);
-    const linkMarkup = links.length ? '<div class="pk-social-links">' + links.map(function (entry) {
+    const linkMarkup = links.length ? '<div class="pk2-links">' + links.map(function (entry) {
       return '<a href="' + esc(entry[1]) + '" target="_blank" rel="noopener"><span>' + esc(entry[0].charAt(0)) + '</span>' + esc(socialLabel(entry[0], entry[1])) + '</a>';
     }).join("") + '</div>' : "";
     const styleTags = tags(profile.styles || []);
@@ -121,44 +128,40 @@
     const technicalInfo = compactText(presskit.technical_info || "", 420);
     if (!root) return;
     root.innerHTML = [
-      '<article class="presskit-page presskit-pro-sheet reveal" id="presskit-sheet">',
-      '<div class="pk-glow pk-glow-one"></div><div class="pk-glow pk-glow-two"></div><div class="pk-grid-bg"></div>',
-      '<header class="pk-hero">',
-      '<div class="pk-brand-chip"><strong>DJ-hub</strong><span>' + (profile.status === "approved" ? "Profil validé" : "Prévisualisation admin") + '</span></div>',
-      '<div class="pk-title">',
-      '<p class="pk-kicker">Official press kit</p>',
+      '<article class="presskit-page presskit-a4-sheet pk2-template-' + esc(templateForProfile(profile)) + ' reveal" id="presskit-sheet">',
+      '<div class="pk2-noise"></div><div class="pk2-accent pk2-accent-top"></div><div class="pk2-accent pk2-accent-bottom"></div>',
+      '<header class="pk2-header">',
+      '<div class="pk2-brand"><strong>DJ-hub</strong><span>' + (profile.status === "approved" ? "Profil validé" : "Official press kit") + '</span></div>',
+      '<p class="pk2-kicker">Profil artiste · Presskit 1/1</p>',
       '<h1>' + esc(profile.artist_name) + '</h1>',
-      '<p class="pk-subtitle">DJ · ' + esc(location) + ' · Réservation via DJ-hub</p>',
-      styleTags ? '<div class="presskit-tags pk-tags">' + styleTags + '</div>' : '',
-      '</div>',
-      '<div class="pk-photo-orbit">',
-      '<div class="pk-orbit-ring"></div><div class="pk-orbit-ring pk-orbit-ring-two"></div>',
-      '<div class="pk-photo-frame">',
-      image ? '<img src="' + esc(image) + '" alt="Photo artiste ' + esc(profile.artist_name) + '">' : '<div class="presskit-photo-placeholder pk-photo-placeholder"><span>' + esc(initials(profile.artist_name)) + '</span><i></i></div>',
-      '</div>',
-      profile.photo_credit ? '<p class="pk-photo-credit">Crédit photo : ' + esc(profile.photo_credit) + '</p>' : '',
-      '</div>',
+      '<p class="pk2-subtitle">DJ basé à ' + esc(location) + ' · Contact réservation via DJ-hub</p>',
+      styleTags ? '<div class="presskit-tags pk2-tags">' + styleTags + '</div>' : '',
       '</header>',
-      '<main class="pk-body">',
-      '<div class="pk-column pk-column-left">',
-      templateSection("Personal info", infoRows([
+      '<main class="pk2-body">',
+      '<aside class="pk2-left">',
+      '<figure class="pk2-photo">',
+      image ? '<img src="' + esc(image) + '" alt="Photo artiste ' + esc(profile.artist_name) + '">' : '<div class="presskit-photo-placeholder pk2-photo-placeholder"><span>' + esc(initials(profile.artist_name)) + '</span><i></i></div>',
+      profile.photo_credit ? '<p class="pk-photo-credit">Crédit photo : ' + esc(profile.photo_credit) + '</p>' : '',
+      '</figure>',
+      '<section class="pk2-card pk2-social-card"><h2>Follow me</h2>' + (linkMarkup || '<p>Réseaux à confirmer.</p>') + '</section>',
+      '</aside>',
+      '<div class="pk2-right">',
+      '<section class="pk2-card pk2-info-card"><h2>Personal info</h2>' + infoRows([
         ["Ville", location],
         ["Styles", mainStyles],
         ["Tarif indicatif", formatEuro(profile.price_from)],
         ["Matériel", materialLabel(profile)]
-      ]), "pk-block-info"),
-      templateSection("Biography", '<p class="pk-lead">' + esc(shortIntro) + '</p>' + (longBio ? '<p>' + esc(longBio) + '</p>' : "")),
-      templateSection("Booking text", '<p>' + esc(bookingText) + '</p>'),
+      ]) + '</section>',
+      '<section class="pk2-card pk2-bio-card"><h2>Biography</h2><p class="pk2-lead">' + esc(shortIntro) + '</p>' + (longBio ? '<p>' + esc(longBio) + '</p>' : '') + '</section>',
+      '<div class="pk2-mini-grid">',
+      '<section class="pk2-card"><h2>Events</h2>' + (eventTags ? '<div class="presskit-tags pk2-mini-tags">' + eventTags + '</div>' : '<p>Soirées privées, bars, rooftops.</p>') + '</section>',
+      '<section class="pk2-card"><h2>Zones</h2>' + (zoneTags ? '<div class="presskit-tags pk2-mini-tags">' + zoneTags + '</div>' : '<p>' + esc(location) + '</p>') + '</section>',
       '</div>',
-      '<aside class="pk-column pk-column-right">',
-      '<div class="pk-stat-row"><div><strong>' + esc(formatEuro(profile.price_from)) + '</strong><span>à partir de</span></div><div><strong>' + esc(location) + '</strong><span>ville</span></div></div>',
-      templateSection("Events", eventTags ? '<div class="presskit-tags pk-mini-tags">' + eventTags + '</div>' : '<p>Soirées privées, bars, rooftops.</p>'),
-      zoneTags ? templateSection("Zones", '<div class="presskit-tags pk-mini-tags">' + zoneTags + '</div>') : "",
-      templateSection("Technical rider", '<p>' + esc(technicalInfo) + '</p>'),
-      linkMarkup ? templateSection("Follow / links", linkMarkup, "pk-social-block") : "",
-      '</aside>',
+      '<section class="pk2-card"><h2>Technical rider</h2><p>' + esc(technicalInfo) + '</p></section>',
+      '<section class="pk2-card pk2-booking-card"><h2>Booking text</h2><p>' + esc(bookingText) + '</p></section>',
+      '</div>',
       '</main>',
-      '<footer class="pk-footer"><div><strong>FOLLOW ME</strong>' + (linkMarkup || '<span>Réseaux à confirmer</span>') + '</div><div><strong>BOOKING CONTACT</strong><span>Contact réservation via DJ-hub</span><span>Informations à confirmer avant réservation.</span></div><span class="pk-footer-url">DJ-hub.fr</span></footer>',
+      '<footer class="pk2-footer"><strong>DJ-hub.fr</strong><span>Contact réservation via DJ-hub · Informations à confirmer avant réservation.</span></footer>',
       '</article>'
     ].join("");
   }

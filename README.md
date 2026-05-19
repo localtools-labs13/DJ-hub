@@ -37,6 +37,7 @@ Tables :
 La sécurité repose sur Row Level Security. Le public voit uniquement les artistes `approved` et les presskits liés à des artistes `approved`.
 
 Migrations MVP complémentaires :
+- `artist-profile-fields-migration.sql` ajoute les champs complets du questionnaire artiste si la base existe déjà.
 - `booking-workflow-migration.sql` ajoute le pipeline de réservation, les champs de facturation interne et la table `booking_events`.
 - `photo-rights-migration.sql` ajoute la confirmation des droits photo sur les profils artistes.
 - `admin-request-management-migration.sql` autorise uniquement les admins à supprimer une demande client depuis l’interface privée.

@@ -8,7 +8,7 @@
     <link rel="apple-touch-icon" href="assets/img/dj-hub-touch-icon.png">
     <title>Mon presskit artiste - DJ-hub</title>
     <meta name="description" content="Générez un presskit DJ-hub à partir de votre questionnaire artiste.">
-    <link rel="stylesheet" href="assets/css/style.css?v=djhub-presskit-template1">
+    <link rel="stylesheet" href="assets/css/style.css?v=djhub-presskit-template3">
   </head>
   <body data-page="artist-presskit">
     <header class="site-header">
@@ -57,6 +57,15 @@
             <h2>Préparer le PDF</h2>
             <p>Le document est généré à partir de votre questionnaire. Vous pouvez ajuster les textes avant de l’imprimer ou de le télécharger.</p>
             <div class="form-grid">
+              <div class="full">
+                <label for="presskit-template">Style visuel</label>
+                <select id="presskit-template" name="presskit_template">
+                  <option value="auto">Automatique selon le style musical</option>
+                  <option value="general">DJ général premium</option>
+                  <option value="house">House / Disco / Afro House</option>
+                  <option value="techno">Techno / Electro</option>
+                </select>
+              </div>
               <div class="full"><label for="presskit-title">Titre</label><input id="presskit-title" name="title" type="text"></div>
               <div class="full"><label for="presskit-short">Bio courte professionnelle</label><textarea id="presskit-short" name="short_intro" rows="4"></textarea></div>
               <div class="full"><label for="presskit-long">Bio longue</label><textarea id="presskit-long" name="long_bio" rows="8"></textarea></div>
@@ -87,7 +96,7 @@
     <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
     <script src="assets/js/supabase-config.js?v=djhub-spacing-logo2"></script>
     <script src="assets/js/auth.js?v=djhub-spacing-logo2"></script>
-    <script src="assets/js/presskit-builder.js?v=djhub-presskit-template1"></script>
+    <script src="assets/js/presskit-builder.js?v=djhub-presskit-template3"></script>
     <script src="assets/js/main.js?v=djhub-spacing-logo2"></script>
   </body>
 </html>

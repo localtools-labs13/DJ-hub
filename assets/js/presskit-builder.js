@@ -195,8 +195,17 @@
     return text.slice(0, max - 1).trim() + "…";
   }
 
-  function renderPresskit(profile, texts) {
+  function templateForProfile(profile, selected) {
+    if (selected && selected !== "auto") return selected;
+    const styles = list(profile.styles, "").toLowerCase();
+    if (styles.indexOf("techno") !== -1 || styles.indexOf("electro") !== -1 || styles.indexOf("hard") !== -1) return "techno";
+    if (styles.indexOf("house") !== -1 || styles.indexOf("disco") !== -1 || styles.indexOf("afro") !== -1) return "house";
+    return "general";
+  }
+
+  function renderPresskit(profile, texts, selectedTemplate) {
     texts = texts || generate(profile);
+    const visualTemplate = templateForProfile(profile, selectedTemplate);
     const image = profile.public_image_url || "";
     const styleTags = tags(profile.styles || []);
     const eventTags = tags(profile.event_types || []);
@@ -205,7 +214,7 @@
     const photoCredit = profile.photo_credit ? '<p class="pk-photo-credit">Crédit photo : ' + esc(profile.photo_credit) + '</p>' : "";
     const influences = profile.influences ? '<p>' + esc(profile.influences) + '</p>' : "";
     const formats = Array.isArray(profile.set_formats) && profile.set_formats.length ? '<div class="presskit-tags">' + tags(profile.set_formats) + '</div>' : "";
-    const linkMarkup = links.length ? '<div class="pk-social-links">' + links.map(function (entry) {
+    const linkMarkup = links.length ? '<div class="pk2-links">' + links.map(function (entry) {
       return '<a href="' + esc(entry[1]) + '" target="_blank" rel="noopener"><span>' + esc(entry[0].charAt(0)) + '</span>' + esc(socialLabel(entry[0], entry[1])) + '</a>';
     }).join("") + '</div>' : "";
     const shortIntro = texts.short_intro || generateShortBio(profile);
@@ -217,51 +226,43 @@
     const mainEvents = list(profile.event_types, "soirées privées, bars, rooftops");
 
     return [
-      '<article class="presskit-page presskit-pro-sheet" id="presskit-sheet">',
-      '<div class="pk-glow pk-glow-one"></div><div class="pk-glow pk-glow-two"></div><div class="pk-grid-bg"></div>',
-      '<header class="pk-hero">',
-      '<div class="pk-brand-chip"><strong>DJ-hub</strong><span>Official press kit</span></div>',
-      '<div class="pk-title">',
-      '<p class="pk-kicker">Official press kit</p>',
+      '<article class="presskit-page presskit-a4-sheet pk2-template-' + esc(visualTemplate) + '" id="presskit-sheet">',
+      '<div class="pk2-noise"></div><div class="pk2-accent pk2-accent-top"></div><div class="pk2-accent pk2-accent-bottom"></div>',
+      '<header class="pk2-header">',
+      '<div class="pk2-brand"><strong>DJ-hub</strong><span>Official press kit</span></div>',
+      '<p class="pk2-kicker">Profil artiste · Presskit 1/1</p>',
       '<h1>' + esc(profile.artist_name || "DJ") + '</h1>',
-      '<p class="pk-subtitle">DJ · ' + esc(location) + ' · Réservation via DJ-hub</p>',
-      styleTags ? '<div class="presskit-tags pk-tags">' + styleTags + '</div>' : '',
-      '</div>',
-      '<div class="pk-photo-orbit">',
-      '<div class="pk-orbit-ring"></div><div class="pk-orbit-ring pk-orbit-ring-two"></div>',
-      '<div class="pk-photo-frame">',
-      image ? '<img src="' + esc(image) + '" alt="Photo artiste ' + esc(profile.artist_name) + '" crossorigin="anonymous">' : '<div class="presskit-photo-placeholder pk-photo-placeholder"><span>' + esc(initials(profile.artist_name)) + '</span><i></i></div>',
-      '</div>',
-      photoCredit,
-      '</div>',
+      '<p class="pk2-subtitle">DJ basé à ' + esc(location) + ' · Contact réservation via DJ-hub</p>',
+      styleTags ? '<div class="presskit-tags pk2-tags">' + styleTags + '</div>' : '',
       '</header>',
-      '<main class="pk-body">',
-      '<div class="pk-column pk-column-left">',
-      templateSection("Personal info", infoRows([
+      '<main class="pk2-body">',
+      '<aside class="pk2-left">',
+      '<figure class="pk2-photo">',
+      image ? '<img src="' + esc(image) + '" alt="Photo artiste ' + esc(profile.artist_name) + '" crossorigin="anonymous">' : '<div class="presskit-photo-placeholder pk2-photo-placeholder"><span>' + esc(initials(profile.artist_name)) + '</span><i></i></div>',
+      photoCredit,
+      '</figure>',
+      '<section class="pk2-card pk2-social-card"><h2>Follow me</h2>' + (linkMarkup || '<p>Réseaux à confirmer.</p>') + '</section>',
+      '</aside>',
+      '<div class="pk2-right">',
+      '<section class="pk2-card pk2-info-card"><h2>Personal info</h2>' + infoRows([
         ["Ville", location],
         ["Styles", mainStyles],
         ["Tarif indicatif", formatEuro(profile.price_from)],
         ["Matériel", materialLabel(profile)]
-      ]), "pk-block-info"),
-      templateSection("Biography", '<p class="pk-lead">' + esc(shortIntro) + '</p>' + (longBio ? '<p>' + esc(longBio) + '</p>' : "")),
-      templateSection("Booking text", '<p>' + esc(bookingText) + '</p>'),
+      ]) + '</section>',
+      '<section class="pk2-card pk2-bio-card"><h2>Biography</h2><p class="pk2-lead">' + esc(shortIntro) + '</p>' + (longBio ? '<p>' + esc(longBio) + '</p>' : '') + '</section>',
+      '<div class="pk2-mini-grid">',
+      '<section class="pk2-card"><h2>Events</h2>' + (eventTags ? '<div class="presskit-tags pk2-mini-tags">' + eventTags + '</div>' : '<p>' + esc(mainEvents) + '</p>') + '</section>',
+      '<section class="pk2-card"><h2>Zones</h2>' + (zoneTags ? '<div class="presskit-tags pk2-mini-tags">' + zoneTags + '</div>' : '<p>' + esc(location) + '</p>') + '</section>',
       '</div>',
-      '<aside class="pk-column pk-column-right">',
-      '<div class="pk-stat-row">',
-      '<div><strong>' + esc(formatEuro(profile.price_from)) + '</strong><span>à partir de</span></div>',
-      '<div><strong>' + esc(location) + '</strong><span>ville</span></div>',
+      '<section class="pk2-card"><h2>Technical rider</h2><p>' + esc(technicalInfo) + '</p></section>',
+      (influences || formats) ? '<section class="pk2-card"><h2>Sound universe</h2>' + influences + formats + '</section>' : '',
+      '<section class="pk2-card pk2-booking-card"><h2>Booking text</h2><p>' + esc(bookingText) + '</p></section>',
       '</div>',
-      templateSection("Events", eventTags ? '<div class="presskit-tags pk-mini-tags">' + eventTags + '</div>' : '<p>' + esc(mainEvents) + '</p>'),
-      zoneTags ? templateSection("Zones", '<div class="presskit-tags pk-mini-tags">' + zoneTags + '</div>') : "",
-      templateSection("Technical rider", '<p>' + esc(technicalInfo) + '</p>'),
-      (influences || formats) ? templateSection("Sound universe", influences + formats) : "",
-      linkMarkup ? templateSection("Follow / links", linkMarkup, "pk-social-block") : "",
-      '</aside>',
       '</main>',
-      '<footer class="pk-footer">',
-      '<div><strong>FOLLOW ME</strong>' + (linkMarkup || '<span>Réseaux à confirmer</span>') + '</div>',
-      '<div><strong>BOOKING CONTACT</strong><span>Contact réservation via DJ-hub</span><span>Tarif final, disponibilité et conditions à confirmer avant validation.</span></div>',
-      '<span class="pk-footer-url">DJ-hub.fr</span>',
+      '<footer class="pk2-footer">',
+      '<strong>DJ-hub.fr</strong>',
+      '<span>Contact réservation via DJ-hub · Tarif final, disponibilité et conditions à confirmer avant validation.</span>',
       '</footer>',
       '</article>'
     ].join("");
@@ -269,6 +270,11 @@
 
   function field(name) {
     return qs('[name="' + name + '"]');
+  }
+
+  function selectedTemplate(profile) {
+    const input = field("presskit_template");
+    return templateForProfile(profile, input ? input.value : "auto");
   }
 
   function fillForm(data) {
@@ -297,7 +303,7 @@
       technical_info: text.technical_info,
       booking_text: text.booking_text,
       generated_text: field("generated_text").value.trim(),
-      generated_html: renderPresskit(profile, text)
+      generated_html: renderPresskit(profile, text, selectedTemplate(profile))
     };
   }
 
@@ -371,7 +377,7 @@
       long_bio: field("long_bio").value,
       technical_info: field("technical_info").value,
       booking_text: field("booking_text").value
-    });
+    }, selectedTemplate(profile));
   }
 
   async function savePresskit(payload) {
@@ -479,6 +485,14 @@
         }
       }
     });
+
+    const templateInput = field("presskit_template");
+    if (templateInput) {
+      templateInput.addEventListener("change", function () {
+        refreshPreview(profile);
+        show("Style visuel mis à jour.", "success");
+      });
+    }
   }
 
   window.djHubPresskit = {
@@ -487,6 +501,7 @@
     generateBookingText: generateBookingText,
     generateTechnicalText: generateTechnicalText,
     renderPresskit: renderPresskit,
+    templateForProfile: templateForProfile,
     printPresskit: printPresskit,
     downloadPresskitPdf: downloadPresskitPdf
   };
