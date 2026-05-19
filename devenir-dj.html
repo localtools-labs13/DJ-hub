@@ -3,137 +3,102 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Devenir DJ partenaire - BookTonDJ</title>
-    <meta name="description" content="Créez votre profil DJ sur BookTonDJ et recevez des demandes qualifiées en France.">
-    <link rel="stylesheet" href="assets/css/style.css?v=nightlife-premium-20260518">
+    <title>Devenir DJ sélectionné - DJ-hub</title>
+    <meta name="description" content="Créez gratuitement votre profil DJ-hub et recevez des demandes de soirées privées et petits bars mieux cadrées.">
+    <link rel="stylesheet" href="assets/css/style.css?v=djhub-final">
   </head>
-  <body data-page="join">
+  <body data-page="artist-join">
     <header class="site-header">
-      <a class="brand" href="index.html" aria-label="Accueil BookTonDJ"><span class="brand-mark">BTD</span><span>BookTonDJ</span></a>
+      <a class="brand" href="index.html" aria-label="Accueil DJ-hub"><span class="brand-mark">DJ</span><span>DJ-hub</span></a>
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span><span class="sr-only">Ouvrir le menu</span></button>
       <nav class="site-nav" id="site-nav" aria-label="Navigation principale">
         <a href="index.html">Accueil</a>
         <a href="trouver-un-dj.html">Trouver un DJ</a>
         <a href="djs.html">DJs</a>
-        <a href="lieux-et-pros.html">Lieux &amp; Pros</a>
+        <a href="lieux-et-pros.html">Bars &amp; lieux</a>
         <a href="devenir-dj.html" aria-current="page">Devenir DJ</a>
-        <a class="btn btn-small btn-primary" href="trouver-un-dj.html">Trouver un DJ</a>
+        <span data-auth-nav><a href="connexion.html">Connexion</a></span>
       </nav>
     </header>
 
     <main>
-      <section class="page-hero compact-hero">
+      <section class="page-hero">
         <div class="container narrow">
-          <p class="eyebrow">Artistes & collectifs</p>
-          <h1>Entrez dans une sélection pensée pour les bookings sérieux.</h1>
-          <p>Créez votre profil BookTonDJ, présentez votre univers et recevez des demandes mieux cadrées : ville, date, ambiance, budget, horaires et besoin matériel.</p>
+          <p class="eyebrow">DJs indépendants</p>
+          <h1>Recevez des demandes de soirées privées et petits bars mieux cadrées.</h1>
+          <p>DJ-hub vous transmet des demandes avec les informations essentielles : ville, date, type de soirée, nombre d’invités ou jauge du lieu, budget, style musical et besoin matériel.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="inscription-artiste.html">Créer mon compte artiste</a>
+            <a class="btn btn-secondary" href="questionnaire-artiste.html">Compléter mon profil</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-band">
+        <div class="container split-section express-panel">
+          <div class="reveal">
+            <p class="eyebrow">Règle officielle</p>
+            <h2>DJ-hub est gratuit pour les DJs. Toujours.</h2>
+            <p>Vous pouvez créer votre profil, recevoir des demandes et accepter ou refuser les prestations sans abonnement ni commission côté DJ. Vous gardez votre tarif annoncé. Les frais de service DJ-hub sont appliqués côté client et indiqués sur la facture.</p>
+          </div>
+          <a class="btn btn-primary reveal" href="inscription-artiste.html">Créer mon compte artiste</a>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="feature-grid">
+            <article class="feature-card reveal"><h3>Profil artiste gratuit</h3><p>Votre fiche est gratuite à créer et à conserver.</p></article>
+            <article class="feature-card reveal"><h3>Aucun abonnement</h3><p>Aucun paiement mensuel demandé aux DJs.</p></article>
+            <article class="feature-card reveal"><h3>Aucune commission côté DJ</h3><p>Vous gardez le tarif annoncé et validé avec le client.</p></article>
+            <article class="feature-card reveal"><h3>Aucune exclusivité</h3><p>Vous restez libre de vos autres canaux de booking.</p></article>
+            <article class="feature-card reveal"><h3>Vous acceptez ou refusez</h3><p>Chaque demande est étudiée selon vos disponibilités et votre intérêt.</p></article>
+            <article class="feature-card reveal"><h3>Validation manuelle</h3><p>Les profils sont publiés uniquement après vérification par DJ-hub.</p></article>
+          </div>
         </div>
       </section>
 
       <section class="section">
         <div class="container form-layout">
           <form class="app-form reveal" method="POST" action="https://formspree.io/f/TON_FORM_DJ" data-form="dj">
-            <p class="eyebrow">Profil artiste</p>
+            <p class="eyebrow">Fallback candidature</p>
+            <h2>Vous préférez envoyer vos infos rapidement ?</h2>
             <div class="form-grid">
-              <div class="field">
-                <label for="nom-artiste">Nom d'artiste</label>
-                <input id="nom-artiste" name="nom_artiste" type="text" required>
-              </div>
-              <div class="field">
-                <label for="prenom-nom">Prénom nom</label>
-                <input id="prenom-nom" name="prenom_nom" type="text" required autocomplete="name">
-              </div>
-              <div class="field">
-                <label for="ville-dj">Ville</label>
-                <input id="ville-dj" name="ville" type="text" required autocomplete="address-level2">
-              </div>
-              <div class="field">
-                <label for="email-dj">Email</label>
-                <input id="email-dj" name="email" type="email" required autocomplete="email">
-              </div>
-              <div class="field">
-                <label for="telephone-dj">Téléphone</label>
-                <input id="telephone-dj" name="telephone" type="tel" required autocomplete="tel">
-              </div>
-              <div class="field">
-                <label for="styles-dj">Styles musicaux</label>
-                <input id="styles-dj" name="styles_musicaux" type="text" required placeholder="House, afro, hip-hop...">
-              </div>
-              <div class="field">
-                <label for="experience-dj">Expérience</label>
-                <input id="experience-dj" name="experience" type="text" required placeholder="5 ans, clubs, mariages, festivals...">
-              </div>
-              <div class="field">
-                <label for="prix-dj">Prix à partir de</label>
-                <input id="prix-dj" name="prix_a_partir_de" type="number" min="0" step="10" required>
-              </div>
-              <div class="field">
-                <label for="zone-dj">Zone de déplacement</label>
-                <input id="zone-dj" name="zone_de_deplacement" type="text" required>
-              </div>
-              <div class="field">
-                <label for="materiel-dj">Matériel disponible</label>
-                <select id="materiel-dj" name="materiel_disponible" required>
-                  <option value="">Choisir</option>
-                  <option>Oui</option>
-                  <option>Non</option>
-                  <option>Selon prestation</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="instagram">Instagram</label>
-                <input id="instagram" name="instagram" type="url" placeholder="https://instagram.com/...">
-              </div>
-              <div class="field">
-                <label for="soundcloud">SoundCloud</label>
-                <input id="soundcloud" name="soundcloud" type="url" placeholder="https://soundcloud.com/...">
-              </div>
-              <div class="field">
-                <label for="mixcloud">Mixcloud</label>
-                <input id="mixcloud" name="mixcloud" type="url" placeholder="https://mixcloud.com/...">
-              </div>
-              <div class="field">
-                <label for="statut-legal">Statut légal</label>
-                <select id="statut-legal" name="statut_legal" required>
-                  <option value="">Choisir</option>
-                  <option>Auto-entrepreneur</option>
-                  <option>Entreprise</option>
-                  <option>Intermittent</option>
-                  <option>Association</option>
-                  <option>À créer</option>
-                </select>
-              </div>
+              <div><label for="dj-name">Nom artiste</label><input id="dj-name" name="artist_name" type="text" required></div>
+              <div><label for="dj-city">Ville</label><input id="dj-city" name="city" type="text" required></div>
+              <div><label for="dj-email">Email</label><input id="dj-email" name="email" type="email" required></div>
+              <div><label for="dj-links">Liens audio / réseaux</label><input id="dj-links" name="links" type="text" placeholder="Instagram, SoundCloud, presskit..."></div>
+              <div class="full"><label for="dj-message">Message</label><textarea id="dj-message" name="message" rows="5"></textarea></div>
             </div>
-            <div class="field">
-              <label for="message-dj">Message</label>
-              <textarea id="message-dj" name="message" rows="6" placeholder="Présentez votre univers, vos références, votre matériel, vos disponibilités..."></textarea>
-            </div>
-            <label class="check-line">
-              <input type="checkbox" name="consentement_rgpd" required>
-              <span>J'accepte que BookTonDJ utilise ces informations uniquement pour traiter ma candidature.</span>
-            </label>
-            <div class="form-feedback" data-form-feedback hidden>Merci, votre profil est prêt à être envoyé.</div>
-            <button class="btn btn-primary btn-full" type="submit">Envoyer mon profil DJ</button>
+            <label class="checkbox-line"><input type="checkbox" name="consentement" required><span>J’accepte que DJ-hub utilise ces informations uniquement pour traiter ma candidature.</span></label>
+            <div class="form-feedback" data-form-feedback hidden>Merci, votre candidature est prête à être envoyée.</div>
+            <button class="btn btn-secondary btn-full" type="submit">Envoyer ma candidature</button>
           </form>
 
           <aside class="side-panel reveal">
-            <p class="eyebrow">Visibilité lancement</p>
-            <h2>Mise en avant DJ</h2>
-            <p>La mise en avant est optionnelle. Elle peut donner plus de visibilité à votre profil pendant le lancement de BookTonDJ, sans garantir de booking.</p>
-            <a class="btn btn-secondary btn-full" href="https://buy.stripe.com/TON_LIEN_MISE_EN_AVANT">Booster mon profil</a>
-            <p class="payment-note">Le paiement ne confirme pas automatiquement une prestation. La réservation finale dépend de la validation du DJ, du lieu, de la date, du matériel et du tarif global.</p>
-            <p class="payment-note">Paiement optionnel, ne garantit pas de booking.</p>
+            <p class="eyebrow">Parcours artiste</p>
+            <h2>Compte obligatoire pour publier</h2>
+            <ul class="clean-list">
+              <li>Créer un compte artiste</li>
+              <li>Remplir le questionnaire</li>
+              <li>Passer en attente de validation</li>
+              <li>Être validé ou corriger son profil</li>
+              <li>Gérer ses disponibilités</li>
+            </ul>
           </aside>
         </div>
       </section>
     </main>
 
     <footer class="site-footer">
-      <div class="container legal">
-        <p>BookTonDJ est un service de mise en relation entre organisateurs d'événements et DJs indépendants. Les profils, disponibilités, tarifs, besoins matériels et conditions de prestation doivent être confirmés avant toute réservation définitive. Le paiement d'un acompte ne confirme pas automatiquement la prestation. Les informations envoyées via les formulaires sont utilisées uniquement pour traiter les demandes.</p>
-      </div>
+      <div class="container legal"><p>DJ-hub est un service de mise en relation entre organisateurs d’événements, petits lieux et DJs indépendants. Les DJs ne paient pas pour créer ou conserver leur profil. Les profils, disponibilités, tarifs, besoins matériels et conditions de prestation doivent être confirmés avant toute réservation définitive. Les frais de service DJ-hub sont ajoutés côté client et indiqués sur la facture. Les informations envoyées via les formulaires sont utilisées uniquement pour traiter les demandes.</p></div>
     </footer>
-    <script src="assets/js/data.js?v=nightlife-premium-20260518"></script>
-    <script src="assets/js/main.js?v=nightlife-premium-20260518"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-config.js?v=djhub-final"></script>
+    <script src="assets/js/auth.js?v=djhub-final"></script>
+    <script src="assets/js/data.js?v=djhub-final"></script>
+    <script src="assets/js/artists-db.js?v=djhub-final"></script>
+    <script src="assets/js/main.js?v=djhub-final"></script>
   </body>
 </html>

@@ -3,17 +3,16 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mon espace artiste - DJ-hub</title>
-    <meta name="description" content="Espace artiste DJ-hub pour gérer profil, validation, disponibilités et demandes.">
+    <title>Validation des artistes - DJ-hub</title>
+    <meta name="description" content="Espace admin DJ-hub pour valider les profils artistes.">
     <link rel="stylesheet" href="assets/css/style.css?v=djhub-final">
   </head>
-  <body data-page="artist-dashboard">
+  <body data-page="admin-validations">
     <header class="site-header">
       <a class="brand" href="index.html" aria-label="Accueil DJ-hub"><span class="brand-mark">DJ</span><span>DJ-hub</span></a>
       <nav class="site-nav" id="site-nav" aria-label="Navigation principale">
         <a href="index.html">Accueil</a>
-        <a href="questionnaire-artiste.html">Mon profil</a>
-        <a href="calendrier-artiste.html">Disponibilités</a>
+        <a href="admin-validations.html" aria-current="page">Validations</a>
         <button class="btn btn-small btn-secondary" type="button" onclick="signOutUser()">Déconnexion</button>
       </nav>
     </header>
@@ -21,10 +20,16 @@
     <main>
       <section class="page-hero">
         <div class="container">
-          <p class="eyebrow">Espace artiste</p>
-          <h1>Mon espace artiste</h1>
-          <div class="form-feedback auth-message" id="auth-message" hidden></div>
-          <div id="artist-dashboard"></div>
+          <p class="eyebrow">Admin DJ-hub</p>
+          <h1>Validation des artistes</h1>
+          <div class="form-feedback auth-message" id="admin-message" hidden></div>
+          <div class="stats-grid admin-stats" id="validation-stats"></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div id="validation-list" class="validation-list"></div>
         </div>
       </section>
     </main>
@@ -32,7 +37,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="assets/js/supabase-config.js?v=djhub-final"></script>
     <script src="assets/js/auth.js?v=djhub-final"></script>
-    <script src="assets/js/artist-dashboard.js?v=djhub-final"></script>
+    <script src="assets/js/admin-validations.js?v=djhub-final"></script>
     <script src="assets/js/main.js?v=djhub-final"></script>
   </body>
 </html>

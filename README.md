@@ -1,97 +1,83 @@
-# BookTonDJ
+# DJ-hub
 
-BookTonDJ est une V1 statique française de marketplace de matching humain entre organisateurs d'événements, lieux professionnels et DJs indépendants.
+DJ-hub est une plateforme statique HTML/CSS/JavaScript vanilla pour mettre en relation des particuliers, petits lieux et DJs indépendants.
 
-Slogan : **Trouvez le DJ parfait pour votre soirée.**
+Positionnement : soirées privées, anniversaires, soirées entre amis, villas, rooftops privés, petits bars, bars à ambiance, restaurants-bars et remplacements DJ ponctuels.
 
-Cette version est pensée pour être mise en ligne rapidement sur un hébergement statique comme IONOS : HTML, CSS et JavaScript vanilla uniquement, sans backend, sans framework et sans dépendance npm.
+## Règles produit
 
-## Ouvrir le site en local
+- Aucun faux profil artiste.
+- `assets/js/data.js` reste vide tant qu’aucun vrai artiste n’est validé.
+- Les artistes apparaissent publiquement uniquement après inscription, questionnaire et validation manuelle.
+- Le compte artiste est obligatoire pour créer ou modifier un profil.
+- Le compte client n’est pas obligatoire au lancement : une demande peut être envoyée sans compte.
+- DJ-hub est toujours gratuit pour les DJs.
+- Les frais de service sont côté client et indiqués sur la facture.
 
-Depuis le dossier du projet :
+Modèle économique interne : frais de service client de 17 % du tarif DJ validé, appliqués sur facture. Ne pas afficher publiquement le pourcentage sur le site.
+
+## Stack
+
+- HTML/CSS/JavaScript vanilla.
+- Compatible GitHub Pages.
+- Supabase Auth pour les comptes artiste/admin.
+- Supabase Postgres avec RLS pour profils, disponibilités et demandes.
+- FullCalendar via CDN pour le calendrier artiste.
+- Formspree peut rester actif en fallback formulaire email.
+
+## Supabase
+
+1. Créer un projet Supabase.
+2. Ouvrir SQL Editor.
+3. Copier/coller `supabase-schema.sql`.
+4. Exécuter le script complet.
+5. Dans `assets/js/supabase-config.js`, remplacer :
+   - `TON_SUPABASE_URL`
+   - `TON_SUPABASE_ANON_KEY`
+
+Ne jamais mettre de clé serveur privée dans le frontend.
+
+## Créer le premier admin
+
+1. Créer un compte via `inscription-artiste.html` ou Supabase Auth.
+2. Exécuter dans Supabase SQL Editor :
+
+```sql
+update public.profiles set role = 'admin' where email = 'TON_EMAIL';
+```
+
+3. Se reconnecter via `connexion.html`.
+4. Aller sur `admin-validations.html`.
+
+## Tester le parcours artiste
+
+1. Ouvrir `inscription-artiste.html`.
+2. Créer un compte artiste.
+3. Remplir `questionnaire-artiste.html`.
+4. Vérifier que le profil est en `pending`.
+5. Se connecter avec un admin.
+6. Valider le profil dans `admin-validations.html`.
+7. Vérifier que le profil validé apparaît dans `djs.html`.
+8. Gérer les disponibilités dans `calendrier-artiste.html`.
+
+## Tester le parcours client
+
+1. Ouvrir `trouver-un-dj.html`.
+2. Remplir une demande sans compte.
+3. Si Supabase est configuré, vérifier la table `booking_requests`.
+4. Si Formspree est configuré, vérifier la réception email.
+
+## Lancer en local
 
 ```bash
 python3 -m http.server 8000
 ```
 
-Puis ouvrez :
+Puis ouvrir `http://127.0.0.1:8000/index.html`.
 
-```text
-http://localhost:8000
-```
+## Déployer sur GitHub Pages
 
-Pages principales :
-
-- `index.html`
-- `trouver-un-dj.html`
-- `devenir-dj.html`
-- `lieux-et-pros.html`
-- `djs.html`
-- `dj.html?id=mara-kline-marseille`
-- `admin.html`
-
-## Ajouter un artiste
-
-Les profils sont dans :
-
-```text
-assets/js/data.js
-```
-
-Copiez un bloc artiste existant dans `window.ARTISTS`, changez l'id, le nom, la ville, les styles, le prix, la bio et les liens.
-
-Conseils :
-
-- utilisez un id sans accents ni espaces, par exemple `nom-artiste-ville` ;
-- laissez `image: ""` si vous n'avez pas encore de photo ;
-- placez les futures images dans `assets/img/artists/` ;
-- renseignez les styles et types d'événements avec des valeurs cohérentes pour les filtres.
-
-## Remplacer les liens Formspree
-
-Les formulaires utilisent des placeholders :
-
-- client : `https://formspree.io/f/TON_FORM_CLIENT`
-- DJ : `https://formspree.io/f/TON_FORM_DJ`
-- pro : `https://formspree.io/f/TON_FORM_PRO`
-
-Créez vos formulaires dans Formspree, puis remplacez ces URLs dans les fichiers HTML.
-
-## Remplacer les liens Stripe
-
-Les boutons Stripe utilisent ces placeholders :
-
-- acompte : `https://buy.stripe.com/TON_LIEN_ACOMPTE`
-- mise en avant DJ : `https://buy.stripe.com/TON_LIEN_MISE_EN_AVANT`
-- demande pro prioritaire : `https://buy.stripe.com/TON_LIEN_PRO`
-
-Créez vos Payment Links Stripe, puis remplacez les placeholders dans les pages concernées.
-
-## Héberger sur IONOS
-
-1. Connectez-vous à votre espace IONOS.
-2. Ouvrez le gestionnaire de fichiers ou votre accès FTP.
-3. Envoyez tous les fichiers du dossier projet à la racine du site ou dans le dossier web choisi.
-4. Vérifiez que `index.html` est bien à la racine.
-5. Testez les pages, les formulaires et les liens Stripe après mise en ligne.
-
-## Limites du MVP
-
-- Pas de backend.
-- Pas de vraie réservation instantanée.
-- Pas de disponibilité garantie.
-- Pas de paiement marketplace automatisé.
-- Pas d'authentification admin.
-- Les demandes Formspree et paiements Stripe doivent être configurés avec de vrais comptes.
-- Les profils et tarifs doivent être validés manuellement avant toute prestation.
-
-## Prochaines étapes
-
-- Backend.
-- Vraie authentification admin.
-- Base de données.
-- Dashboard DJ.
-- Paiement marketplace.
-- Calendrier.
-- Emails automatiques.
-- RGPD complet.
+1. Commiter les fichiers.
+2. Pousser sur GitHub.
+3. Activer GitHub Pages sur la branche souhaitée.
+4. Configurer les vraies valeurs Supabase avant mise en ligne.

@@ -3,153 +3,121 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Décrivez votre événement - BookTonDJ</title>
-    <meta name="description" content="Envoyez gratuitement votre demande pour recevoir des profils de DJs compatibles avec votre événement.">
-    <link rel="stylesheet" href="assets/css/style.css?v=nightlife-premium-20260518">
+    <title>Décrivez votre soirée - DJ-hub</title>
+    <meta name="description" content="Envoyez gratuitement votre demande DJ pour une soirée privée, un anniversaire, une villa, un rooftop ou un petit bar.">
+    <link rel="stylesheet" href="assets/css/style.css?v=djhub-final">
   </head>
   <body data-page="request">
     <header class="site-header">
-      <a class="brand" href="index.html" aria-label="Accueil BookTonDJ"><span class="brand-mark">BTD</span><span>BookTonDJ</span></a>
+      <a class="brand" href="index.html" aria-label="Accueil DJ-hub"><span class="brand-mark">DJ</span><span>DJ-hub</span></a>
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span><span class="sr-only">Ouvrir le menu</span></button>
       <nav class="site-nav" id="site-nav" aria-label="Navigation principale">
         <a href="index.html">Accueil</a>
         <a href="trouver-un-dj.html" aria-current="page">Trouver un DJ</a>
         <a href="djs.html">DJs</a>
-        <a href="lieux-et-pros.html">Lieux &amp; Pros</a>
+        <a href="lieux-et-pros.html">Bars &amp; lieux</a>
         <a href="devenir-dj.html">Devenir DJ</a>
-        <a class="btn btn-small btn-primary" href="trouver-un-dj.html">Trouver un DJ</a>
+        <span data-auth-nav><a href="connexion.html">Connexion</a></span>
       </nav>
     </header>
 
     <main>
-      <section class="page-hero compact-hero">
+      <section class="page-hero">
         <div class="container narrow">
-          <p class="eyebrow">Brief événement</p>
-          <h1>Donnez-nous la vibe, on cherche le bon DJ.</h1>
-          <p>Une soirée privée, un rooftop, un anniversaire ou un événement pro : envoyez le contexte et recevez une sélection compatible avec votre date, votre ville, votre ambiance et votre budget.</p>
-          <div class="alert alert-soft">Demande gratuite, réponse humaine, sans engagement. Aucun paiement avant validation claire.</div>
+          <p class="eyebrow">Demande gratuite</p>
+          <h1>Décrivez votre soirée</h1>
+          <p>Date, ville, nombre d’invités, ambiance souhaitée, budget : envoyez votre demande gratuitement.</p>
+          <div class="alert alert-soft">Votre demande est gratuite. Le tarif final est confirmé avant validation. Les frais de service DJ-hub sont indiqués sur la facture.</div>
         </div>
       </section>
 
       <section class="section">
         <div class="container form-layout">
-          <form class="app-form reveal" method="POST" action="https://formspree.io/f/TON_FORM_CLIENT" data-form="client">
-            <input type="hidden" name="dj_selectionne" id="selected-dj-input">
+          <form class="app-form reveal" id="client-request-form" method="POST" action="https://formspree.io/f/TON_FORM_CLIENT" data-form="client">
             <div class="selected-dj-box" id="selected-dj-box" hidden></div>
-            <p class="eyebrow">Infos essentielles</p>
+            <input id="selected-dj-input" name="artist_profile_id" type="hidden">
+            <input name="_subject" type="hidden" value="Nouvelle demande DJ-hub">
+
             <div class="form-grid">
-              <div class="field">
-                <label for="nom">Nom</label>
-                <input id="nom" name="nom" type="text" required autocomplete="name">
-              </div>
-              <div class="field">
-                <label for="email">Email</label>
-                <input id="email" name="email" type="email" required autocomplete="email">
-              </div>
-              <div class="field">
-                <label for="telephone">Téléphone</label>
-                <input id="telephone" name="telephone" type="tel" required autocomplete="tel">
-              </div>
-              <div class="field">
-                <label for="ville">Ville</label>
-                <input id="ville" name="ville" type="text" required autocomplete="address-level2">
-              </div>
-              <div class="field">
-                <label for="date-evenement">Date événement</label>
-                <input id="date-evenement" name="date_evenement" type="date" required>
-              </div>
-              <div class="field">
-                <label for="heure-debut">Heure début</label>
-                <input id="heure-debut" name="heure_debut" type="time" required>
-              </div>
-              <div class="field">
-                <label for="duree">Durée</label>
-                <select id="duree" name="duree" required>
+              <div><label for="client-name">Nom</label><input id="client-name" name="client_name" type="text" placeholder="Votre nom" required></div>
+              <div><label for="client-email">Email</label><input id="client-email" name="client_email" type="email" placeholder="vous@email.fr" required></div>
+              <div><label for="client-phone">Téléphone</label><input id="client-phone" name="client_phone" type="tel" placeholder="06 00 00 00 00"></div>
+              <div>
+                <label for="requester-type">Vous êtes</label>
+                <select id="requester-type" name="requester_type" required>
                   <option value="">Choisir</option>
-                  <option>2h</option>
-                  <option>3h</option>
-                  <option>4h</option>
-                  <option>5h et plus</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="type-evenement">Type événement</label>
-                <select id="type-evenement" name="type_evenement" required>
-                  <option value="">Choisir</option>
-                  <option>Soirée privée</option>
-                  <option>Anniversaire</option>
-                  <option>Mariage</option>
-                  <option>Bar</option>
-                  <option>Restaurant</option>
-                  <option>Corporate</option>
-                  <option>Club</option>
+                  <option>Particulier</option>
+                  <option>Petit bar / lieu indépendant</option>
+                  <option>Restaurant-bar</option>
                   <option>Autre</option>
                 </select>
               </div>
-              <div class="field">
-                <label for="invites">Nombre invités</label>
-                <input id="invites" name="nombre_invites" type="number" min="1" required>
-              </div>
-              <div class="field">
-                <label for="style-musical">Style musical</label>
-                <input id="style-musical" name="style_musical" type="text" placeholder="House, afro, disco, généraliste..." required>
-              </div>
-              <div class="field">
-                <label for="budget">Budget</label>
-                <select id="budget" name="budget" required>
+              <div><label for="city">Ville</label><input id="city" name="city" type="text" placeholder="Marseille, Paris, Lyon..." required></div>
+              <div><label for="event-date">Date événement</label><input id="event-date" name="event_date" type="date" required></div>
+              <div><label for="start-time">Heure début</label><input id="start-time" name="start_time" type="time"></div>
+              <div><label for="duration">Durée</label><input id="duration" name="duration" type="text" placeholder="Ex : 4 heures"></div>
+              <div>
+                <label for="event-type">Type événement</label>
+                <select id="event-type" name="event_type" required>
                   <option value="">Choisir</option>
-                  <option>Moins de 300 EUR</option>
-                  <option>300 - 500 EUR</option>
-                  <option>500 - 800 EUR</option>
-                  <option>800 - 1200 EUR</option>
-                  <option>1200 EUR et plus</option>
+                  <option>Anniversaire</option><option>Soirée privée</option><option>Soirée entre amis</option><option>EVJF / EVG</option><option>Garden party</option><option>Villa</option><option>Rooftop privé</option><option>Petit bar</option><option>Bar à ambiance</option><option>Apéro musical</option><option>Soirée étudiante</option><option>After privé</option><option>Cocktail privé</option><option>Remplacement DJ</option><option>Autre</option>
                 </select>
               </div>
-              <div class="field">
-                <label for="materiel">Besoin matériel</label>
-                <select id="materiel" name="besoin_materiel" required>
+              <div>
+                <label for="venue-type">Type de lieu</label>
+                <select id="venue-type" name="venue_type">
                   <option value="">Choisir</option>
-                  <option>Oui</option>
-                  <option>Non</option>
-                  <option>À confirmer</option>
+                  <option>Appartement</option><option>Maison</option><option>Villa</option><option>Salle louée</option><option>Rooftop</option><option>Extérieur</option><option>Petit bar</option><option>Restaurant-bar</option><option>Autre</option>
                 </select>
               </div>
+              <div><label for="guests">Nombre invités / jauge</label><input id="guests" name="guests" type="number" min="1" placeholder="60"></div>
+              <div><label for="music-style">Style musical</label><input id="music-style" name="music_style" type="text" placeholder="House, disco, hip-hop, généraliste..."></div>
+              <div><label for="budget">Budget</label><input id="budget" name="budget" type="text" placeholder="Ex : 400 à 600 EUR"></div>
+              <div>
+                <label for="sound-system">Le lieu dispose-t-il d’une sono ?</label>
+                <select id="sound-system" name="sound_system"><option value="">Choisir</option><option>Oui</option><option>Non</option><option>Je ne sais pas</option></select>
+              </div>
+              <div>
+                <label for="lights-needed">Besoin de lumières ?</label>
+                <select id="lights-needed" name="lights_needed"><option value="">Choisir</option><option>Oui</option><option>Non</option><option>À confirmer</option></select>
+              </div>
+              <div><label for="material-needed">Besoin matériel</label><input id="material-needed" name="material_needed" type="text" placeholder="Sono, contrôleur, lumières, micro..."></div>
+              <div class="full"><label for="message">Message</label><textarea id="message" name="message" rows="5" placeholder="Décrivez l’ambiance, les horaires, le contexte du lieu et vos contraintes."></textarea></div>
             </div>
-            <div class="field">
-              <label for="message">Message</label>
-              <textarea id="message" name="message" rows="6" placeholder="Ambiance souhaitée, contraintes du lieu, horaires précis, références musicales..."></textarea>
-            </div>
-            <label class="check-line">
-              <input type="checkbox" name="consentement_rgpd" required>
-              <span>J'accepte que BookTonDJ utilise ces informations uniquement pour traiter ma demande.</span>
+
+            <label class="checkbox-line">
+              <input type="checkbox" name="consentement" required>
+              <span>J’accepte que DJ-hub utilise ces informations uniquement pour traiter ma demande.</span>
             </label>
             <div class="form-feedback" data-form-feedback hidden>Merci, votre demande est prête à être envoyée.</div>
-            <button class="btn btn-primary btn-full" type="submit">Recevoir une shortlist DJ</button>
+            <button class="btn btn-primary btn-full" type="submit">Envoyer ma demande gratuite</button>
           </form>
 
           <aside class="side-panel reveal">
-            <p class="eyebrow">Après envoi</p>
-            <h2>Pas de booking automatique flou</h2>
-            <ol class="number-list">
-              <li>Nous lisons le brief et le niveau d'ambiance attendu</li>
-              <li>Nous rapprochons votre demande de profils compatibles</li>
-              <li>Vous confirmez le DJ, le tarif et les conditions avant tout acompte</li>
-            </ol>
-            <div class="mini-note">
-              <strong>Validation humaine</strong>
-              <p>Disponibilité, horaires, matériel, tarif global et contraintes du lieu sont confirmés avant validation finale.</p>
-            </div>
+            <p class="eyebrow">Ce qui aide vraiment</p>
+            <h2>Un brief complet accélère le matching</h2>
+            <ul class="clean-list">
+              <li>Ville, date et horaires</li>
+              <li>Type de soirée et type de lieu</li>
+              <li>Nombre d’invités ou jauge du bar</li>
+              <li>Ambiance musicale attendue</li>
+              <li>Budget et matériel déjà disponible</li>
+            </ul>
           </aside>
         </div>
       </section>
     </main>
 
     <footer class="site-footer">
-      <div class="container legal">
-        <p>BookTonDJ est un service de mise en relation entre organisateurs d'événements et DJs indépendants. Les profils, disponibilités, tarifs, besoins matériels et conditions de prestation doivent être confirmés avant toute réservation définitive. Le paiement d'un acompte ne confirme pas automatiquement la prestation. Les informations envoyées via les formulaires sont utilisées uniquement pour traiter les demandes.</p>
-      </div>
+      <div class="container legal"><p>DJ-hub est un service de mise en relation entre organisateurs d’événements, petits lieux et DJs indépendants. Les DJs ne paient pas pour créer ou conserver leur profil. Les profils, disponibilités, tarifs, besoins matériels et conditions de prestation doivent être confirmés avant toute réservation définitive. Les frais de service DJ-hub sont ajoutés côté client et indiqués sur la facture. Les informations envoyées via les formulaires sont utilisées uniquement pour traiter les demandes.</p></div>
     </footer>
-    <script src="assets/js/data.js?v=nightlife-premium-20260518"></script>
-    <script src="assets/js/main.js?v=nightlife-premium-20260518"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-config.js?v=djhub-final"></script>
+    <script src="assets/js/auth.js?v=djhub-final"></script>
+    <script src="assets/js/data.js?v=djhub-final"></script>
+    <script src="assets/js/artists-db.js?v=djhub-final"></script>
+    <script src="assets/js/booking-requests.js?v=djhub-final"></script>
+    <script src="assets/js/main.js?v=djhub-final"></script>
   </body>
 </html>

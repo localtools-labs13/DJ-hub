@@ -2,7 +2,6 @@
   "use strict";
 
   var artists = Array.isArray(window.ARTISTS) ? window.ARTISTS : [];
-  var stripeDepositUrl = "https://buy.stripe.com/TON_LIEN_ACOMPTE";
 
   function $(selector, scope) {
     return (scope || document).querySelector(selector);
@@ -30,11 +29,12 @@
   }
 
   function formatEuro(value) {
+    if (!value) return "Tarif sur demande";
     return new Intl.NumberFormat("fr-FR", {
       style: "currency",
       currency: "EUR",
       maximumFractionDigits: 0
-    }).format(value || 0);
+    }).format(value);
   }
 
   function uniqueSorted(values) {
@@ -45,7 +45,7 @@
 
   function hashHue(value) {
     var hash = 0;
-    String(value || "BookTonDJ").split("").forEach(function (char) {
+    String(value || "DJ-hub").split("").forEach(function (char) {
       hash = char.charCodeAt(0) + ((hash << 5) - hash);
     });
     return Math.abs(hash) % 360;
@@ -85,6 +85,12 @@
   }
 
   function artistCard(artist) {
+    var styles = artist.styles || [];
+    var badges = [
+      artist.material ? "Matériel possible" : "Matériel à confirmer",
+      artist.available || "Disponibilités à confirmer"
+    ].concat(artist.badges || []);
+
     return [
       '<article class="artist-card reveal">',
       '  <a class="artist-media" href="dj.html?id=' + encodeURIComponent(artist.id) + '" aria-label="Voir le profil de ' + escapeHtml(artist.name) + '">',
@@ -96,22 +102,50 @@
       '        <h3>' + escapeHtml(artist.name) + '</h3>',
       '        <p>' + escapeHtml(artist.city) + '</p>',
       '      </div>',
-      '      <span class="rating">' + escapeHtml(artist.rating) + '/5</span>',
+      '      <span class="rating">Validé</span>',
       '    </div>',
-      '    <div class="style-line">' + stylePills(artist.styles || [], 3) + '</div>',
+      '    <div class="style-line">' + stylePills(styles, 4) + '</div>',
       '    <div class="artist-meta">',
-      '      <span>À partir de ' + formatEuro(artist.priceFrom) + '</span>',
-      '      <span>' + escapeHtml(artist.events) + ' événements</span>',
-      '      <span>' + (artist.material ? "Matériel possible" : "Matériel à prévoir") + '</span>',
+      '      <span>' + (artist.priceFrom ? 'À partir de ' + formatEuro(artist.priceFrom) : 'Tarif sur demande') + '</span>',
+      '      <span>' + escapeHtml((artist.eventTypes || []).slice(0, 2).join(" · ") || "Soirées privées") + '</span>',
+      '      <span>' + (artist.material ? "DJ + matériel possible" : "Matériel à confirmer") + '</span>',
       '    </div>',
-      '    <p class="availability">' + escapeHtml(artist.available) + '</p>',
-      '    <div class="badge-row">' + badgeList(artist.badges || [], 3) + '</div>',
+      '    <p class="availability">' + escapeHtml(artist.available || "Disponibilités à confirmer avec le DJ") + '</p>',
+      '    <div class="badge-row">' + badgeList(badges, 3) + '</div>',
       '    <div class="card-actions">',
       '      <a class="btn btn-secondary" href="dj.html?id=' + encodeURIComponent(artist.id) + '">Voir le profil</a>',
       '      <a class="btn btn-primary" href="trouver-un-dj.html?dj=' + encodeURIComponent(artist.id) + '">Demander ce DJ</a>',
       '    </div>',
       '  </div>',
       '</article>'
+    ].join("");
+  }
+
+  function emptyArtistsHome() {
+    return [
+      '<div class="empty-state empty-state-premium reveal">',
+      '<p class="eyebrow">Sélection en cours</p>',
+      '<h2>Premiers artistes en cours de sélection</h2>',
+      '<p>DJ-hub n’affiche que des profils validés manuellement. Les premiers DJs seront ajoutés progressivement après vérification des informations, des liens musicaux, de la zone de déplacement et des disponibilités.</p>',
+      '<div class="hero-actions">',
+      '<a class="btn btn-primary" href="inscription-artiste.html">Rejoindre la sélection DJ</a>',
+      '<a class="btn btn-secondary" href="trouver-un-dj.html">Décrire ma soirée</a>',
+      '</div>',
+      '</div>'
+    ].join("");
+  }
+
+  function emptyArtistsList() {
+    return [
+      '<div class="empty-state empty-state-premium reveal">',
+      '<p class="eyebrow">Lancement DJ-hub</p>',
+      '<h2>Aucun DJ validé pour le moment</h2>',
+      '<p>DJ-hub est en phase de lancement. Les premiers artistes apparaîtront ici après validation manuelle.</p>',
+      '<div class="hero-actions">',
+      '<a class="btn btn-primary" href="devenir-dj.html">Devenir DJ</a>',
+      '<a class="btn btn-secondary" href="trouver-un-dj.html">Décrire ma soirée</a>',
+      '</div>',
+      '</div>'
     ].join("");
   }
 
@@ -157,16 +191,21 @@
     nodes.forEach(function (node) { observer.observe(node); });
   }
 
-  function renderPopularArtists() {
+  async function loadArtists(filters) {
+    if (window.djHubArtists && window.djHubArtists.loadApprovedArtists) {
+      artists = await window.djHubArtists.loadApprovedArtists(filters || {});
+    } else {
+      artists = Array.isArray(window.ARTISTS) ? window.ARTISTS : [];
+    }
+    return artists;
+  }
+
+  async function renderPopularArtists() {
     var container = $("#popular-artists");
     if (!container) return;
     var limit = Number(container.dataset.limit || 6);
-    var popular = artists
-      .slice()
-      .sort(function (a, b) { return b.rating - a.rating || b.events - a.events; })
-      .slice(0, limit);
-
-    container.innerHTML = popular.map(artistCard).join("");
+    var loaded = await loadArtists();
+    container.innerHTML = loaded.length ? loaded.slice(0, limit).map(artistCard).join("") : emptyArtistsHome();
     initReveal();
   }
 
@@ -188,6 +227,7 @@
     return {
       q: normalize($("#filter-search", form) && $("#filter-search", form).value),
       city: $("#filter-city", form) ? $("#filter-city", form).value : "",
+      date: $("#filter-date", form) ? $("#filter-date", form).value : "",
       style: $("#filter-style", form) ? $("#filter-style", form).value : "",
       budget: $("#filter-budget", form) ? Number($("#filter-budget", form).value) : 0,
       event: $("#filter-event", form) ? $("#filter-event", form).value : "",
@@ -200,41 +240,42 @@
       artist.name,
       artist.city,
       (artist.styles || []).join(" "),
-      (artist.eventTypes || []).join(" "),
-      (artist.badges || []).join(" ")
+      (artist.eventTypes || []).join(" ")
     ].join(" "));
 
     if (filters.q && haystack.indexOf(filters.q) === -1) return false;
     if (filters.city && artist.city !== filters.city) return false;
     if (filters.style && (artist.styles || []).indexOf(filters.style) === -1) return false;
-    if (filters.budget && artist.priceFrom > filters.budget) return false;
+    if (filters.budget && artist.priceFrom && artist.priceFrom > filters.budget) return false;
     if (filters.event && (artist.eventTypes || []).indexOf(filters.event) === -1) return false;
     if (filters.material === "true" && !artist.material) return false;
     if (filters.material === "false" && artist.material) return false;
     return true;
   }
 
-  function renderArtistsList() {
+  async function renderArtistsList() {
     var grid = $("#artists-grid");
     var form = $("#artist-filters");
     if (!grid || !form) return;
 
-    fillSelect($("#filter-city", form), uniqueSorted(artists.map(function (artist) { return artist.city; })));
-    fillSelect($("#filter-style", form), uniqueSorted(artists.flatMap(function (artist) { return artist.styles || []; })));
-    fillSelect($("#filter-event", form), uniqueSorted(artists.flatMap(function (artist) { return artist.eventTypes || []; })));
-
     var params = new URLSearchParams(window.location.search);
-    ["q", "city", "style", "budget", "event", "material"].forEach(function (name) {
+    ["q", "city", "date", "style", "budget", "event", "material"].forEach(function (name) {
       var input = $('[name="' + name + '"]', form);
       if (input && params.has(name)) input.value = params.get(name);
     });
 
-    function update() {
+    async function update() {
       var filters = readFilters(form);
-      var filtered = artists.filter(function (artist) { return matchesFilters(artist, filters); });
-      grid.innerHTML = filtered.length ? filtered.map(artistCard).join("") : '<div class="empty-state">Aucun DJ ne correspond à ces filtres pour le moment. Essayez d’élargir la ville, le style ou le budget.</div>';
+      var loaded = await loadArtists(filters);
+
+      fillSelect($("#filter-city", form), uniqueSorted(loaded.map(function (artist) { return artist.city; })));
+      fillSelect($("#filter-style", form), uniqueSorted(loaded.flatMap(function (artist) { return artist.styles || []; })));
+      fillSelect($("#filter-event", form), uniqueSorted(loaded.flatMap(function (artist) { return artist.eventTypes || []; })));
+
+      var filtered = loaded.filter(function (artist) { return matchesFilters(artist, filters); });
+      grid.innerHTML = filtered.length ? filtered.map(artistCard).join("") : emptyArtistsList();
       var count = $("#results-count");
-      if (count) count.textContent = String(filtered.length);
+      if (count) count.textContent = filtered.length ? String(filtered.length) : "Sélection en cours";
       initReveal();
     }
 
@@ -244,12 +285,15 @@
       window.setTimeout(update, 0);
     });
 
-    update();
+    await update();
   }
 
-  function getArtistFromUrl() {
+  async function getArtistFromUrl() {
     var id = new URLSearchParams(window.location.search).get("id");
-    return artists.find(function (artist) { return artist.id === id; });
+    if (window.djHubArtists && window.djHubArtists.getApprovedArtistById) {
+      return window.djHubArtists.getApprovedArtistById(id);
+    }
+    return artists.find(function (artist) { return artist.id === id; }) || null;
   }
 
   function socialLinks(artist) {
@@ -259,60 +303,64 @@
       ["Mixcloud", artist.mixcloud]
     ].filter(function (entry) { return entry[1]; });
 
-    if (!links.length) return '<p class="muted">Liens sociaux à ajouter.</p>';
+    if (!links.length) return '<p class="muted">Liens sociaux à confirmer.</p>';
 
     return links.map(function (entry) {
       return '<a class="social-link" href="' + escapeHtml(entry[1]) + '" target="_blank" rel="noopener">' + escapeHtml(entry[0]) + '</a>';
     }).join("");
   }
 
-  function renderArtistDetail() {
+  async function renderArtistDetail() {
     var container = $("#artist-detail");
     if (!container) return;
 
-    var artist = getArtistFromUrl();
+    var artist = await getArtistFromUrl();
     if (!artist) {
       container.innerHTML = [
-        '<div class="empty-detail">',
-        '  <p class="eyebrow">Profil introuvable</p>',
-        '  <h1>Ce DJ n’existe pas encore dans la sélection BookTonDJ.</h1>',
-        '  <p>Le lien est peut-être incomplet ou l’artiste a été retiré du prototype.</p>',
-        '  <a class="btn btn-primary" href="djs.html">Retour aux DJs</a>',
+        '<div class="empty-detail empty-state-premium">',
+        '  <p class="eyebrow">Profil non disponible</p>',
+        '  <h1>Profil non disponible</h1>',
+        '  <p>Ce profil n’est pas encore validé ou n’existe plus dans la sélection DJ-hub.</p>',
+        '  <div class="hero-actions">',
+        '  <a class="btn btn-primary" href="djs.html">Voir les DJs</a>',
+        '  <a class="btn btn-secondary" href="trouver-un-dj.html">Décrire ma soirée</a>',
+        '  </div>',
         '</div>'
       ].join("");
       return;
     }
 
-    document.title = artist.name + " - DJ " + artist.city + " - BookTonDJ";
+    document.title = artist.name + " - DJ " + artist.city + " - DJ-hub";
 
     container.innerHTML = [
       '<article class="artist-detail reveal">',
       '  <div class="artist-detail-media">' + artistVisual(artist, true) + '</div>',
       '  <div class="artist-detail-content">',
-      '    <p class="eyebrow">Profil DJ</p>',
+      '    <p class="eyebrow">Profil DJ validé</p>',
       '    <h1>' + escapeHtml(artist.name) + '</h1>',
       '    <p class="detail-subtitle">' + escapeHtml(artist.city) + ' · ' + escapeHtml((artist.styles || []).join(" / ")) + '</p>',
       '    <div class="detail-stats">',
       '      <span><strong>' + formatEuro(artist.priceFrom) + '</strong><small>à partir de</small></span>',
-      '      <span><strong>' + escapeHtml(artist.rating) + '/5</strong><small>note</small></span>',
-      '      <span><strong>' + escapeHtml(artist.events) + '</strong><small>événements</small></span>',
+      '      <span><strong>' + escapeHtml(artist.material ? "Oui" : "À confirmer") + '</strong><small>matériel</small></span>',
+      '      <span><strong>Validé</strong><small>par DJ-hub</small></span>',
       '    </div>',
-      '    <p>' + escapeHtml(artist.bio) + '</p>',
-      '    <div class="style-line detail-style-line">' + stylePills(artist.styles || [], 5) + '</div>',
-      '    <div class="badge-row">' + badgeList(artist.badges || [], 6) + '</div>',
+      '    <p>' + escapeHtml(artist.bio || "Présentation en cours de validation.") + '</p>',
+      '    <p class="muted">' + (artist.priceFrom ? 'À partir de ' + formatEuro(artist.priceFrom) + ' selon durée, lieu, matériel et disponibilité.' : 'Tarif à confirmer selon durée, lieu, matériel et disponibilité.') + '</p>',
+      '    <div class="style-line detail-style-line">' + stylePills(artist.styles || [], 6) + '</div>',
+      '    <div class="badge-row">' + badgeList([artist.material ? "Matériel possible" : "Matériel à confirmer", "Profil vérifié"], 3) + '</div>',
       '    <div class="detail-actions">',
       '      <a class="btn btn-primary" href="trouver-un-dj.html?dj=' + encodeURIComponent(artist.id) + '">Demander ce DJ</a>',
-      '      <a class="btn btn-secondary" href="' + stripeDepositUrl + '">Payer l’acompte</a>',
+      '      <a class="btn btn-secondary" href="djs.html">Voir d’autres DJs</a>',
       '    </div>',
-      '    <div class="alert alert-soft">Le paiement d’un acompte ne confirme pas automatiquement la prestation. La réservation finale dépend de la confirmation du DJ, du lieu, de la date, du matériel et du tarif global.</div>',
+      '    <div class="alert alert-soft">Tarif final confirmé avant validation avec le DJ. Les frais de service DJ-hub sont indiqués sur la facture.</div>',
       '  </div>',
       '</article>',
       '<div class="detail-grid">',
-      '  <section class="detail-panel reveal"><h2>Expérience</h2><p>' + escapeHtml(artist.experience) + '</p></section>',
-      '  <section class="detail-panel reveal"><h2>Matériel</h2><p>' + (artist.material ? "Matériel possible selon prestation et configuration du lieu." : "Matériel à prévoir ou à confirmer avec le lieu.") + '</p></section>',
+      '  <section class="detail-panel reveal"><h2>Expérience</h2><p>' + escapeHtml(artist.experience || "Expérience à confirmer.") + '</p></section>',
+      '  <section class="detail-panel reveal"><h2>Matériel</h2><p>' + (artist.material ? "Matériel possible selon prestation et configuration du lieu." : "Matériel à confirmer selon le lieu et la demande.") + '</p></section>',
       '  <section class="detail-panel reveal"><h2>Zones couvertes</h2><div class="tag-grid compact">' + (artist.zones || []).map(function (zone) { return '<span>' + escapeHtml(zone) + '</span>'; }).join("") + '</div></section>',
       '  <section class="detail-panel reveal"><h2>Événements adaptés</h2><div class="tag-grid compact">' + (artist.eventTypes || []).map(function (type) { return '<span>' + escapeHtml(type) + '</span>'; }).join("") + '</div></section>',
-      '  <section class="detail-panel reveal"><h2>Disponibilité</h2><p>' + escapeHtml(artist.available) + '</p></section>',
+      '  <section class="detail-panel reveal"><h2>Disponibilité</h2><p>' + escapeHtml(artist.available || "À confirmer avec le DJ.") + '</p></section>',
       '  <section class="detail-panel reveal"><h2>Liens</h2><div class="social-row">' + socialLinks(artist) + '</div></section>',
       '</div>'
     ].join("");
@@ -320,29 +368,15 @@
     initReveal();
   }
 
-  function initSelectedArtistRequest() {
-    var box = $("#selected-dj-box");
-    var input = $("#selected-dj-input");
-    if (!box || !input) return;
-
-    var id = new URLSearchParams(window.location.search).get("dj");
-    var artist = artists.find(function (item) { return item.id === id; });
-    if (!artist) return;
-
-    input.value = artist.name + " - " + artist.city + " (" + artist.id + ")";
-    box.hidden = false;
-    box.innerHTML = '<strong>DJ demandé :</strong> ' + escapeHtml(artist.name) + ' · ' + escapeHtml(artist.city) + ' · à partir de ' + formatEuro(artist.priceFrom);
-  }
-
   function prefillFromQuery() {
     var params = new URLSearchParams(window.location.search);
     if (!params.toString()) return;
 
     var map = {
-      ville: "ville",
-      date_evenement: "date_evenement",
-      type_evenement: "type_evenement",
-      style_musical: "style_musical",
+      ville: "city",
+      date_evenement: "event_date",
+      type_evenement: "event_type",
+      style_musical: "music_style",
       budget: "budget"
     };
 
@@ -358,53 +392,34 @@
       form.addEventListener("submit", function () {
         if (!feedback) return;
         feedback.hidden = false;
-        feedback.textContent = "Merci, votre demande est en cours d'envoi. Vous allez être redirigé vers le service de formulaire.";
+        feedback.textContent = "Merci, votre demande est en cours d’envoi.";
       });
     });
   }
 
-  function renderAdmin() {
+  function renderAdminPrototype() {
     var stats = $("#admin-stats");
     var requestsTable = $("#admin-requests");
     var artistsTable = $("#admin-artists");
     if (!stats && !requestsTable && !artistsTable) return;
 
-    var requests = [
-      { client: "Camille R.", city: "Paris", date: "24/05/2026", style: "House / Disco", budget: "650 EUR", status: "À traiter" },
-      { client: "Maison Alta", city: "Nice", date: "29/05/2026", style: "Lounge", budget: "900 EUR", status: "Prioritaire" },
-      { client: "Hugo B.", city: "Lyon", date: "31/05/2026", style: "Généraliste", budget: "450 EUR", status: "Assigné" },
-      { client: "Le Comptoir", city: "Bordeaux", date: "06/06/2026", style: "Afro / Latino", budget: "500 EUR", status: "En attente" }
-    ];
-
     if (stats) {
       stats.innerHTML = [
-        ["Demandes reçues", "128"],
-        ["DJs inscrits", String(artists.length)],
-        ["Demandes en attente", "9"],
-        ["Réservations confirmées", "17"]
+        ["Demandes enregistrées", "0"],
+        ["DJs validés", String(artists.length)],
+        ["Profils à valider", "0"],
+        ["Alertes", "0"]
       ].map(function (item) {
         return '<article class="stat-card"><span>' + escapeHtml(item[0]) + '</span><strong>' + escapeHtml(item[1]) + '</strong></article>';
       }).join("");
     }
 
     if (requestsTable) {
-      requestsTable.innerHTML = requests.map(function (request) {
-        return [
-          '<tr>',
-          '<td>' + escapeHtml(request.client) + '</td>',
-          '<td>' + escapeHtml(request.city) + '</td>',
-          '<td>' + escapeHtml(request.date) + '</td>',
-          '<td>' + escapeHtml(request.style) + '</td>',
-          '<td>' + escapeHtml(request.budget) + '</td>',
-          '<td><span class="status-pill">' + escapeHtml(request.status) + '</span></td>',
-          '<td class="table-actions"><button>contacter</button><button>assigner</button><button>confirmer</button><button>archiver</button></td>',
-          '</tr>'
-        ].join("");
-      }).join("");
+      requestsTable.innerHTML = '<tr><td colspan="7">Aucune demande locale à afficher. Les demandes réelles seront visibles dans Supabase.</td></tr>';
     }
 
     if (artistsTable) {
-      artistsTable.innerHTML = artists.map(function (artist) {
+      artistsTable.innerHTML = artists.length ? artists.map(function (artist) {
         return [
           '<tr>',
           '<td>' + escapeHtml(artist.name) + '</td>',
@@ -414,19 +429,18 @@
           '<td><span class="status-pill">Publié</span></td>',
           '</tr>'
         ].join("");
-      }).join("");
+      }).join("") : '<tr><td colspan="5">Aucun DJ validé pour le moment.</td></tr>';
     }
   }
 
-  document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("DOMContentLoaded", async function () {
     initNav();
-    renderPopularArtists();
-    renderArtistsList();
-    renderArtistDetail();
-    initSelectedArtistRequest();
     prefillFromQuery();
     initForms();
-    renderAdmin();
+    await renderPopularArtists();
+    await renderArtistsList();
+    await renderArtistDetail();
+    renderAdminPrototype();
     initReveal();
   });
 })();

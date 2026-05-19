@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mes disponibilités - DJ-hub</title>
+    <meta name="description" content="Calendrier artiste DJ-hub pour préparer et gérer les disponibilités.">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=djhub-final">
+  </head>
+  <body data-page="artist-calendar">
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Accueil DJ-hub"><span class="brand-mark">DJ</span><span>DJ-hub</span></a>
+      <nav class="site-nav" id="site-nav" aria-label="Navigation principale">
+        <a href="espace-artiste.html">Espace artiste</a>
+        <a href="questionnaire-artiste.html">Mon profil</a>
+        <button class="btn btn-small btn-secondary" type="button" onclick="signOutUser()">Déconnexion</button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="page-hero">
+        <div class="container narrow">
+          <p class="eyebrow">Calendrier artiste</p>
+          <h1>Mes disponibilités</h1>
+          <p>Préparez vos créneaux disponibles, en option ou occupés. Côté public, seules les disponibilités disponibles ou en option peuvent être lues pour les profils validés.</p>
+          <div class="legend-row">
+            <span><i class="dot mint"></i>Disponible</span>
+            <span><i class="dot cyan"></i>Option</span>
+            <span><i class="dot pink"></i>Occupé</span>
+          </div>
+          <div class="form-feedback auth-message" id="calendar-message" hidden></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container form-layout">
+          <div class="auth-card">
+            <div id="artist-calendar"></div>
+          </div>
+          <form class="app-form reveal" id="availability-form">
+            <p class="eyebrow">Ajouter un créneau</p>
+            <div class="form-grid">
+              <div><label for="availability-start-date">Date début</label><input id="availability-start-date" type="date" required></div>
+              <div><label for="availability-start-time">Heure début</label><input id="availability-start-time" type="time" required></div>
+              <div><label for="availability-end-date">Date fin</label><input id="availability-end-date" type="date" required></div>
+              <div><label for="availability-end-time">Heure fin</label><input id="availability-end-time" type="time" required></div>
+              <div class="full">
+                <label for="availability-status">Statut</label>
+                <select id="availability-status">
+                  <option value="available">Disponible</option>
+                  <option value="option">Option</option>
+                  <option value="busy">Occupé</option>
+                </select>
+              </div>
+              <div class="full"><label for="availability-note">Note privée</label><textarea id="availability-note" rows="3"></textarea></div>
+            </div>
+            <button class="btn btn-primary btn-full" type="submit">Enregistrer le créneau</button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    <script src="assets/js/supabase-config.js?v=djhub-final"></script>
+    <script src="assets/js/auth.js?v=djhub-final"></script>
+    <script src="assets/js/calendar.js?v=djhub-final"></script>
+    <script src="assets/js/main.js?v=djhub-final"></script>
+  </body>
+</html>

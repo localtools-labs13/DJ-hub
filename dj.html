@@ -3,21 +3,21 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Profil DJ - BookTonDJ</title>
-    <meta name="description" content="Consultez la fiche d'un DJ BookTonDJ et envoyez une demande de disponibilité.">
-    <link rel="stylesheet" href="assets/css/style.css?v=nightlife-premium-20260518">
+    <title>Profil DJ - DJ-hub</title>
+    <meta name="description" content="Consultez une fiche DJ validée par DJ-hub et envoyez une demande gratuite.">
+    <link rel="stylesheet" href="assets/css/style.css?v=djhub-final">
   </head>
   <body data-page="artist-detail">
     <header class="site-header">
-      <a class="brand" href="index.html" aria-label="Accueil BookTonDJ"><span class="brand-mark">BTD</span><span>BookTonDJ</span></a>
+      <a class="brand" href="index.html" aria-label="Accueil DJ-hub"><span class="brand-mark">DJ</span><span>DJ-hub</span></a>
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span><span class="sr-only">Ouvrir le menu</span></button>
       <nav class="site-nav" id="site-nav" aria-label="Navigation principale">
         <a href="index.html">Accueil</a>
         <a href="trouver-un-dj.html">Trouver un DJ</a>
-        <a href="djs.html" aria-current="page">DJs</a>
-        <a href="lieux-et-pros.html">Lieux &amp; Pros</a>
+        <a href="djs.html">DJs</a>
+        <a href="lieux-et-pros.html">Bars &amp; lieux</a>
         <a href="devenir-dj.html">Devenir DJ</a>
-        <a class="btn btn-small btn-primary" href="trouver-un-dj.html">Trouver un DJ</a>
+        <span data-auth-nav><a href="connexion.html">Connexion</a></span>
       </nav>
     </header>
 
@@ -28,11 +28,14 @@
     </main>
 
     <footer class="site-footer">
-      <div class="container legal">
-        <p>BookTonDJ est un service de mise en relation entre organisateurs d'événements et DJs indépendants. Les profils, disponibilités, tarifs, besoins matériels et conditions de prestation doivent être confirmés avant toute réservation définitive. Le paiement d'un acompte ne confirme pas automatiquement la prestation. Les informations envoyées via les formulaires sont utilisées uniquement pour traiter les demandes.</p>
-      </div>
+      <div class="container legal"><p>DJ-hub est un service de mise en relation entre organisateurs d’événements, petits lieux et DJs indépendants. Les DJs ne paient pas pour créer ou conserver leur profil. Les profils, disponibilités, tarifs, besoins matériels et conditions de prestation doivent être confirmés avant toute réservation définitive. Les frais de service DJ-hub sont ajoutés côté client et indiqués sur la facture. Les informations envoyées via les formulaires sont utilisées uniquement pour traiter les demandes.</p></div>
     </footer>
-    <script src="assets/js/data.js?v=nightlife-premium-20260518"></script>
-    <script src="assets/js/main.js?v=nightlife-premium-20260518"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-config.js?v=djhub-final"></script>
+    <script src="assets/js/auth.js?v=djhub-final"></script>
+    <script src="assets/js/data.js?v=djhub-final"></script>
+    <script src="assets/js/artists-db.js?v=djhub-final"></script>
+    <script src="assets/js/main.js?v=djhub-final"></script>
   </body>
 </html>
