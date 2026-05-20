@@ -348,7 +348,43 @@
     window.print();
   }
 
-  async function downloadPresskitPdf(profile) {
+  function setDownloadButtonLoading(button, isLoading) {
+    if (!button) return;
+    if (isLoading) {
+      button.dataset.originalText = button.textContent;
+      button.textContent = "Préparation du PDF...";
+      button.disabled = true;
+      button.classList.add("is-loading");
+      return;
+    }
+    button.textContent = button.dataset.originalText || button.textContent;
+    button.disabled = false;
+    button.classList.remove("is-loading");
+  }
+
+  function waitForImages(root) {
+    const images = Array.from(root.querySelectorAll("img"));
+    if (!images.length) return Promise.resolve();
+    return Promise.all(images.map(function (image) {
+      if (image.complete) return Promise.resolve();
+      return new Promise(function (resolve) {
+        image.addEventListener("load", resolve, { once: true });
+        image.addEventListener("error", resolve, { once: true });
+      });
+    }));
+  }
+
+  function createPdfSource(sheet) {
+    const wrap = document.createElement("div");
+    wrap.className = "presskit-pdf-export";
+    const clone = sheet.cloneNode(true);
+    clone.id = "presskit-sheet-export";
+    wrap.appendChild(clone);
+    document.body.appendChild(wrap);
+    return wrap;
+  }
+
+  async function downloadPresskitPdf(profile, button) {
     const sheet = qs("#presskit-sheet");
     if (!sheet || !window.html2pdf) {
       show("Téléchargement automatique indisponible. Utilisez la fenêtre d’impression pour enregistrer en PDF.", "warning");
@@ -356,21 +392,37 @@
       return;
     }
 
+    let source = null;
     try {
+      setDownloadButtonLoading(button, true);
+      source = createPdfSource(sheet);
+      await waitForImages(source);
       const filename = "presskit-dj-hub-" + slug(profile.artist_name || profile.slug || "dj") + ".pdf";
       await window.html2pdf()
         .set({
           margin: 0,
           filename: filename,
           image: { type: "jpeg", quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true, backgroundColor: "#070a13" },
+          html2canvas: {
+            scale: 2.35,
+            useCORS: true,
+            allowTaint: false,
+            backgroundColor: "#070a13",
+            logging: false,
+            scrollX: 0,
+            scrollY: 0
+          },
           jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
         })
-        .from(sheet)
+        .from(source.firstElementChild)
         .save();
+      show("Presskit PDF téléchargé. Vous pouvez l’envoyer directement à vos prospects.", "success");
     } catch (error) {
       show("Téléchargement automatique indisponible. Utilisez la fenêtre d’impression pour enregistrer en PDF.", "warning");
       printPresskit();
+    } finally {
+      if (source) source.remove();
+      setDownloadButtonLoading(button, false);
     }
   }
 
@@ -449,7 +501,8 @@
       refreshPreview(profile);
 
       if (params.get("download") === "pdf") {
-        window.setTimeout(function () { downloadPresskitPdf(profile); }, 500);
+        show("Presskit prêt. Cliquez sur “Télécharger mon presskit PDF” si le téléchargement ne démarre pas automatiquement.", "info");
+        window.setTimeout(function () { downloadPresskitPdf(profile); }, 700);
       }
     } catch (error) {
       show(error.message || "Impossible de charger le presskit.", "error");
@@ -494,7 +547,7 @@
 
       if (action === "download-pdf") {
         refreshPreview(profile);
-        await downloadPresskitPdf(profile);
+        await downloadPresskitPdf(profile, button);
       }
 
       if (action === "download-html") {

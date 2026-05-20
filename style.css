@@ -4662,6 +4662,105 @@ code {
   margin-inline: auto;
 }
 
+.presskit-download-box {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1.1rem 0 1.35rem;
+  padding: 1rem;
+  border: 1px solid rgba(24, 216, 255, 0.28);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 12% 20%, rgba(24, 216, 255, 0.16), transparent 46%),
+    linear-gradient(145deg, rgba(255,255,255,0.11), rgba(255,255,255,0.045));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.11), 0 18px 42px rgba(24, 216, 255, 0.08);
+}
+
+.presskit-download-box strong {
+  color: var(--text);
+  font-family: "Space Grotesk", Inter, sans-serif;
+  font-size: 1.08rem;
+}
+
+.presskit-download-box span {
+  color: var(--muted);
+}
+
+.btn.is-loading,
+.btn:disabled {
+  cursor: wait;
+  opacity: 0.72;
+  transform: none !important;
+}
+
+.presskit-pdf-export {
+  position: fixed;
+  left: -10000px;
+  top: 0;
+  z-index: -1;
+  width: 210mm;
+  height: 297mm;
+  overflow: hidden;
+  pointer-events: none;
+  background: #070a13;
+}
+
+.presskit-pdf-export .presskit-a4-sheet {
+  width: 210mm !important;
+  max-width: none !important;
+  height: 297mm !important;
+  min-height: 297mm !important;
+  margin: 0 !important;
+  gap: 4mm !important;
+  padding: 9mm 9mm 7mm !important;
+  box-shadow: none !important;
+}
+
+.presskit-pdf-export .pk2-header {
+  min-height: 0 !important;
+  padding-right: 0 !important;
+  padding-bottom: 4mm !important;
+}
+
+.presskit-pdf-export .pk2-header h1 {
+  max-width: 100% !important;
+  font-size: 16mm !important;
+  line-height: 0.86 !important;
+}
+
+.presskit-pdf-export .pk2-subtitle {
+  max-width: 100% !important;
+  font-size: 2.8mm !important;
+}
+
+.presskit-pdf-export .pk2-body {
+  grid-template-columns: 70mm 1fr !important;
+  gap: 6mm !important;
+  padding: 4mm !important;
+}
+
+.presskit-pdf-export .pk2-photo,
+.presskit-pdf-export .pk2-photo img,
+.presskit-pdf-export .pk2-photo-placeholder {
+  height: 136mm !important;
+  min-height: 0 !important;
+}
+
+.presskit-pdf-export .pk2-card {
+  padding: 3mm !important;
+  border-radius: 4mm !important;
+}
+
+.presskit-pdf-export .pk2-card h2 {
+  font-size: 2.45mm !important;
+}
+
+.presskit-pdf-export .pk2-card p,
+.presskit-pdf-export .pk2-info-card dt,
+.presskit-pdf-export .pk2-info-card dd,
+.presskit-pdf-export .pk2-links a {
+  font-size: 2.05mm !important;
+}
+
 .presskit-a4-sheet {
   width: min(100%, 760px);
   gap: 16px;
