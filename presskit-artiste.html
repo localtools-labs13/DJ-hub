@@ -8,7 +8,7 @@
     <link rel="apple-touch-icon" href="assets/img/dj-hub-touch-icon.png">
     <title>Mon presskit artiste - DJ-hub</title>
     <meta name="description" content="Générez un presskit DJ-hub à partir de votre questionnaire artiste.">
-    <link rel="stylesheet" href="assets/css/style.css?v=djhub-presskit-download2">
+    <link rel="stylesheet" href="assets/css/style.css?v=djhub-presskit-pdf3">
   </head>
   <body data-page="artist-presskit">
     <header class="site-header">
@@ -56,11 +56,6 @@
             <p class="eyebrow">Textes modifiables</p>
             <h2>Préparer le PDF</h2>
             <p>Le document est généré à partir de votre questionnaire. Vous pouvez le télécharger directement ou ajuster les textes avant l’export.</p>
-            <div class="presskit-download-box">
-              <strong>Prêt à envoyer</strong>
-              <span>Le PDF se télécharge en A4 avec votre photo, vos réseaux et les informations de booking.</span>
-              <button class="btn btn-primary" type="button" data-presskit-action="download-pdf">Télécharger mon presskit PDF</button>
-            </div>
             <div class="form-grid">
               <div class="full">
                 <label for="presskit-template">Style visuel</label>
@@ -90,16 +85,26 @@
             <p class="form-note">Si le téléchargement automatique est bloqué par votre navigateur, le bouton impression ouvre le mode “Enregistrer au format PDF”.</p>
           </form>
 
-          <aside class="presskit-preview reveal" id="presskit-preview" aria-label="Prévisualisation presskit"></aside>
+          <div class="presskit-output reveal">
+            <div class="presskit-output-toolbar no-print">
+              <div>
+                <strong>Presskit A4 prêt</strong>
+                <span>PDF propre, une page, prêt à envoyer.</span>
+              </div>
+              <button class="btn btn-primary" type="button" data-presskit-action="download-pdf">Télécharger mon presskit PDF</button>
+            </div>
+            <aside class="presskit-preview" id="presskit-preview" aria-label="Prévisualisation presskit"></aside>
+          </div>
         </div>
       </section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
     <script src="assets/js/supabase-config.js?v=djhub-spacing-logo2"></script>
     <script src="assets/js/auth.js?v=djhub-spacing-logo2"></script>
-    <script src="assets/js/presskit-builder.js?v=djhub-presskit-download1"></script>
+    <script src="assets/js/presskit-builder.js?v=djhub-presskit-pdf3"></script>
     <script src="assets/js/main.js?v=djhub-spacing-logo2"></script>
   </body>
 </html>

@@ -4662,6 +4662,41 @@ code {
   padding-bottom: 1rem;
 }
 
+.presskit-output {
+  min-width: 0;
+}
+
+.presskit-output-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.95rem;
+  border: 1px solid rgba(24, 216, 255, 0.28);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 8% 18%, rgba(24, 216, 255, 0.16), transparent 42%),
+    linear-gradient(145deg, rgba(255,255,255,0.105), rgba(255,255,255,0.045));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.11), 0 18px 42px rgba(24, 216, 255, 0.08);
+}
+
+.presskit-output-toolbar div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.presskit-output-toolbar strong {
+  color: var(--text);
+  font-family: "Space Grotesk", Inter, sans-serif;
+  font-size: 1.02rem;
+}
+
+.presskit-output-toolbar span {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
 .presskit-preview .presskit-a4-sheet {
   flex: 0 0 min(100%, 760px);
   margin-inline: auto;
@@ -5139,6 +5174,11 @@ code {
   .container.presskit-layout,
   .presskit-layout {
     grid-template-columns: 1fr;
+  }
+
+  .presskit-output-toolbar {
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .presskit-preview {

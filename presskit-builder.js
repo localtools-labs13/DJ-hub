@@ -348,6 +348,292 @@
     window.print();
   }
 
+  function pdfCtor() {
+    return window.jspdf && window.jspdf.jsPDF ? window.jspdf.jsPDF : window.jsPDF;
+  }
+
+  function setPdfFill(doc, hex) {
+    const c = hex.replace("#", "");
+    doc.setFillColor(parseInt(c.slice(0, 2), 16), parseInt(c.slice(2, 4), 16), parseInt(c.slice(4, 6), 16));
+  }
+
+  function setPdfText(doc, hex) {
+    const c = hex.replace("#", "");
+    doc.setTextColor(parseInt(c.slice(0, 2), 16), parseInt(c.slice(2, 4), 16), parseInt(c.slice(4, 6), 16));
+  }
+
+  function setPdfStroke(doc, hex) {
+    const c = hex.replace("#", "");
+    doc.setDrawColor(parseInt(c.slice(0, 2), 16), parseInt(c.slice(2, 4), 16), parseInt(c.slice(4, 6), 16));
+  }
+
+  function drawPdfBackground(doc) {
+    setPdfFill(doc, "#070a13");
+    doc.rect(0, 0, 210, 297, "F");
+    setPdfStroke(doc, "#12394b");
+    doc.setLineWidth(0.28);
+    for (let i = -260; i < 230; i += 10) {
+      doc.line(i, 297, i + 297, 0);
+    }
+    setPdfFill(doc, "#0e1728");
+    doc.roundedRect(8, 8, 194, 281, 3, 3, "F");
+    setPdfStroke(doc, "#1a6f8d");
+    doc.setLineWidth(0.35);
+    doc.roundedRect(8, 8, 194, 281, 3, 3, "S");
+  }
+
+  function drawPdfPill(doc, text, x, y, maxWidth) {
+    const label = compactText(text, 22).toUpperCase();
+    const width = Math.min(maxWidth || 42, Math.max(18, doc.getTextWidth(label) + 7));
+    setPdfFill(doc, "#14253a");
+    setPdfStroke(doc, "#39bde7");
+    doc.setLineWidth(0.2);
+    doc.roundedRect(x, y, width, 6.5, 3, 3, "FD");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(5.1);
+    setPdfText(doc, "#eef8ff");
+    doc.text(label, x + 3.4, y + 4.4);
+    return width;
+  }
+
+  function drawPdfTags(doc, values, x, y, maxWidth) {
+    let cx = x;
+    let cy = y;
+    (values || []).filter(Boolean).slice(0, 6).forEach(function (value) {
+      const width = Math.min(44, Math.max(18, doc.getTextWidth(String(value).toUpperCase()) + 8));
+      if (cx + width > x + maxWidth) {
+        cx = x;
+        cy += 8;
+      }
+      drawPdfPill(doc, value, cx, cy, width);
+      cx += width + 3;
+    });
+    return cy + 8;
+  }
+
+  function pdfLines(doc, text, width, maxLines) {
+    const cleaned = String(text || "").replace(/\s+/g, " ").trim();
+    if (!cleaned) return [];
+    return doc.splitTextToSize(cleaned, width).slice(0, maxLines);
+  }
+
+  function drawPdfTextBlock(doc, text, x, y, width, maxLines, size, color) {
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(size || 6.2);
+    setPdfText(doc, color || "#edf7ff");
+    const lines = pdfLines(doc, text, width, maxLines || 8);
+    doc.text(lines, x, y, { lineHeightFactor: 1.28 });
+    return y + (lines.length * (size || 6.2) * 0.45);
+  }
+
+  function drawPdfCard(doc, title, body, x, y, width, height, maxLines) {
+    setPdfFill(doc, "#111b2b");
+    setPdfStroke(doc, "#1d5f77");
+    doc.setLineWidth(0.25);
+    doc.roundedRect(x, y, width, height, 3, 3, "FD");
+    setPdfFill(doc, "#e946ff");
+    doc.circle(x + 4.2, y + 5.1, 0.85, "F");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(6.5);
+    setPdfText(doc, "#5fe4ff");
+    doc.text(title.toUpperCase(), x + 7, y + 6.7);
+    drawPdfTextBlock(doc, body, x + 4, y + 13, width - 8, maxLines, 5.6, "#edf7ff");
+  }
+
+  function drawPdfInfoCard(doc, profile, x, y, width, height) {
+    setPdfFill(doc, "#111b2b");
+    setPdfStroke(doc, "#1d5f77");
+    doc.setLineWidth(0.25);
+    doc.roundedRect(x, y, width, height, 3, 3, "FD");
+    setPdfFill(doc, "#e946ff");
+    doc.circle(x + 4.2, y + 5.1, 0.85, "F");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(6.5);
+    setPdfText(doc, "#5fe4ff");
+    doc.text("PERSONAL INFO", x + 7, y + 6.7);
+    const rows = [
+      ["Ville", profile.city || "À confirmer"],
+      ["Styles", list(profile.styles, "À confirmer")],
+      ["Tarif", formatEuro(profile.price_from)],
+      ["Matériel", materialLabel(profile)]
+    ];
+    const colW = (width - 10) / 2;
+    rows.forEach(function (row, index) {
+      const rx = x + 4 + (index % 2) * (colW + 3);
+      const ry = y + 15 + Math.floor(index / 2) * 13;
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(4.6);
+      setPdfText(doc, "#98a9ba");
+      doc.text(row[0].toUpperCase(), rx, ry);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(5.4);
+      setPdfText(doc, "#f6fbff");
+      doc.text(pdfLines(doc, row[1], colW, 2), rx, ry + 5, { lineHeightFactor: 1.2 });
+    });
+  }
+
+  function blobToDataUrl(blob) {
+    return new Promise(function (resolve, reject) {
+      const reader = new FileReader();
+      reader.onload = function () { resolve(reader.result); };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  function loadImage(dataUrl) {
+    return new Promise(function (resolve, reject) {
+      const image = new Image();
+      image.onload = function () { resolve(image); };
+      image.onerror = reject;
+      image.src = dataUrl;
+    });
+  }
+
+  async function coverImageDataUrl(url, width, height) {
+    if (!url) return null;
+    try {
+      const response = await fetch(url, { mode: "cors", cache: "force-cache" });
+      if (!response.ok) return null;
+      const dataUrl = await blobToDataUrl(await response.blob());
+      const image = await loadImage(dataUrl);
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#0a0f1c";
+      ctx.fillRect(0, 0, width, height);
+      const ratio = Math.max(width / image.width, height / image.height);
+      const drawW = image.width * ratio;
+      const drawH = image.height * ratio;
+      ctx.drawImage(image, (width - drawW) / 2, (height - drawH) / 2, drawW, drawH);
+      return canvas.toDataURL("image/jpeg", 0.92);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function drawPdfPhotoPlaceholder(doc, profile, x, y, width, height) {
+    setPdfFill(doc, "#090f1d");
+    doc.rect(x, y, width, height, "F");
+    setPdfStroke(doc, "#1c6f8c");
+    doc.rect(x, y, width, height, "S");
+    setPdfStroke(doc, "#124458");
+    doc.setLineWidth(0.25);
+    for (let i = -height; i < width + height; i += 7) {
+      doc.line(x + i, y + height, x + i + height, y);
+    }
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(34);
+    setPdfText(doc, "#f6fbff");
+    doc.text(initials(profile.artist_name), x + width / 2, y + height / 2 + 5, { align: "center" });
+  }
+
+  function drawPdfSocials(doc, profile, x, y, width) {
+    const links = linkRows(profile).slice(0, 4);
+    setPdfFill(doc, "#111b2b");
+    setPdfStroke(doc, "#1d5f77");
+    doc.roundedRect(x, y, width, 38, 3, 3, "FD");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(6.5);
+    setPdfText(doc, "#5fe4ff");
+    doc.text("FOLLOW ME", x + 4, y + 6.7);
+    if (!links.length) {
+      drawPdfTextBlock(doc, "Réseaux à confirmer.", x + 4, y + 16, width - 8, 2, 5.6);
+      return;
+    }
+    links.forEach(function (entry, index) {
+      const rowY = y + 15 + index * 5.2;
+      const colors = { Instagram: "#dd2a7b", SoundCloud: "#ff6b00", Mixcloud: "#55f2bb", YouTube: "#ff3030" };
+      setPdfFill(doc, colors[entry[0]] || "#59dcff");
+      doc.circle(x + 5, rowY - 1.5, 1.8, "F");
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(4.4);
+      setPdfText(doc, "#071018");
+      doc.text(entry[0].charAt(0), x + 5, rowY, { align: "center" });
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(5);
+      setPdfText(doc, "#f4f9ff");
+      doc.text(compactText(socialDisplay(entry[0], entry[1]), 28), x + 9, rowY);
+    });
+  }
+
+  async function downloadPresskitPdfDirect(profile, payload) {
+    const JsPDF = pdfCtor();
+    if (!JsPDF) return false;
+    const doc = new JsPDF({ unit: "mm", format: "a4", orientation: "portrait", compress: true });
+    const texts = payload || {
+      short_intro: field("short_intro").value.trim(),
+      long_bio: field("long_bio").value.trim(),
+      technical_info: field("technical_info").value.trim(),
+      booking_text: field("booking_text").value.trim()
+    };
+    const name = (profile.artist_name || "DJ").toUpperCase();
+    drawPdfBackground(doc);
+
+    setPdfFill(doc, "#64dcff");
+    doc.roundedRect(14, 14, 14, 14, 4, 4, "F");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(5.5);
+    setPdfText(doc, "#071018");
+    doc.text("DJ-hub", 21, 22.5, { align: "center" });
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(5.2);
+    setPdfText(doc, "#cbd8e8");
+    doc.text("OFFICIAL PRESS KIT", 32, 21.8);
+    doc.setFontSize(7);
+    setPdfText(doc, "#5fe4ff");
+    doc.text("PROFIL ARTISTE · PRESSKIT 1/1", 14, 41);
+
+    let titleSize = 28;
+    doc.setFont("helvetica", "bold");
+    while (doc.getTextWidth(name) > 182 && titleSize > 18) {
+      titleSize -= 1.5;
+      doc.setFontSize(titleSize);
+    }
+    doc.setFontSize(titleSize);
+    setPdfText(doc, "#ffffff");
+    doc.text(name, 14, 56);
+    doc.setFontSize(7.2);
+    setPdfText(doc, "#62dfff");
+    doc.text("DJ basé à " + (profile.city || "ville à confirmer") + " · Contact réservation via DJ-hub", 14, 66);
+    drawPdfTags(doc, profile.styles || [], 14, 72, 182);
+
+    const photo = await coverImageDataUrl(profile.public_image_url, 900, 1500);
+    const photoX = 14;
+    const photoY = 90;
+    const photoW = 72;
+    const photoH = 138;
+    if (photo) {
+      doc.addImage(photo, "JPEG", photoX, photoY, photoW, photoH, undefined, "FAST");
+      setPdfStroke(doc, "#1c6f8c");
+      doc.rect(photoX, photoY, photoW, photoH, "S");
+    } else {
+      drawPdfPhotoPlaceholder(doc, profile, photoX, photoY, photoW, photoH);
+    }
+
+    drawPdfSocials(doc, profile, 14, 233, 72);
+    const rightX = 92;
+    drawPdfInfoCard(doc, profile, rightX, 90, 104, 37);
+    drawPdfCard(doc, "Biography", texts.short_intro || generateShortBio(profile), rightX, 132, 104, 42, 7);
+    drawPdfCard(doc, "Events", list(profile.event_types, "Soirées privées, bars, rooftops"), rightX, 179, 50, 26, 4);
+    drawPdfCard(doc, "Zones", list(profile.zones, profile.city || "À confirmer"), 146, 179, 50, 26, 4);
+    drawPdfCard(doc, "Technical rider", texts.technical_info || generateTechnicalText(profile), rightX, 210, 104, 31, 4);
+    drawPdfCard(doc, "Booking text", texts.booking_text || generateBookingText(profile), rightX, 246, 104, 27, 4);
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8);
+    setPdfText(doc, "#5fe4ff");
+    doc.text("DJ-HUB.FR", 14, 283);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(5.2);
+    setPdfText(doc, "#dbe8f5");
+    doc.text("Contact réservation via DJ-hub · Tarif final, disponibilité et conditions à confirmer avant validation.", 196, 283, { align: "right" });
+
+    doc.save("presskit-dj-hub-" + slug(profile.artist_name || profile.slug || "dj") + ".pdf");
+    return true;
+  }
+
   function setDownloadButtonLoading(button, isLoading) {
     if (!button) return;
     if (isLoading) {
@@ -384,9 +670,9 @@
     return wrap;
   }
 
-  async function downloadPresskitPdf(profile, button) {
+  async function downloadPresskitPdf(profile, button, payload) {
     const sheet = qs("#presskit-sheet");
-    if (!sheet || !window.html2pdf) {
+    if (!sheet) {
       show("Téléchargement automatique indisponible. Utilisez la fenêtre d’impression pour enregistrer en PDF.", "warning");
       printPresskit();
       return;
@@ -395,6 +681,15 @@
     let source = null;
     try {
       setDownloadButtonLoading(button, true);
+      if (await downloadPresskitPdfDirect(profile, payload)) {
+        show("Presskit PDF téléchargé. Vous pouvez l’envoyer directement à vos prospects.", "success");
+        return;
+      }
+      if (!window.html2pdf) {
+        show("Téléchargement automatique indisponible. Utilisez la fenêtre d’impression pour enregistrer en PDF.", "warning");
+        printPresskit();
+        return;
+      }
       source = createPdfSource(sheet);
       await waitForImages(source);
       const filename = "presskit-dj-hub-" + slug(profile.artist_name || profile.slug || "dj") + ".pdf";
@@ -547,7 +842,7 @@
 
       if (action === "download-pdf") {
         refreshPreview(profile);
-        await downloadPresskitPdf(profile, button);
+        await downloadPresskitPdf(profile, button, payload);
       }
 
       if (action === "download-html") {
