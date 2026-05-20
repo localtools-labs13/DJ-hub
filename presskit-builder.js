@@ -673,7 +673,7 @@
   async function downloadPresskitPdf(profile, button, payload) {
     const sheet = qs("#presskit-sheet");
     if (!sheet) {
-      show("Téléchargement automatique indisponible. Utilisez la fenêtre d’impression pour enregistrer en PDF.", "warning");
+      show("Utilisez “Imprimer / enregistrer en PDF” pour créer le fichier.", "warning");
       printPresskit();
       return;
     }
@@ -686,7 +686,7 @@
         return;
       }
       if (!window.html2pdf) {
-        show("Téléchargement automatique indisponible. Utilisez la fenêtre d’impression pour enregistrer en PDF.", "warning");
+        show("Utilisez “Imprimer / enregistrer en PDF” pour créer le fichier.", "warning");
         printPresskit();
         return;
       }
@@ -713,7 +713,7 @@
         .save();
       show("Presskit PDF téléchargé. Vous pouvez l’envoyer directement à vos prospects.", "success");
     } catch (error) {
-      show("Téléchargement automatique indisponible. Utilisez la fenêtre d’impression pour enregistrer en PDF.", "warning");
+      show("Utilisez “Imprimer / enregistrer en PDF” pour créer le fichier.", "warning");
       printPresskit();
     } finally {
       if (source) source.remove();
@@ -796,8 +796,7 @@
       refreshPreview(profile);
 
       if (params.get("download") === "pdf") {
-        show("Presskit prêt. Cliquez sur “Télécharger mon presskit PDF” si le téléchargement ne démarre pas automatiquement.", "info");
-        window.setTimeout(function () { downloadPresskitPdf(profile); }, 700);
+        show("Presskit prêt. Utilisez “Imprimer / enregistrer en PDF” pour créer le fichier.", "info");
       }
     } catch (error) {
       show(error.message || "Impossible de charger le presskit.", "error");
