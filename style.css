@@ -3823,6 +3823,11 @@ code {
     #3b3b3b;
 }
 
+.pk2-photo-placeholder span {
+  position: relative;
+  z-index: 3;
+}
+
 .pk2-photo-placeholder i {
   position: absolute;
   right: 26px;
@@ -4712,7 +4717,18 @@ code {
   margin: 0 !important;
   gap: 4mm !important;
   padding: 9mm 9mm 7mm !important;
+  color: #f6fbff !important;
+  background:
+    linear-gradient(90deg, rgba(24, 216, 255, 0.14) 0 1.2mm, transparent 1.2mm 6mm),
+    linear-gradient(135deg, #07101b 0%, #11152d 48%, #071a23 100%) !important;
   box-shadow: none !important;
+}
+
+.presskit-pdf-export .presskit-a4-sheet::before,
+.presskit-pdf-export .presskit-a4-sheet::after,
+.presskit-pdf-export .pk2-noise,
+.presskit-pdf-export .pk2-accent {
+  display: none !important;
 }
 
 .presskit-pdf-export .pk2-header {
@@ -4736,6 +4752,13 @@ code {
   grid-template-columns: 70mm 1fr !important;
   gap: 6mm !important;
   padding: 4mm !important;
+  min-height: 202mm !important;
+  border: 1px solid rgba(24, 216, 255, 0.34) !important;
+  background:
+    linear-gradient(90deg, rgba(24,216,255,0.08) 0 1px, transparent 1px 8mm),
+    linear-gradient(0deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 8mm),
+    linear-gradient(145deg, #0a1220 0%, #12162b 48%, #0a1d25 100%) !important;
+  box-shadow: none !important;
 }
 
 .presskit-pdf-export .pk2-photo,
@@ -4745,9 +4768,31 @@ code {
   min-height: 0 !important;
 }
 
+.presskit-pdf-export .pk2-photo {
+  border: 1px solid rgba(24, 216, 255, 0.42) !important;
+  background: #0a0f1c !important;
+}
+
+.presskit-pdf-export .pk2-photo-placeholder {
+  color: #f7fbff !important;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(24,216,255,0.28), transparent 28%),
+    repeating-linear-gradient(45deg, rgba(24,216,255,0.08) 0 5mm, rgba(139,92,246,0.08) 5mm 10mm),
+    #0a0f1c !important;
+}
+
+.presskit-pdf-export .pk2-photo-placeholder span {
+  color: #f7fbff !important;
+  text-shadow: 0 0 18px rgba(24, 216, 255, 0.35) !important;
+}
+
 .presskit-pdf-export .pk2-card {
   padding: 3mm !important;
   border-radius: 4mm !important;
+  color: #f7fbff !important;
+  border: 1px solid rgba(24, 216, 255, 0.34) !important;
+  background: #111a28 !important;
+  box-shadow: none !important;
 }
 
 .presskit-pdf-export .pk2-card h2 {
@@ -4759,6 +4804,24 @@ code {
 .presskit-pdf-export .pk2-info-card dd,
 .presskit-pdf-export .pk2-links a {
   font-size: 2.05mm !important;
+  color: #eef6ff !important;
+}
+
+.presskit-pdf-export .pk2-card h2,
+.presskit-pdf-export .pk2-kicker,
+.presskit-pdf-export .pk2-footer strong,
+.presskit-pdf-export .pk2-footer span {
+  color: #59dcff !important;
+}
+
+.presskit-pdf-export .presskit-tags span,
+.presskit-pdf-export .pk2-links a {
+  border-color: rgba(24, 216, 255, 0.42) !important;
+  background: #172438 !important;
+}
+
+.presskit-pdf-export .pk2-footer {
+  color: #e9f7ff !important;
 }
 
 .presskit-a4-sheet {
