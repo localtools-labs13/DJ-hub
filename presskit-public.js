@@ -1,0 +1,246 @@
+(function () {
+  "use strict";
+
+  function qs(selector, scope) {
+    return (scope || document).querySelector(selector);
+  }
+
+  function esc(value) {
+    return String(value || "").replace(/[&<>"']/g, function (char) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" })[char];
+    });
+  }
+
+  function client() {
+    return window.djHubSupabase || null;
+  }
+
+  function configured() {
+    return Boolean(window.djHubSupabaseConfig && window.djHubSupabaseConfig.isConfigured && client());
+  }
+
+  function unavailable(text) {
+    const root = qs("#presskit-public");
+    if (!root) return;
+    root.innerHTML = '<div class="empty-state empty-state-premium"><p class="eyebrow">Presskit</p><h1>Presskit non disponible.</h1><p>' + esc(text || "Ce presskit n’est pas public pour le moment.") + '</p><a class="btn btn-primary" href="djs.html">Voir les DJs</a></div>';
+  }
+
+  function tags(values) {
+    return (values || []).map(function (value) {
+      return '<span>' + esc(value) + '</span>';
+    }).join("");
+  }
+
+  function list(values, fallback) {
+    return Array.isArray(values) && values.length ? values.join(", ") : fallback || "à confirmer";
+  }
+
+  function compactText(text, max) {
+    text = String(text || "").replace(/\s+/g, " ").trim();
+    if (!text || text.length <= max) return text;
+    return text.slice(0, max - 1).trim() + "…";
+  }
+
+  function templateForProfile(profile) {
+    const styles = list(profile.styles, "").toLowerCase();
+    if (styles.indexOf("techno") !== -1 || styles.indexOf("electro") !== -1 || styles.indexOf("hard") !== -1) return "techno";
+    if (styles.indexOf("house") !== -1 || styles.indexOf("disco") !== -1 || styles.indexOf("afro") !== -1) return "house";
+    return "general";
+  }
+
+  function initials(name) {
+    return String(name || "DJ").split(" ").filter(Boolean).slice(0, 2).map(function (part) {
+      return part.charAt(0);
+    }).join("").toUpperCase();
+  }
+
+  function linkRows(profile) {
+    return [
+      ["Instagram", profile.instagram],
+      ["SoundCloud", profile.soundcloud],
+      ["Mixcloud", profile.mixcloud],
+      ["YouTube", profile.youtube],
+      ["Site web", profile.website]
+    ].filter(function (entry) { return entry[1]; });
+  }
+
+  function socialLabel(label, url) {
+    const raw = String(url || "").trim();
+    if (!raw) return "";
+    const handleMatch = raw.match(/(?:instagram\.com|soundcloud\.com|mixcloud\.com|youtube\.com|youtu\.be)\/@?([^/?#]+)/i);
+    if (handleMatch && handleMatch[1]) return label + " · @" + handleMatch[1].replace(/^@/, "");
+    try {
+      return label + " · " + new URL(raw).hostname.replace(/^www\./, "");
+    } catch (error) {
+      return label + " · " + raw.replace(/^https?:\/\//, "");
+    }
+  }
+
+  function socialDisplay(label, url) {
+    return socialLabel(label, url)
+      .replace(/^Instagram · /, "")
+      .replace(/^SoundCloud · /, "")
+      .replace(/^Mixcloud · /, "")
+      .replace(/^YouTube · /, "")
+      .replace(/^Site web · /, "");
+  }
+
+  function socialIcon(label) {
+    const key = String(label || "").toLowerCase();
+    if (key === "instagram") {
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="4"></rect><circle cx="12" cy="12" r="3.2"></circle><circle cx="16.8" cy="7.2" r="1"></circle></svg>';
+    }
+    if (key === "soundcloud") {
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 17.2h11.2a3.8 3.8 0 0 0 .2-7.6 5.1 5.1 0 0 0-9.8 1.7A3 3 0 0 0 6.6 17.2Z"></path><path d="M3.8 13.2v3.1M5.6 11.7v4.8M7.4 10.7v5.8M9.2 9.5v7"></path></svg>';
+    }
+    if (key === "mixcloud") {
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.6 16.8h9.1a3.3 3.3 0 0 0 .2-6.6 4.4 4.4 0 0 0-8.4 1.2 2.7 2.7 0 0 0-.9 5.4Z"></path><path d="M3.8 13.9c1.3-2.6 3.1-3.9 5.5-3.9 1.7 0 3 .5 4 1.6 1 .9 1.9 1.4 2.7 1.4 1.2 0 2.2-.7 3-2"></path></svg>';
+    }
+    if (key === "youtube") {
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="7" width="15" height="10" rx="3"></rect><path d="m10.7 10 4.2 2-4.2 2Z"></path></svg>';
+    }
+    return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle><path d="M4.5 12h15M12 4.2c2.2 2.4 3.3 5 3.3 7.8S14.2 17.4 12 19.8M12 4.2C9.8 6.6 8.7 9.2 8.7 12s1.1 5.4 3.3 7.8"></path></svg>';
+  }
+
+  function formatEuro(value) {
+    if (!value) return "Tarif à confirmer";
+    return new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(value);
+  }
+
+  function materialLabel(profile) {
+    if (profile.material === true) return "Matériel disponible selon configuration";
+    if (profile.material === false) return "Matériel à confirmer selon le lieu";
+    return "À confirmer";
+  }
+
+  function templateSection(title, body, extraClass) {
+    if (!body) return "";
+    return '<section class="pk-block ' + esc(extraClass || "") + '"><h2>' + esc(title) + '</h2>' + body + '</section>';
+  }
+
+  function infoRows(rows) {
+    return '<dl class="pk-info-list">' + rows.filter(function (row) { return row[1]; }).map(function (row) {
+      return '<div><dt>' + esc(row[0]) + '</dt><dd>' + esc(row[1]) + '</dd></div>';
+    }).join("") + '</dl>';
+  }
+
+  function generateFallbackPresskit(profile) {
+    const styles = list(profile.styles, "plusieurs univers musicaux");
+    const events = list(profile.event_types, "soirées privées et petits lieux");
+    const shortIntro = (profile.artist_name || "Ce DJ") + " est un DJ basé à " + (profile.city || "votre ville") + ", spécialisé en " + styles + ". Son univers est pensé pour les " + events + ", avec une sélection adaptée à l’ambiance du lieu, au public et au moment de la soirée.";
+    return {
+      short_intro: shortIntro,
+      long_bio: [shortIntro, profile.bio || "", profile.experience || ""].filter(Boolean).join("\n\n"),
+      booking_text: "Contact réservation via DJ-hub. Tarif final, disponibilité et conditions à confirmer avant validation.",
+      technical_info: "Zone de déplacement : " + list(profile.zones, profile.city || "à confirmer") + ". Matériel : " + (profile.material ? "matériel disponible selon configuration" : "à confirmer") + "."
+    };
+  }
+
+  function render(profile, presskit) {
+    const root = qs("#presskit-public");
+    const image = profile.public_image_url || "";
+    const links = linkRows(profile);
+    const linkMarkup = links.length ? '<div class="pk2-links">' + links.map(function (entry) {
+      return '<a href="' + esc(entry[1]) + '" target="_blank" rel="noopener" aria-label="' + esc(entry[0]) + '"><span class="pk2-social-icon">' + socialIcon(entry[0]) + '</span><em>' + esc(socialDisplay(entry[0], entry[1])) + '</em></a>';
+    }).join("") + '</div>' : "";
+    const styleTags = tags(profile.styles || []);
+    const eventTags = tags(profile.event_types || []);
+    const zoneTags = tags(profile.zones || []);
+    const location = profile.city || "Ville à confirmer";
+    const mainStyles = list(profile.styles, "Styles à confirmer");
+    const shortIntro = compactText(presskit.short_intro || "", 300);
+    const longBio = compactText(presskit.long_bio || profile.bio || "", 460);
+    const bookingText = compactText(presskit.booking_text || "Contact réservation via DJ-hub.", 260);
+    const technicalInfo = compactText(presskit.technical_info || "", 250);
+    if (!root) return;
+    root.innerHTML = [
+      '<article class="presskit-page presskit-a4-sheet pk2-template-' + esc(templateForProfile(profile)) + ' reveal" id="presskit-sheet">',
+      '<div class="pk2-noise"></div><div class="pk2-accent pk2-accent-top"></div><div class="pk2-accent pk2-accent-bottom"></div>',
+      '<header class="pk2-header">',
+      '<div class="pk2-brand"><strong>DJ-hub</strong><span>' + (profile.status === "approved" ? "Profil validé" : "Official press kit") + '</span></div>',
+      '<p class="pk2-kicker">Profil artiste · Presskit 1/1</p>',
+      '<h1>' + esc(profile.artist_name) + '</h1>',
+      '<p class="pk2-subtitle">DJ basé à ' + esc(location) + ' · Contact réservation via DJ-hub</p>',
+      styleTags ? '<div class="presskit-tags pk2-tags">' + styleTags + '</div>' : '',
+      '</header>',
+      '<main class="pk2-body">',
+      '<aside class="pk2-left">',
+      '<figure class="pk2-photo">',
+      image ? '<img src="' + esc(image) + '" alt="Photo artiste ' + esc(profile.artist_name) + '">' : '<div class="presskit-photo-placeholder pk2-photo-placeholder"><span>' + esc(initials(profile.artist_name)) + '</span><i></i></div>',
+      profile.photo_credit ? '<p class="pk-photo-credit">Crédit photo : ' + esc(profile.photo_credit) + '</p>' : '',
+      '</figure>',
+      '<section class="pk2-card pk2-social-card"><h2>Follow me</h2>' + (linkMarkup || '<p>Réseaux à confirmer.</p>') + '</section>',
+      '</aside>',
+      '<div class="pk2-right">',
+      '<section class="pk2-card pk2-info-card"><h2>Personal info</h2>' + infoRows([
+        ["Ville", location],
+        ["Styles", mainStyles],
+        ["Tarif indicatif", formatEuro(profile.price_from)],
+        ["Matériel", materialLabel(profile)]
+      ]) + '</section>',
+      '<section class="pk2-card pk2-bio-card"><h2>Biography</h2><p class="pk2-lead">' + esc(shortIntro) + '</p>' + (longBio ? '<p>' + esc(longBio) + '</p>' : '') + '</section>',
+      '<div class="pk2-mini-grid">',
+      '<section class="pk2-card pk2-events-card"><h2>Events</h2>' + (eventTags ? '<div class="presskit-tags pk2-mini-tags">' + eventTags + '</div>' : '<p>Soirées privées, bars, rooftops.</p>') + '</section>',
+      '<section class="pk2-card pk2-zones-card"><h2>Zones</h2>' + (zoneTags ? '<div class="presskit-tags pk2-mini-tags">' + zoneTags + '</div>' : '<p>' + esc(location) + '</p>') + '</section>',
+      '</div>',
+      '<section class="pk2-card pk2-tech-card"><h2>Technical rider</h2><p>' + esc(technicalInfo) + '</p></section>',
+      '<section class="pk2-card pk2-booking-card"><h2>Booking text</h2><p>' + esc(bookingText) + '</p></section>',
+      '</div>',
+      '</main>',
+      '<footer class="pk2-footer"><strong>DJ-hub.fr</strong><span>Contact réservation via DJ-hub · Informations à confirmer avant réservation.</span></footer>',
+      '</article>'
+    ].join("");
+  }
+
+  async function init() {
+    if (!qs("#presskit-public")) return;
+    const id = new URLSearchParams(window.location.search).get("id");
+    const adminPreview = new URLSearchParams(window.location.search).get("admin") === "1";
+    if (!id) {
+      unavailable("Lien incomplet.");
+      return;
+    }
+
+    if (!configured()) {
+      unavailable("Supabase n’est pas encore configuré.");
+      return;
+    }
+
+    try {
+      if (adminPreview) {
+        const role = await window.requireRole("admin", "connexion.html");
+        if (!role || role.role !== "admin") return;
+      }
+
+      let query = client().from("artist_profiles").select("*").eq("id", id);
+      if (!adminPreview) query = query.eq("status", "approved");
+      const { data: profile, error: profileError } = await query.maybeSingle();
+      if (profileError) throw profileError;
+      if (!profile || (!adminPreview && profile.status !== "approved")) {
+        unavailable();
+        return;
+      }
+
+      const { data: presskit, error: presskitError } = await client()
+        .from("artist_presskits")
+        .select("*")
+        .eq("artist_profile_id", id)
+        .maybeSingle();
+      if (presskitError) throw presskitError;
+      if (!presskit && adminPreview) {
+        render(profile, generateFallbackPresskit(profile));
+        return;
+      }
+      if (!presskit) {
+        unavailable("Ce profil n’a pas encore de presskit public.");
+        return;
+      }
+
+      render(profile, presskit);
+    } catch (error) {
+      unavailable(error.message || "Presskit non disponible.");
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", init);
+})();
